@@ -1,0 +1,12 @@
+{
+    "shell-version": [
+        "3.14",
+        "3.16"
+    ], 
+    "uuid": "sound-output-device-chooser@kgshank.net", 
+    "name": "Sound Output Device Chooser", 
+    "description": "Shows a list of sound output devices (similar to gnome sound settings) in the status menu below the volume slider. Various active ports like HDMI , Speakers etc. of the same device are also displayed for selection",
+    "version": "1",
+    "original-author": "GopI",
+    "url": "https://github.com/kgshank/gse-sound-output-device-chooser"
+}
