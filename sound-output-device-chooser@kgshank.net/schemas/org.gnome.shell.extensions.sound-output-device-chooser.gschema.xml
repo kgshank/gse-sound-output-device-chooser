@@ -1,0 +1,16 @@
+<schemalist >
+   <schema id="org.gnome.shell.extensions.sound-output-device-chooser" path="/org/gnome/shell/extensions/sound-output-device-chooser/">
+    <key name="hide-on-single-device" type="b">
+      <default>false</default>
+      <summary>Preference to show the chooser when only one device is available</summary>
+      <description>Value set to false hides the device chooser when only one device is available</description>
+    </key>
+
+    <key name="show-profiles" type="b">
+      <default>true</default>
+      <summary>Preference to show the available profiles for all devices</summary>
+      <description>Value set to true displays the individual availble profiles for each device</description>
+    </key>
+          
+  </schema>
+</schemalist>
