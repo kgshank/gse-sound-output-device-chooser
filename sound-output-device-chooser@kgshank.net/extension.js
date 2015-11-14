@@ -115,7 +115,9 @@ const SoundOutputDeviceChooser = new Lang.Class({
             }
             this._devices[id] = new Object();
             this._devices[id].uidevice = uidevice;
-            this._devices[id].text = uidevice.description + "\n(" + uidevice.origin + ")";
+            this._devices[id].text = uidevice.description;
+            if(uidevice.origin != "")
+            	this._devices[id].text += "\n(" + uidevice.origin + ")";
             this._devices[id].item = this.menu.addAction( this._devices[id].text, function() {
                 control.change_output(uidevice);
             });
