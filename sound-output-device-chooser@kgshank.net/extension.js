@@ -120,8 +120,11 @@ const SoundOutputDeviceChooser = new Lang.Class({
                 control.change_output(uidevice);
             });
 
+            icon = uidevice.get_icon_name();
+            if(icon == null)
+                icon = 'audio-card';
             this._devices[id].item._icon = new St.Icon({ style_class: 'popup-menu-icon',
-                icon_name: uidevice.get_icon_name()});
+                icon_name: icon});
             this._devices[id].item.actor.insert_child_at_index(this._devices[id].item._icon,1);
             if(!this._devices[id].profiles)
             {
@@ -236,7 +239,10 @@ const SoundOutputDeviceChooser = new Lang.Class({
             this.active_device = this._devices[id];
             this._devices[id].item.setOrnament(PopupMenu.Ornament.CHECK);
             this.label.text = this._devices[id].text;
-            this.icon.icon_name = this._devices[id].uidevice.get_icon_name();
+            icon = this._devices[id].uidevice.get_icon_name();
+            if(icon == null)
+                icon = 'audio-card';
+            this.icon.icon_name = icon;
         }
     },
 
