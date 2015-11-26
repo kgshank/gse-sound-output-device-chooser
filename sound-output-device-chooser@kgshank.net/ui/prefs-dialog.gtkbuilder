@@ -14,6 +14,7 @@
       <object class="GtkGrid" id="grid1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="opacity">0.97999999999999998</property>
         <property name="margin_left">15</property>
         <property name="margin_right">15</property>
         <property name="margin_top">15</property>
@@ -65,6 +66,31 @@
           <packing>
             <property name="left_attach">0</property>
             <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label4">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="opacity">0.94999999999999996</property>
+            <property name="halign">start</property>
+            <property name="label" translatable="yes">Use monochrome icons</property>
+            <property name="justify">right</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSwitch" id="use-monochrome">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="active">True</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">2</property>
           </packing>
         </child>
       </object>

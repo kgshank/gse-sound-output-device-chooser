@@ -11,6 +11,12 @@
       <summary>Preference to show the available profiles for all devices</summary>
       <description>Value set to true displays the individual availble profiles for each device</description>
     </key>
+
+    <key name="use-monochrome" type="b">
+      <default>true</default>
+      <summary>Preference to use monochrome icons instead of default icons</summary>
+      <description>Value set to true uses monochrome icons</description>
+    </key>
           
   </schema>
 </schemalist>

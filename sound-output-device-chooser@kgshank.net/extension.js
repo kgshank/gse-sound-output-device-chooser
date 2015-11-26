@@ -41,7 +41,7 @@ const SoundOutputDeviceChooser = new Lang.Class({
         this._settings = Lib.getSettings(Prefs.SETTINGS_SCHEMA);
         this._settings.connect("changed::" + Prefs.HIDE_ON_SINGLE_DEVICE , function(){_this._setChooserVisibility();});
         this._settings.connect("changed::" + Prefs.SHOW_PROFILES , function(){_this._setProfileVisibility();});
-
+        this._settings.connect("changed::" + Prefs.USE_MONOCHROME , function(){_this._setIcons();});
         /*
          * this._control.connect("state-changed",
          * function(control,id){global.log('state-changed' + id);});
@@ -126,7 +126,7 @@ const SoundOutputDeviceChooser = new Lang.Class({
             if(icon == null)
                 icon = 'audio-card';
             this._devices[id].item._icon = new St.Icon({ style_class: 'popup-menu-icon',
-                icon_name: icon});
+                icon_name: (this._settings.get_boolean(Prefs.USE_MONOCHROME)) ? icon + "-symbolic" :  icon});
             this._devices[id].item.actor.insert_child_at_index(this._devices[id].item._icon,1);
             if(!this._devices[id].profiles)
             {
@@ -180,7 +180,7 @@ const SoundOutputDeviceChooser = new Lang.Class({
             }
 
             profileItem.setProfileActive(this._devices[id].activeProfile == profile.name);
-       }
+        }
 
         this._setChooserVisibility();
         return uidevice;
@@ -244,7 +244,8 @@ const SoundOutputDeviceChooser = new Lang.Class({
             icon = this._devices[id].uidevice.get_icon_name();
             if(icon == null)
                 icon = 'audio-card';
-            this.icon.icon_name = icon;
+            this.icon.icon_name = (this._settings.get_boolean(Prefs.USE_MONOCHROME)) ? icon
+                    +   "-symbolic" : icon;
         }
     },
 
@@ -299,9 +300,22 @@ const SoundOutputDeviceChooser = new Lang.Class({
             let device = this._devices[id];        
             for each (let profile in device.profiles)           
             {
-                device.profilesitems[profile.name].actor.visible = (visibility && device.item.actor.visible);
+                device.profilesitems[profile.name].actor.visible = 
+                    (visibility && device.item.actor.visible && Object.keys(device.profilesitems).length > 1);
             }
         }
+    },
+
+    _setIcons: function() {
+        let useMonochrome = this._settings.get_boolean(Prefs.USE_MONOCHROME);
+        for each (let device in this._devices)           
+        {
+            device.item._icon.icon_name =  (useMonochrome) ? device.uidevice.get_icon_name() 
+                    + "-symbolic" : device.uidevice.get_icon_name();     
+        }
+        this.icon.icon_name =  
+            (useMonochrome) ? this.active_device.uidevice.get_icon_name() 
+                    +   "-symbolic" : this.active_device.uidevice.get_icon_name();
     },
 
     destroy: function() {

@@ -27,6 +27,7 @@ const Lib = Me.imports.convenience;
 const SETTINGS_SCHEMA = "org.gnome.shell.extensions.sound-output-device-chooser";
 const HIDE_ON_SINGLE_DEVICE = "hide-on-single-device";
 const SHOW_PROFILES = "show-profiles";
+const USE_MONOCHROME = "use-monochrome";
 
 function init(){}
 
@@ -38,7 +39,7 @@ const SDCSettingsWidget = new GObject.Class({
 
     _init: function(params) {
         this.parent(params);
-    
+
         this.orientation = Gtk.Orientation.VERTICAL;
         this.spacign = 0;
 
@@ -60,18 +61,18 @@ const SDCSettingsWidget = new GObject.Class({
             this.pack_start(label, true, true, 0);
         } else {
             global.log('JS LOG:_UI file receive and load: '+uiFilePath);
-        
+
             let mainContainer = builder.get_object("main-gtkbox1");
-            
+
             this.pack_start(mainContainer, true, true, 0);
 
             let showProfileSwitch = builder.get_object("show-profile");
             let singleDeviceSwitch = builder.get_object("single-device");
-            
+            let useMonochromeSwitch = builder.get_object("use-monochrome");
+
             this.settings.bind(HIDE_ON_SINGLE_DEVICE, singleDeviceSwitch , "active", Gio.SettingsBindFlags.DEFAULT);
             this.settings.bind(SHOW_PROFILES,showProfileSwitch , "active", Gio.SettingsBindFlags.DEFAULT);
-           
-
+            this.settings.bind(USE_MONOCHROME,useMonochromeSwitch , "active", Gio.SettingsBindFlags.DEFAULT);
         }
     }
 });
