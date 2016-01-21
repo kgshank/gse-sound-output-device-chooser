@@ -86,7 +86,8 @@ const SoundOutputDeviceChooser = new Lang.Class({
             if(uidevice && uidevice.port_available)
             {
                 let stream = this._control.get_stream_from_device(uidevice);
-                if(stream == defaultSink && stream.get_port().port === uidevice.get_port()) {
+                let stream_port = stream.get_port();
+                if(stream_port && stream == defaultSink && stream_port.port === uidevice.get_port()) {
                     this._outputActivated(this._control, id);
                 }
             }            
