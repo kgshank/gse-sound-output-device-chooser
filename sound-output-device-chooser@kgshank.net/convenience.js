@@ -67,7 +67,7 @@ function getProfiles(control, uidevice)
             refreshCards();
         }
 
-        if(cards[stream.card_index])
+        if(cards && cards[stream.card_index])
         {
             global.log(uidevice.port_name + ' found');			
             return getProfilesForPort(uidevice.port_name, cards[stream.card_index]);
