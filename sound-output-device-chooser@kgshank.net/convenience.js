@@ -61,7 +61,7 @@ function getProfiles(control, uidevice)
     let stream = control.lookup_stream_id(uidevice.get_stream_id());
     if(stream)
     {
-        if(!cards[stream.card_index])
+        if(!cards || !cards[stream.card_index])
         {
             global.log(uidevice.port_name + ' not found'); 	    		
             refreshCards();

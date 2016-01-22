@@ -127,7 +127,7 @@ const SoundOutputDeviceChooser = new Lang.Class({
                 control.change_output(uidevice);
             });
 
-            icon = uidevice.get_icon_name();
+            let icon = uidevice.get_icon_name();
             if(icon == null)
                 icon = 'audio-card';
             this._devices[id].item._icon = new St.Icon({ style_class: 'popup-menu-icon',
@@ -246,7 +246,7 @@ const SoundOutputDeviceChooser = new Lang.Class({
             this.active_device = this._devices[id];
             this._devices[id].item.setOrnament(PopupMenu.Ornament.CHECK);
             this.label.text = this._devices[id].text;
-            icon = this._devices[id].uidevice.get_icon_name();
+            let icon = this._devices[id].uidevice.get_icon_name();
             if(icon == null)
                 icon = 'audio-card';
             this.icon.icon_name = (this._settings.get_boolean(Prefs.USE_MONOCHROME)) ? icon
