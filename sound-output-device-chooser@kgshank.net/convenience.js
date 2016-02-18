@@ -115,6 +115,10 @@ function parseOutput(out)
         if( (matches = /^Card\s#(\d+)$/.exec(line) )) {
             cardIndex = matches[1];
             global.log( "card_index=" + cardIndex);
+            if(!cards[cardIndex])
+            {
+                cards[cardIndex] = {'index':cardIndex,'profiles':[], 'ports':[]};
+            } 
         }
         else if (line.match(/^\t*Profiles:$/) )
         {
@@ -131,10 +135,6 @@ function parseOutput(out)
                 case "PROFILES":
                     if((matches = /(output:[^+]*?):\s(.*?)\s\(sinks:/.exec(line)))
                     {
-                        if(!cards[cardIndex])
-                        {
-                            cards[cardIndex] = {'index':cardIndex,'profiles':[], 'ports':[]};
-                        } 
                         cards[cardIndex].profiles.push({'name': matches[1], 'human_name': matches[2]});
                     }
                     break;
