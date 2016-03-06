@@ -17,6 +17,11 @@
       <summary>Preference to use monochrome icons instead of default icons</summary>
       <description>Value set to true uses monochrome icons</description>
     </key>
-          
+    
+    <key name="ports-settings" type="s">
+      <default>"[]"</default>
+      <summary>Preference to hide/show different ports always</summary>
+      <description></description>
+    </key>
   </schema>
 </schemalist>

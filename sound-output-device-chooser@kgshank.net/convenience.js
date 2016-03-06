@@ -82,7 +82,7 @@ function getProfiles(control, uidevice)
             let profiles;			
             if((profiles = getProfilesForPort(uidevice.port_name, card)))
             {
-                global.log("Found a name matching port "+ profiles.length);				
+                global.log("Num profiles: "+ profiles.length);				
                 return profiles;
             }
         }
@@ -90,15 +90,26 @@ function getProfiles(control, uidevice)
 
     return null;
 }
+let ports;
+function getPorts(refresh)
+{
+    if(!ports || refresh)
+    {
+        refreshCards();
+    }
+    return ports;
+}
 
 function refreshCards()
 {
     cards = {};	
+    ports = [];
     let [result, out, err, exit_code] = GLib.spawn_command_line_sync('pactl list cards');	
     if(result && !exit_code)
     {
         parseOutput(out);
     }
+    // global.log(JSON.stringify(cards));
 }
 
 function parseOutput(out)
@@ -133,21 +144,22 @@ function parseOutput(out)
             switch(parseSection)
             {
                 case "PROFILES":
-                    if((matches = /(output:[^+]*?):\s(.*?)\s\(sinks:/.exec(line)))
+                    if((matches = /.*?((?:output|input)[^+]*?):\s(.*?)\s\(sinks:/.exec(line)))
                     {
                         cards[cardIndex].profiles.push({'name': matches[1], 'human_name': matches[2]});
                     }
                     break;
                 case "PORTS":
-                    if((matches = /\t*(.*?output.*?):\s(.*?)\s\(priority:/.exec(line)))
+                    if((matches = /\t*(.*?):\s(.*?)\s\(priority:/.exec(line)))
                     {
                         port = {'name' : matches[1], 'human_name' : matches[2]};
+                        cards[cardIndex].ports.push(port);
+                        ports.push({'name' : matches[1], 'human_name' : matches[2]});
                     }
                     else if( port && (matches = /\t*Part of profile\(s\):\s(.*)/.exec(line)))
                     {
                         let profileStr = matches[1];
                         port.profiles = profileStr.split(', ');
-                        cards[cardIndex].ports.push(port);
                         port = null;
                     }
                     break;
@@ -162,7 +174,7 @@ function getProfilesForPort(portName, card)
     {
         if(portName === port.name)
         {
-            global.log('Port Found!!!');
+            global.log('Port Found: ' + portName + "::" + port.human_name);
             let profiles = [];
             for each(let profile in port.profiles)
             {

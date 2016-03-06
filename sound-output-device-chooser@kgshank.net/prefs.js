@@ -28,6 +28,7 @@ const SETTINGS_SCHEMA = "org.gnome.shell.extensions.sound-output-device-chooser"
 const HIDE_ON_SINGLE_DEVICE = "hide-on-single-device";
 const SHOW_PROFILES = "show-profiles";
 const USE_MONOCHROME = "use-monochrome";
+const PORT_SETTINGS = "ports-settings"
 
 function init(){}
 
@@ -39,12 +40,11 @@ const SDCSettingsWidget = new GObject.Class({
 
     _init: function(params) {
         this.parent(params);
-
         this.orientation = Gtk.Orientation.VERTICAL;
-        this.spacign = 0;
-
-        // creates the settings
-        this.settings = Lib.getSettings(SETTINGS_SCHEMA);
+        this.spacing = 0;
+    
+     // creates the settings
+        this._settings = Lib.getSettings(SETTINGS_SCHEMA);
 
         // creates the ui builder and add the main resource file
         let uiFilePath = Me.path + "/ui/prefs-dialog.gtkbuilder";
@@ -57,30 +57,133 @@ const SDCSettingsWidget = new GObject.Class({
                 label: _("Could not load the preferences UI file"),
                 vexpand: true
             });
-
+            
             this.pack_start(label, true, true, 0);
         } else {
             global.log('JS LOG:_UI file receive and load: '+uiFilePath);
 
-            let mainContainer = builder.get_object("main-gtkbox1");
+            let mainContainer = builder.get_object("notebook1");
 
             this.pack_start(mainContainer, true, true, 0);
 
             let showProfileSwitch = builder.get_object("show-profile");
             let singleDeviceSwitch = builder.get_object("single-device");
             let useMonochromeSwitch = builder.get_object("use-monochrome");
+            let showAlwaysToggleRender = builder.get_object("ShowAlwaysToggleRender");
+            let hideAlwaysToggleRender = builder.get_object("HideAlwaysToggleRender");
+            let showActiveToggleRender = builder.get_object("ShowActiveToggleRender");
+            this._portsStore = builder.get_object("ports-store");
+            
+            showAlwaysToggleRender.connect("toggled", Lang.bind(this, this._showAlwaysToggleRenderCallback));
+            hideAlwaysToggleRender.connect("toggled", Lang.bind(this, this._hideAlwaysToggleRenderCallback));
+            showActiveToggleRender.connect("toggled", Lang.bind(this, this._showActiveToggleRenderCallback));
+            
+            this._settings.bind(HIDE_ON_SINGLE_DEVICE, singleDeviceSwitch , "active", Gio.SettingsBindFlags.DEFAULT);
+            this._settings.bind(SHOW_PROFILES,showProfileSwitch , "active", Gio.SettingsBindFlags.DEFAULT);
+            this._settings.bind(USE_MONOCHROME,useMonochromeSwitch , "active", Gio.SettingsBindFlags.DEFAULT);
+            
+            this._populatePorts();
+            this._restorePortsFromSettings();
+        }
+    },
+    
+    _populatePorts: function (){
+        let ports = Lib.getPorts();
+        for each(let port in ports)
+        {
+            this._portsStore.set(this._portsStore.append(),[0,1,2,3,4,5],[port.human_name, false, false, true, port.name,3]);
+        }
+    },
+    
+    _showAlwaysToggleRenderCallback: function(widget, path) {
+        this._toggleCallback(widget, path, 1, [2, 3]);
+    },
+    
+    _hideAlwaysToggleRenderCallback: function(widget, path) {
+        this._toggleCallback(widget, path, 2, [1, 3]);
+    },
+    
+    _showActiveToggleRenderCallback: function(widget, path) {
+        this._toggleCallback(widget, path, 3, [1, 2]);
+    },
+    
+    _toggleCallback: function(widget, path, activeCol, inactiveCols) {
+        let active = !widget.active;
+        if(!active)
+        {
+            return;
+        }
+        let [success, iter] = this._portsStore.get_iter_from_string(path);
+        if (!success) {
+            return;
+        }
+        this._portsStore.set_value(iter, activeCol, active);
+        this._portsStore.set_value(iter, 5, activeCol);
+        for each(let col in inactiveCols)
+        {
+            this._portsStore.set_value(iter, col, !active);
+        }
+        this._commitSettings();
+    },
+    
+    _commitSettings: function() {
+        let ports = [];
+        let [success, iter] = this._portsStore.get_iter_first();
 
-            this.settings.bind(HIDE_ON_SINGLE_DEVICE, singleDeviceSwitch , "active", Gio.SettingsBindFlags.DEFAULT);
-            this.settings.bind(SHOW_PROFILES,showProfileSwitch , "active", Gio.SettingsBindFlags.DEFAULT);
-            this.settings.bind(USE_MONOCHROME,useMonochromeSwitch , "active", Gio.SettingsBindFlags.DEFAULT);
+        while (iter && success) {
+            if(!this._portsStore.get_value(iter,3)) {
+                ports.push({
+                    human_name: this._portsStore.get_value(iter, 0),
+                    name: this._portsStore.get_value(iter, 4),
+                    display_option: this._portsStore.get_value(iter, 5)
+                });
+            }
+            success = this._portsStore.iter_next(iter);
+        }
+
+        this._settings.set_string(PORT_SETTINGS, JSON.stringify(ports));        
+    },
+
+    _restorePortsFromSettings: function() {
+        let ports = JSON.parse(this._settings.get_string(PORT_SETTINGS));
+       
+        let found;
+        for each(let port in ports) {
+            found = false;
+            if (!port || !port.human_name || !port.name) {
+                continue;
+            }
+
+            let [success, iter] = this._portsStore.get_iter_first();
+
+            while (iter && success) {
+                let human_name = this._portsStore.get_value(iter, 0);
+                let name = this._portsStore.get_value(iter, 4);
+                
+                if(port.name == name && port.human_name == human_name) {
+                    this._portsStore.set_value(iter, 3, false);
+                    this._portsStore.set_value(iter, port.display_option, true);
+                    this._portsStore.set_value(iter, 5, port.display_option);
+                    found = true;
+                    break;
+                }
+                success = this._portsStore.iter_next(iter);
+            }
+            
+            if(!found){
+                iter = this._portsStore.append();
+                this._portsStore.set(iter, [0,1,2,3,4,5], 
+                        [port.human_name, false, false, false, port.name,port.display_option]);
+                this._portsStore.set_value(iter, port.display_option, true);
+            }
         }
     }
 });
 
 
 function buildPrefsWidget() {
-    let widget = new SDCSettingsWidget();
-    widget.show_all();
+    let _settings = new SDCSettingsWidget();
+    _settings.show_all();
 
-    return widget;
+    return _settings;
 }

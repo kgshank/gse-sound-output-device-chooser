@@ -2,103 +2,250 @@
 <!-- Generated with glade 3.19.0 -->
 <interface>
   <requires lib="gtk+" version="3.16"/>
-  <object class="GtkBox" id="main-gtkbox1">
+  <object class="GtkListStore" id="ports-store">
+    <columns>
+      <!-- column-name Port -->
+      <column type="gchararray"/>
+      <!-- column-name ShowAlways -->
+      <column type="gboolean"/>
+      <!-- column-name HideAlways -->
+      <column type="gboolean"/>
+      <!-- column-name ShowOnActive -->
+      <column type="gboolean"/>
+      <!-- column-name PortRealName -->
+      <column type="gchararray"/>
+      <!-- column-name SelectedColumn -->
+      <column type="gint"/>
+    </columns>
+  </object>
+  <object class="GtkNotebook" id="notebook1">
     <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="margin_left">5</property>
-    <property name="margin_right">5</property>
-    <property name="margin_top">5</property>
-    <property name="margin_bottom">5</property>
-    <property name="orientation">vertical</property>
+    <property name="can_focus">True</property>
+    <property name="opacity">0.96999999999999997</property>
+    <property name="hexpand">True</property>
+    <property name="vexpand">True</property>
     <child>
-      <object class="GtkGrid" id="grid1">
+      <object class="GtkBox" id="main-gtkbox1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="opacity">0.97999999999999998</property>
-        <property name="margin_left">15</property>
-        <property name="margin_right">15</property>
-        <property name="margin_top">15</property>
-        <property name="margin_bottom">15</property>
-        <property name="row_spacing">25</property>
-        <property name="column_spacing">15</property>
+        <property name="margin_left">5</property>
+        <property name="margin_right">5</property>
+        <property name="margin_top">5</property>
+        <property name="margin_bottom">5</property>
+        <property name="hexpand">True</property>
+        <property name="vexpand">True</property>
+        <property name="orientation">vertical</property>
         <child>
-          <object class="GtkSwitch" id="single-device">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSwitch" id="show-profile">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="active">True</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="label1">
+          <object class="GtkGrid" id="grid1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="halign">start</property>
-            <property name="margin_right">100</property>
-            <property name="label" translatable="yes">Show profiles for selection</property>
+            <property name="opacity">0.98039215686274506</property>
+            <property name="margin_top">15</property>
+            <property name="margin_bottom">15</property>
+            <property name="row_spacing">25</property>
+            <property name="column_spacing">15</property>
+            <child>
+              <object class="GtkSwitch" id="single-device">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkSwitch" id="show-profile">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="active">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="label" translatable="yes">Show profiles for selection</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label2">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="label" translatable="yes">Hide for Single Device</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label4">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="opacity">0.94901960784313721</property>
+                <property name="halign">start</property>
+                <property name="label" translatable="yes">Use monochrome icons</property>
+                <property name="justify">right</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkSwitch" id="use-monochrome">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="active">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
           </object>
           <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">1</property>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
           </packing>
         </child>
+      </object>
+    </child>
+    <child type="tab">
+      <object class="GtkLabel" id="settings-label">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">General Settings</property>
+      </object>
+      <packing>
+        <property name="tab_fill">False</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox" id="port-gtkbox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_left">5</property>
+        <property name="margin_right">5</property>
+        <property name="margin_top">5</property>
+        <property name="margin_bottom">5</property>
+        <property name="hexpand">True</property>
+        <property name="vexpand">True</property>
+        <property name="orientation">vertical</property>
         <child>
-          <object class="GtkLabel" id="label2">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="halign">start</property>
-            <property name="margin_right">100</property>
-            <property name="label" translatable="yes">Hide for Single Device</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="label4">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="opacity">0.94999999999999996</property>
-            <property name="halign">start</property>
-            <property name="label" translatable="yes">Use monochrome icons</property>
-            <property name="justify">right</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSwitch" id="use-monochrome">
+          <object class="GtkScrolledWindow" id="scrolledwindow1">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="active">True</property>
+            <property name="opacity">0.99999999865889544</property>
+            <property name="resize_mode">queue</property>
+            <property name="shadow_type">in</property>
+            <child>
+              <object class="GtkTreeView" id="port-treeview">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="model">ports-store</property>
+                <child internal-child="selection">
+                  <object class="GtkTreeSelection" id="treeview-selection1"/>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="PortNameColumn">
+                    <property name="resizable">True</property>
+                    <property name="sizing">autosize</property>
+                    <property name="min_width">250</property>
+                    <property name="title" translatable="yes">Port Name</property>
+                    <property name="sort_order">descending</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="PortNameRenderer"/>
+                      <attributes>
+                        <attribute name="text">0</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="ShowAlwaysColumn">
+                    <property name="sizing">autosize</property>
+                    <property name="title" translatable="yes">Show Always</property>
+                    <child>
+                      <object class="GtkCellRendererToggle" id="ShowAlwaysToggleRender">
+                        <property name="radio">True</property>
+                      </object>
+                      <attributes>
+                        <attribute name="active">1</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="HideAlwaysColumn">
+                    <property name="sizing">autosize</property>
+                    <property name="title" translatable="yes">Hide Always</property>
+                    <child>
+                      <object class="GtkCellRendererToggle" id="HideAlwaysToggleRender">
+                        <property name="radio">True</property>
+                      </object>
+                      <attributes>
+                        <attribute name="active">2</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="ShowOnActiveColumn">
+                    <property name="sizing">autosize</property>
+                    <property name="title" translatable="yes">Default</property>
+                    <child>
+                      <object class="GtkCellRendererToggle" id="ShowActiveToggleRender">
+                        <property name="radio">True</property>
+                      </object>
+                      <attributes>
+                        <attribute name="active">3</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
           </object>
           <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">2</property>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
           </packing>
         </child>
       </object>
       <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">0</property>
+        <property name="position">1</property>
       </packing>
+    </child>
+    <child type="tab">
+      <object class="GtkLabel" id="portsettings-label">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Port Settings</property>
+      </object>
+      <packing>
+        <property name="position">1</property>
+        <property name="tab_fill">False</property>
+      </packing>
+    </child>
+    <child>
+      <placeholder/>
+    </child>
+    <child type="tab">
+      <placeholder/>
     </child>
   </object>
 </interface>
