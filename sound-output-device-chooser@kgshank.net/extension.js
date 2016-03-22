@@ -36,8 +36,8 @@ SoundOutputDeviceChooser = new Lang.Class({
         return this._control.lookup_output_id(id);
     },
 
-    changeDeviceById : function(id) {
-        this._control.change_output(id);
+    changeDevice : function(uidevice) {
+        this._control.change_output(uidevice);
     },
 
     getDefaultDevice : function() {
@@ -63,8 +63,8 @@ SoundInputDeviceChooser = new Lang.Class({
         return this._control.lookup_input_id(id);
     },
 
-    changeDeviceById : function(id) {
-        this._control.change_input(id);
+    changeDevice : function(uidevice) {
+        this._control.change_input(uidevice);
     },
 
     getDefaultDevice : function() {
