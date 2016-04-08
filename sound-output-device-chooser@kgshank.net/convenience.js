@@ -18,6 +18,7 @@
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const ExtensionUtils = imports.misc.extensionUtils;
+const Lang = imports.lang;
 
 /**
  * getSettings:
@@ -63,13 +64,11 @@ function getProfiles(control, uidevice)
     {
         if(!cards || !cards[stream.card_index])
         {
-            global.log(uidevice.port_name + ' not found'); 	    		
             refreshCards();
         }
 
         if(cards && cards[stream.card_index])
         {
-            global.log(uidevice.port_name + ' found');			
             return getProfilesForPort(uidevice.port_name, cards[stream.card_index]);
         } 	    		
     }
@@ -82,7 +81,6 @@ function getProfiles(control, uidevice)
             let profiles;			
             if((profiles = getProfilesForPort(uidevice.port_name, card)))
             {
-                global.log("Num profiles: "+ profiles.length);				
                 return profiles;
             }
         }
@@ -125,7 +123,7 @@ function parseOutput(out)
 
         if( (matches = /^Card\s#(\d+)$/.exec(line) )) {
             cardIndex = matches[1];
-            global.log( "card_index=" + cardIndex);
+            
             if(!cards[cardIndex])
             {
                 cards[cardIndex] = {'index':cardIndex,'profiles':[], 'ports':[]};
@@ -174,7 +172,6 @@ function getProfilesForPort(portName, card)
     {
         if(portName === port.name)
         {
-            global.log('Port Found: ' + portName + "::" + port.human_name);
             let profiles = [];
             for each(let profile in port.profiles)
             {
@@ -195,4 +192,47 @@ function getProfilesForPort(portName, card)
     }
     return null;
 }
+
+const Signal = new Lang.Class({
+    Name: 'Signal',
+    
+    _init: function(signalSource, signalName, callback) {
+        this._signalSource = signalSource;
+        this._signalName = signalName;
+        this._signalCallback = callback;
+    },
+    
+    connect: function() {
+        this._signalId = this._signalSource.connect(this._signalName, this._signalCallback);
+    },
+    
+    disconnect: function() {
+        if(this._signalId) {
+            this._signalSource.disconnect(this._signalId);
+            this._signalId = null;
+        }
+    }
+});
+
+const SignalManager = new Lang.Class({
+	Name: 'SignalManager',
+		
+	_init: function() {
+		this._signals = [];
+	},
+	
+	addSignal: function(signalSource, signalName, callback) {
+		let obj = null;
+		if(signalSource && signalName && callback) {
+            obj = new Signal(signalSource, signalName, callback);
+            obj.connect();
+            this._signals.push(obj); 
+        }
+		return obj;
+    },
+    
+    disconnectAll: function() {
+        this._signals.forEach(function(obj) {obj.disconnect();});
+    }
+});
 
