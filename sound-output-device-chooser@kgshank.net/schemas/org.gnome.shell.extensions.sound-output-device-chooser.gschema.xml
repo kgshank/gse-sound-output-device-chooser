@@ -18,6 +18,13 @@
       <description>Value set to true uses monochrome icons</description>
     </key>
     
+    <key name="show-input-slider" type="b">
+      <default>true</default>
+      <summary>Preference to show input slider always</summary>
+      <description>Value set to true displays the slider control for input device volume</description>
+    </key>
+    
+    
     <key name="ports-settings" type="s">
       <default>"[]"</default>
       <summary>Preference to hide/show different ports always</summary>

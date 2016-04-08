@@ -24,11 +24,14 @@ const Lang = imports.lang;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Lib = Me.imports.convenience;
+const SignalManager = Lib.SignalManager;
+
 const SETTINGS_SCHEMA = "org.gnome.shell.extensions.sound-output-device-chooser";
 const HIDE_ON_SINGLE_DEVICE = "hide-on-single-device";
 const SHOW_PROFILES = "show-profiles";
 const USE_MONOCHROME = "use-monochrome";
-const PORT_SETTINGS = "ports-settings"
+const PORT_SETTINGS = "ports-settings";
+const SHOW_INPUT_SLIDER = "show-input-slider";
 
 function init(){}
 
@@ -65,22 +68,30 @@ const SDCSettingsWidget = new GObject.Class({
             let mainContainer = builder.get_object("notebook1");
 
             this.pack_start(mainContainer, true, true, 0);
-
+            
+            this._signalManager = new SignalManager();
+            
+            
             let showProfileSwitch = builder.get_object("show-profile");
             let singleDeviceSwitch = builder.get_object("single-device");
             let useMonochromeSwitch = builder.get_object("use-monochrome");
+            let showInputSliderSwitch = builder.get_object("show-input-slider");
+            
+            this._settings.bind(HIDE_ON_SINGLE_DEVICE, singleDeviceSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
+            this._settings.bind(SHOW_PROFILES, showProfileSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
+            this._settings.bind(USE_MONOCHROME, useMonochromeSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
+            this._settings.bind(SHOW_INPUT_SLIDER, showInputSliderSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
+            
+            
             let showAlwaysToggleRender = builder.get_object("ShowAlwaysToggleRender");
             let hideAlwaysToggleRender = builder.get_object("HideAlwaysToggleRender");
             let showActiveToggleRender = builder.get_object("ShowActiveToggleRender");
+            
+            this._signalManager.addSignal(showAlwaysToggleRender, "toggled", Lang.bind(this, this._showAlwaysToggleRenderCallback));
+            this._signalManager.addSignal(hideAlwaysToggleRender, "toggled", Lang.bind(this, this._hideAlwaysToggleRenderCallback));
+            this._signalManager.addSignal(showActiveToggleRender, "toggled", Lang.bind(this, this._showActiveToggleRenderCallback));
+            
             this._portsStore = builder.get_object("ports-store");
-            
-            showAlwaysToggleRender.connect("toggled", Lang.bind(this, this._showAlwaysToggleRenderCallback));
-            hideAlwaysToggleRender.connect("toggled", Lang.bind(this, this._hideAlwaysToggleRenderCallback));
-            showActiveToggleRender.connect("toggled", Lang.bind(this, this._showActiveToggleRenderCallback));
-            
-            this._settings.bind(HIDE_ON_SINGLE_DEVICE, singleDeviceSwitch , "active", Gio.SettingsBindFlags.DEFAULT);
-            this._settings.bind(SHOW_PROFILES,showProfileSwitch , "active", Gio.SettingsBindFlags.DEFAULT);
-            this._settings.bind(USE_MONOCHROME,useMonochromeSwitch , "active", Gio.SettingsBindFlags.DEFAULT);
             
             this._populatePorts();
             this._restorePortsFromSettings();
@@ -182,8 +193,8 @@ const SDCSettingsWidget = new GObject.Class({
 
 
 function buildPrefsWidget() {
-    let _settings = new SDCSettingsWidget();
-    _settings.show_all();
+    let _settingsWidget = new SDCSettingsWidget();
+    _settingsWidget.show_all();
 
-    return _settings;
+    return _settingsWidget;
 }
