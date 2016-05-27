@@ -14,10 +14,13 @@ A simple selector to enabled selection of sound source and sink based on Gnome C
 ### Changelog
 -----------------------
 
-#### 14
+#### 15
 * New option to show/hide input devices
 * New option to show/hide output devices
+* Bug fix for card[cardIndex] undefined error in convenience.js
 
+#### 14
+* Included missing files
 
 #### 13
 * Option to show input volume control slider
