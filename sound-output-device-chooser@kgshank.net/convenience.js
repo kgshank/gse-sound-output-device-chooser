@@ -137,7 +137,7 @@ function parseOutput(out)
         {
             parseSection = "PORTS";
         }
-        else
+        else if(cards[cardIndex])
         {		
             switch(parseSection)
             {
