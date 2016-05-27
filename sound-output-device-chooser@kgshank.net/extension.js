@@ -28,7 +28,7 @@ const SoundOutputDeviceChooser = new Lang.Class({
 	Extends : Base.SoundDeviceChooserBase,
 
 	_init : function() {
-		this.parent("output")
+		this.parent("output");
 	},
 
 	lookupDeviceById : function(id) {
@@ -54,7 +54,7 @@ const SoundInputDeviceChooser = new Lang.Class({
 	Extends : Base.SoundDeviceChooserBase,
 
 	_init : function() {
-		this.parent("input")
+		this.parent("input");
 	},
 
 	lookupDeviceById : function(id) {

@@ -65,6 +65,10 @@ const SoundDeviceChooserBase = new Lang.Class({
                 this._signalManager.addSignal(this._settings,"changed::" + Prefs.USE_MONOCHROME , Lang.bind(this,this._setIcons));
                 this._signalManager.addSignal(this._settings,"changed::" + Prefs.PORT_SETTINGS , Lang.bind(this,this._resetDevices));
                 
+                this._show_device_signal =  Prefs["SHOW_" + this.deviceType.toUpperCase()  + "_DEVICES"];
+                
+                this._signalManager.addSignal(this._settings,"changed::" + this._show_device_signal, Lang.bind(this,this._setVisibility) );
+                
                 this._portsSettings = JSON.parse(this._settings.get_string(Prefs.PORT_SETTINGS));
                 
                 /**
@@ -103,6 +107,9 @@ const SoundDeviceChooserBase = new Lang.Class({
                     this._controlStateChangeSignal.disconnect();
                     delete this._controlStateChangeSignal;
                 }
+                
+                
+        		this._setVisibility();
             }
         }
     },
@@ -356,6 +363,10 @@ const SoundDeviceChooserBase = new Lang.Class({
             }
         }
     },
+    
+	_setVisibility : function() {
+		this.actor.visible =  this._settings.get_boolean(this._show_device_signal);
+	},
 
     destroy: function() {
        this._signalManager.disconnectAll();

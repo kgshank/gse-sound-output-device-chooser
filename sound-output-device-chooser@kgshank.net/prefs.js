@@ -32,6 +32,8 @@ const SHOW_PROFILES = "show-profiles";
 const USE_MONOCHROME = "use-monochrome";
 const PORT_SETTINGS = "ports-settings";
 const SHOW_INPUT_SLIDER = "show-input-slider";
+const SHOW_INPUT_DEVICES = "show-input-devices";
+const SHOW_OUTPUT_DEVICES = "show-output-devices";
 
 function init(){}
 
@@ -76,11 +78,16 @@ const SDCSettingsWidget = new GObject.Class({
             let singleDeviceSwitch = builder.get_object("single-device");
             let useMonochromeSwitch = builder.get_object("use-monochrome");
             let showInputSliderSwitch = builder.get_object("show-input-slider");
+            let showInputDevicesSwitch = builder.get_object("show-input-devices");
+            let showOutputDevicesSwitch = builder.get_object("show-output-devices");
+            
             
             this._settings.bind(HIDE_ON_SINGLE_DEVICE, singleDeviceSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(SHOW_PROFILES, showProfileSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(USE_MONOCHROME, useMonochromeSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(SHOW_INPUT_SLIDER, showInputSliderSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
+            this._settings.bind(SHOW_INPUT_DEVICES, showInputDevicesSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
+            this._settings.bind(SHOW_OUTPUT_DEVICES, showOutputDevicesSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             
             
             let showAlwaysToggleRender = builder.get_object("ShowAlwaysToggleRender");
