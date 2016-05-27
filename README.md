@@ -14,6 +14,11 @@ A simple selector to enabled selection of sound source and sink based on Gnome C
 ### Changelog
 -----------------------
 
+#### 14
+* New option to show/hide input devices
+* New option to show/hide output devices
+
+
 #### 13
 * Option to show input volume control slider
 * Bug fixes to hide sound devices without a valid card (network devices etc)
