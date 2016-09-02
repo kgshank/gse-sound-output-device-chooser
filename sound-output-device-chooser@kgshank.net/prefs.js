@@ -3,15 +3,15 @@
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Orignal Author: Gopi Sankar Karmegam
  ******************************************************************************/
 
@@ -47,7 +47,7 @@ const SDCSettingsWidget = new GObject.Class({
         this.parent(params);
         this.orientation = Gtk.Orientation.VERTICAL;
         this.spacing = 0;
-    
+
      // creates the settings
         this._settings = Lib.getSettings(SETTINGS_SCHEMA);
 
@@ -62,7 +62,7 @@ const SDCSettingsWidget = new GObject.Class({
                 label: _("Could not load the preferences UI file"),
                 vexpand: true
             });
-            
+
             this.pack_start(label, true, true, 0);
         } else {
             global.log('JS LOG:_UI file receive and load: '+uiFilePath);
@@ -70,41 +70,41 @@ const SDCSettingsWidget = new GObject.Class({
             let mainContainer = builder.get_object("notebook1");
 
             this.pack_start(mainContainer, true, true, 0);
-            
+
             this._signalManager = new SignalManager();
-            
-            
+
+
             let showProfileSwitch = builder.get_object("show-profile");
             let singleDeviceSwitch = builder.get_object("single-device");
             let useMonochromeSwitch = builder.get_object("use-monochrome");
             let showInputSliderSwitch = builder.get_object("show-input-slider");
             let showInputDevicesSwitch = builder.get_object("show-input-devices");
             let showOutputDevicesSwitch = builder.get_object("show-output-devices");
-            
-            
+
+
             this._settings.bind(HIDE_ON_SINGLE_DEVICE, singleDeviceSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(SHOW_PROFILES, showProfileSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(USE_MONOCHROME, useMonochromeSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(SHOW_INPUT_SLIDER, showInputSliderSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(SHOW_INPUT_DEVICES, showInputDevicesSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(SHOW_OUTPUT_DEVICES, showOutputDevicesSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
-            
-            
+
+
             let showAlwaysToggleRender = builder.get_object("ShowAlwaysToggleRender");
             let hideAlwaysToggleRender = builder.get_object("HideAlwaysToggleRender");
             let showActiveToggleRender = builder.get_object("ShowActiveToggleRender");
-            
+
             this._signalManager.addSignal(showAlwaysToggleRender, "toggled", Lang.bind(this, this._showAlwaysToggleRenderCallback));
             this._signalManager.addSignal(hideAlwaysToggleRender, "toggled", Lang.bind(this, this._hideAlwaysToggleRenderCallback));
             this._signalManager.addSignal(showActiveToggleRender, "toggled", Lang.bind(this, this._showActiveToggleRenderCallback));
-            
+
             this._portsStore = builder.get_object("ports-store");
-            
+
             this._populatePorts();
             this._restorePortsFromSettings();
         }
     },
-    
+
     _populatePorts: function (){
         let ports = Lib.getPorts();
         for each(let port in ports)
@@ -112,19 +112,19 @@ const SDCSettingsWidget = new GObject.Class({
             this._portsStore.set(this._portsStore.append(),[0,1,2,3,4,5],[port.human_name, false, false, true, port.name,3]);
         }
     },
-    
+
     _showAlwaysToggleRenderCallback: function(widget, path) {
         this._toggleCallback(widget, path, 1, [2, 3]);
     },
-    
+
     _hideAlwaysToggleRenderCallback: function(widget, path) {
         this._toggleCallback(widget, path, 2, [1, 3]);
     },
-    
+
     _showActiveToggleRenderCallback: function(widget, path) {
         this._toggleCallback(widget, path, 3, [1, 2]);
     },
-    
+
     _toggleCallback: function(widget, path, activeCol, inactiveCols) {
         let active = !widget.active;
         if(!active)
@@ -143,7 +143,7 @@ const SDCSettingsWidget = new GObject.Class({
         }
         this._commitSettings();
     },
-    
+
     _commitSettings: function() {
         let ports = [];
         let [success, iter] = this._portsStore.get_iter_first();
@@ -159,12 +159,12 @@ const SDCSettingsWidget = new GObject.Class({
             success = this._portsStore.iter_next(iter);
         }
 
-        this._settings.set_string(PORT_SETTINGS, JSON.stringify(ports));        
+        this._settings.set_string(PORT_SETTINGS, JSON.stringify(ports));
     },
 
     _restorePortsFromSettings: function() {
         let ports = JSON.parse(this._settings.get_string(PORT_SETTINGS));
-       
+
         let found;
         for each(let port in ports) {
             found = false;
@@ -177,7 +177,7 @@ const SDCSettingsWidget = new GObject.Class({
             while (iter && success) {
                 let human_name = this._portsStore.get_value(iter, 0);
                 let name = this._portsStore.get_value(iter, 4);
-                
+
                 if(port.name == name && port.human_name == human_name) {
                     this._portsStore.set_value(iter, 3, false);
                     this._portsStore.set_value(iter, port.display_option, true);
@@ -187,10 +187,10 @@ const SDCSettingsWidget = new GObject.Class({
                 }
                 success = this._portsStore.iter_next(iter);
             }
-            
+
             if(!found){
                 iter = this._portsStore.append();
-                this._portsStore.set(iter, [0,1,2,3,4,5], 
+                this._portsStore.set(iter, [0,1,2,3,4,5],
                         [port.human_name, false, false, false, port.name,port.display_option]);
                 this._portsStore.set_value(iter, port.display_option, true);
             }

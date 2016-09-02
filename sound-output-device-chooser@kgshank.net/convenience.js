@@ -3,15 +3,15 @@
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Orignal Author: Gopi Sankar Karmegam
  ******************************************************************************/
 
@@ -22,9 +22,9 @@ const Lang = imports.lang;
 
 /**
  * getSettings:
- * 
+ *
  * @schema: (optional): the GSettings schema id
- * 
+ *
  * Builds and return a GSettings schema for
  * @schema, using schema files in extensionsdir/schemas. If
  * @schema is not provided, it is taken from metadata['settings-schema'].
@@ -70,7 +70,7 @@ function getProfiles(control, uidevice)
         if(cards && cards[stream.card_index])
         {
             return getProfilesForPort(uidevice.port_name, cards[stream.card_index]);
-        } 	    		
+        }
     }
     else
     {
@@ -78,7 +78,7 @@ function getProfiles(control, uidevice)
         refreshCards();
         for each(let card in cards)
         {
-            let profiles;			
+            let profiles;
             if((profiles = getProfilesForPort(uidevice.port_name, card)))
             {
                 return profiles;
@@ -100,9 +100,9 @@ function getPorts(refresh)
 
 function refreshCards()
 {
-    cards = {};	
+    cards = {};
     ports = [];
-    let [result, out, err, exit_code] = GLib.spawn_command_line_sync('pactl list cards');	
+    let [result, out, err, exit_code] = GLib.spawn_command_line_sync('pactl list cards');
     if(result && !exit_code)
     {
         parseOutput(out);
@@ -123,11 +123,11 @@ function parseOutput(out)
 
         if( (matches = /^Card\s#(\d+)$/.exec(line) )) {
             cardIndex = matches[1];
-            
+
             if(!cards[cardIndex])
             {
                 cards[cardIndex] = {'index':cardIndex,'profiles':[], 'ports':[]};
-            } 
+            }
         }
         else if (line.match(/^\t*Profiles:$/) )
         {
@@ -138,7 +138,7 @@ function parseOutput(out)
             parseSection = "PORTS";
         }
         else if(cards[cardIndex])
-        {		
+        {
             switch(parseSection)
             {
                 case "PROFILES":
@@ -162,7 +162,7 @@ function parseOutput(out)
                     }
                     break;
             }
-        }		
+        }
     }
 }
 
@@ -181,7 +181,7 @@ function getProfilesForPort(portName, card)
                     {
                         if(profile === cardProfile.name)
                         {
-                            profiles.push(cardProfile);							
+                            profiles.push(cardProfile);
                         }
                     }
                 }
@@ -195,17 +195,17 @@ function getProfilesForPort(portName, card)
 
 const Signal = new Lang.Class({
     Name: 'Signal',
-    
+
     _init: function(signalSource, signalName, callback) {
         this._signalSource = signalSource;
         this._signalName = signalName;
         this._signalCallback = callback;
     },
-    
+
     connect: function() {
         this._signalId = this._signalSource.connect(this._signalName, this._signalCallback);
     },
-    
+
     disconnect: function() {
         if(this._signalId) {
             this._signalSource.disconnect(this._signalId);
@@ -216,23 +216,22 @@ const Signal = new Lang.Class({
 
 const SignalManager = new Lang.Class({
 	Name: 'SignalManager',
-		
+
 	_init: function() {
 		this._signals = [];
 	},
-	
+
 	addSignal: function(signalSource, signalName, callback) {
 		let obj = null;
 		if(signalSource && signalName && callback) {
             obj = new Signal(signalSource, signalName, callback);
             obj.connect();
-            this._signals.push(obj); 
+            this._signals.push(obj);
         }
 		return obj;
     },
-    
+
     disconnectAll: function() {
         this._signals.forEach(function(obj) {obj.disconnect();});
     }
 });
-
