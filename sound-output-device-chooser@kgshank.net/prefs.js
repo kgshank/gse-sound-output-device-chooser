@@ -29,12 +29,17 @@ const SignalManager = Lib.SignalManager;
 
 const SETTINGS_SCHEMA = "org.gnome.shell.extensions.sound-output-device-chooser";
 const HIDE_ON_SINGLE_DEVICE = "hide-on-single-device";
+const HIDE_MENU_ICONS = "hide-menu-icons";
 const SHOW_PROFILES = "show-profiles";
-const USE_MONOCHROME = "use-monochrome";
 const PORT_SETTINGS = "ports-settings";
 const SHOW_INPUT_SLIDER = "show-input-slider";
 const SHOW_INPUT_DEVICES = "show-input-devices";
 const SHOW_OUTPUT_DEVICES = "show-output-devices";
+
+const ICON_THEME = "icon-theme";
+const ICON_THEME_COLORED = "colored";
+const ICON_THEME_MONOCHROME = "monochrome";
+const ICON_THEME_NONE = "none";
 
 function init(){}
 
@@ -68,28 +73,27 @@ const SDCSettingsWidget = new GObject.Class({
         } else {
             global.log('JS LOG:_UI file receive and load: '+uiFilePath);
 
-            let mainContainer = builder.get_object("notebook1");
+            let mainContainer = builder.get_object("main-container");
 
             this.pack_start(mainContainer, true, true, 0);
 
             this._signalManager = new SignalManager();
-
-
+            
             let showProfileSwitch = builder.get_object("show-profile");
             let singleDeviceSwitch = builder.get_object("single-device");
-            let useMonochromeSwitch = builder.get_object("use-monochrome");
             let showInputSliderSwitch = builder.get_object("show-input-slider");
             let showInputDevicesSwitch = builder.get_object("show-input-devices");
             let showOutputDevicesSwitch = builder.get_object("show-output-devices");
-
+            let hideMenuIconsSwitch = builder.get_object("hide-menu-icons");
+            let iconThemeCombo = builder.get_object("icon-theme");
 
             this._settings.bind(HIDE_ON_SINGLE_DEVICE, singleDeviceSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(SHOW_PROFILES, showProfileSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
-            this._settings.bind(USE_MONOCHROME, useMonochromeSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(SHOW_INPUT_SLIDER, showInputSliderSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(SHOW_INPUT_DEVICES, showInputDevicesSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(SHOW_OUTPUT_DEVICES, showOutputDevicesSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
-
+            this._settings.bind(HIDE_MENU_ICONS, hideMenuIconsSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
+            this._settings.bind(ICON_THEME, iconThemeCombo, "active-id", Gio.SettingsBindFlags.DEFAULT);
 
             let showAlwaysToggleRender = builder.get_object("ShowAlwaysToggleRender");
             let hideAlwaysToggleRender = builder.get_object("HideAlwaysToggleRender");

@@ -64,7 +64,8 @@ const SoundDeviceChooserBase = new Lang.Class({
 
                 this._signalManager.addSignal(this._settings,"changed::" + Prefs.HIDE_ON_SINGLE_DEVICE,Lang.bind(this,this._setChooserVisibility) );
                 this._signalManager.addSignal(this._settings,"changed::" + Prefs.SHOW_PROFILES , Lang.bind(this,this._setProfileVisibility));
-                this._signalManager.addSignal(this._settings,"changed::" + Prefs.USE_MONOCHROME , Lang.bind(this,this._setIcons));
+                this._signalManager.addSignal(this._settings,"changed::" + Prefs.ICON_THEME , Lang.bind(this,this._setIcons));
+                this._signalManager.addSignal(this._settings,"changed::" + Prefs.HIDE_MENU_ICONS , Lang.bind(this,this._setIcons));
                 this._signalManager.addSignal(this._settings,"changed::" + Prefs.PORT_SETTINGS , Lang.bind(this,this._resetDevices));
 
                 this._show_device_signal =  Prefs["SHOW_" + this.deviceType.toUpperCase()  + "_DEVICES"];
@@ -138,7 +139,7 @@ const SoundDeviceChooserBase = new Lang.Class({
             if(icon == null || icon.trim() == "")
                 icon = this.getDefaultIcon();
             obj.item._icon = new St.Icon({ style_class: 'popup-menu-icon',
-                icon_name: (this._settings.get_boolean(Prefs.USE_MONOCHROME)) ? icon + "-symbolic" :  icon});
+                icon_name: this._getIcon(icon)});
             obj.item.actor.insert_child_at_index(obj.item._icon,1);
             if(!obj.profiles) {
                 obj.profiles = Lib.getProfiles(control, uidevice);
@@ -250,11 +251,15 @@ const SoundDeviceChooserBase = new Lang.Class({
             this._activeDevice = obj;
             obj.item.setOrnament(PopupMenu.Ornament.CHECK);
             this.label.text = obj.text;
-            let icon = obj.uidevice.get_icon_name();
-            if(icon == null || icon.trim() == "")
-                icon = this.getDefaultIcon();
-            this.icon.icon_name = (this._settings.get_boolean(Prefs.USE_MONOCHROME)) ? icon
-                    +   "-symbolic" : icon;
+
+            if (!this._settings.get_boolean(Prefs.HIDE_MENU_ICONS)) {
+                let icon = obj.uidevice.get_icon_name();
+                if(icon == null || icon.trim() == "")
+                    icon = this.getDefaultIcon();
+                this.icon.icon_name = this._getIcon(icon);
+            } else {
+                this.icon.icon_name = "blank";
+            }
         }
     },
 
@@ -308,21 +313,39 @@ const SoundDeviceChooserBase = new Lang.Class({
         }
     },
 
+    _getIcon: function(name) {
+        let iconsType = this._settings.get_string(Prefs.ICON_THEME);
+
+        switch (iconsType) {
+            case Prefs.ICON_THEME_COLORED:
+                return name;
+            case Prefs.ICON_THEME_MONOCHROME:
+                return name + "-symbolic";
+            default:
+                return "none";
+        }
+    },
+
     _setIcons: function() {
-        let useMonochrome = this._settings.get_boolean(Prefs.USE_MONOCHROME);
+        // Set the icons in the selection list
         for each (let device in this._devices) {
             let icon = device.uidevice.get_icon_name();
             if(icon == null || icon.trim() == "")
                 icon = this.getDefaultIcon();
-            device.item._icon.icon_name =  (useMonochrome) ? icon
-                    + "-symbolic" : icon;
+            device.item._icon.icon_name = this._getIcon(icon);
         }
-        let icon = this._activeDevice.uidevice.get_icon_name();
-        if(icon == null || icon.trim() == "")
-            icon = this.getDefaultIcon();
 
-        this.icon.icon_name =
-            (useMonochrome) ? icon + "-symbolic" : icon;
+        // These indicate the active device, which is displayed directly in the
+        // Gnome menu, not in the list.
+        if (!this._settings.get_boolean(Prefs.HIDE_MENU_ICONS)) {
+            let icon = this._activeDevice.uidevice.get_icon_name();
+            if(icon == null || icon.trim() == "")
+                icon = this.getDefaultIcon();
+
+            this.icon.icon_name = this._getIcon(icon);
+        } else {
+            this.icon.icon_name = "blank";
+        }
     },
 
 

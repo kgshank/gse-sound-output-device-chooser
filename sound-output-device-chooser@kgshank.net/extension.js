@@ -15,7 +15,7 @@
  * Orignal Author: Gopi Sankar Karmegam
  ******************************************************************************/
  /* jshint moz:true */
- 
+
 const Lang = imports.lang;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
@@ -121,7 +121,9 @@ var _outputInstance = null;
 var _inputInstance = null;
 var _inputSliderInstance = null;
 
-function init() {
+function init(extensionMeta) {
+	let theme = imports.gi.Gtk.IconTheme.get_default();
+	theme.append_search_path(extensionMeta.path + "/icons");
 }
 
 function enable() {

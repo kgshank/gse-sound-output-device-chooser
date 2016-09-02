@@ -41,5 +41,17 @@
       <summary>Preference to hide/show different ports always</summary>
       <description></description>
     </key>
+
+    <key name="icon-theme" type="s">
+        <default>"monochrome"</default>
+        <summary>Preference indicating the type of icons used by the extension</summary>
+        <description>Value can be "colored", "monochrome", "none", etc.</description>
+    </key>
+
+    <key name="hide-menu-icons" type="b">
+        <default>false</default>
+        <summary>Preference indicating whether the icons are hidden in the dropdown menu (but are visible in the expanded list).</summary>
+        <description></description>
+    </key>
   </schema>
 </schemalist>
