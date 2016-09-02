@@ -14,6 +14,8 @@
  *
  * Orignal Author: Gopi Sankar Karmegam
  ******************************************************************************/
+ /* jshint moz:true */
+ 
 const Lang = imports.lang;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();

@@ -14,6 +14,8 @@
  *
  * Orignal Author: Gopi Sankar Karmegam
  ******************************************************************************/
+ /* jshint moz:true */
+
 const Lang = imports.lang;
 const Main = imports.ui.main;
 const PopupMenu = imports.ui.popupMenu;

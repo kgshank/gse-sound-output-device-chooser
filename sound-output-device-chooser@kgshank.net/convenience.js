@@ -14,6 +14,7 @@
  *
  * Orignal Author: Gopi Sankar Karmegam
  ******************************************************************************/
+ /* jshint moz:true */
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
