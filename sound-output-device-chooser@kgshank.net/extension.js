@@ -3,17 +3,19 @@
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Orignal Author: Gopi Sankar Karmegam
  ******************************************************************************/
+ /* jshint moz:true */
+
 const Lang = imports.lang;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
@@ -78,7 +80,7 @@ const SoundInputDeviceChooser = new Lang.Class({
 
 const InputSliderInstance = new Lang.Class({
 	Name : 'InputSliderInstance',
-	
+
 	_init : function(volumeMenu) {
 		this._input = volumeMenu._input;
 		this._settings = Lib.getSettings(Prefs.SETTINGS_SCHEMA);
@@ -87,25 +89,25 @@ const InputSliderInstance = new Lang.Class({
 		this._overrideFunction();
 		this._setSliderVisiblity();
 	},
-	
+
 	_overrideFunction : function() {
 		this._input._shouldBeVisibleOriginal = this._input._shouldBeVisible;
 		this._input._shouldBeVisibleCustom = function () {
 			return this._stream != null;
 		};
 	},
-	
+
 	_setSliderVisiblity : function() {
 		if(this._settings.get_boolean(Prefs.SHOW_INPUT_SLIDER)) {
-			this._input._shouldBeVisible = this._input._shouldBeVisibleCustom; 
+			this._input._shouldBeVisible = this._input._shouldBeVisibleCustom;
 		}
 		else {
 			this._input._shouldBeVisible = this._input._shouldBeVisibleOriginal;
 		}
 		this._input._maybeShowInput();
 	},
-	
-	
+
+
 	destroy : function() {
 		this._signalManager.disconnectAll();
 		this._input._shouldBeVisible = this._input._shouldBeVisibleOriginal;
@@ -114,28 +116,30 @@ const InputSliderInstance = new Lang.Class({
 		delete this._input['_shouldBeVisibleCustom'];
 	}
 });
-	
+
 var _outputInstance = null;
 var _inputInstance = null;
 var _inputSliderInstance = null;
 
-function init() {
+function init(extensionMeta) {
+	let theme = imports.gi.Gtk.IconTheme.get_default();
+	theme.append_search_path(extensionMeta.path + "/icons");
 }
 
 function enable() {
 	if (_outputInstance == null) {
 		_outputInstance = new SoundOutputDeviceChooser();
 	}
-	
+
 	if (_inputInstance == null) {
 		_inputInstance = new SoundInputDeviceChooser();
 	}
 	let _volumeMenu = Main.panel.statusArea.aggregateMenu._volume._volumeMenu;
-	
+
 	if (_inputSliderInstance == null) {
 		_inputSliderInstance = new InputSliderInstance(_volumeMenu);
 	}
-	
+
 	let	menuItems = _volumeMenu._getMenuItems();
 	let i = 0;
 	for (; i < menuItems.length; i++) {

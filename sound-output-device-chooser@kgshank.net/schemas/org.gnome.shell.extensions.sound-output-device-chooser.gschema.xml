@@ -17,29 +17,41 @@
       <summary>Preference to use monochrome icons instead of default icons</summary>
       <description>Value set to true uses monochrome icons</description>
     </key>
-    
+
     <key name="show-input-slider" type="b">
       <default>true</default>
       <summary>Preference to show input slider always</summary>
       <description>Value set to true displays the slider control for input device volume</description>
     </key>
-    
+
     <key name="show-input-devices" type="b">
       <default>true</default>
       <summary>Preference to show input device chooser</summary>
       <description>Value set to true displays the device chooser for input devices</description>
     </key>
-    
+
     <key name="show-output-devices" type="b">
       <default>true</default>
       <summary>Preference to show output device chooser</summary>
       <description>Value set to true displays the device chooser for output devices</description>
     </key>
-    
+
     <key name="ports-settings" type="s">
       <default>"[]"</default>
       <summary>Preference to hide/show different ports always</summary>
       <description></description>
+    </key>
+
+    <key name="icon-theme" type="s">
+        <default>"monochrome"</default>
+        <summary>Preference indicating the type of icons used by the extension</summary>
+        <description>Value can be "colored", "monochrome", "none", etc.</description>
+    </key>
+
+    <key name="hide-menu-icons" type="b">
+        <default>false</default>
+        <summary>Preference indicating whether the icons are hidden in the dropdown menu (but are visible in the expanded list).</summary>
+        <description></description>
     </key>
   </schema>
 </schemalist>
