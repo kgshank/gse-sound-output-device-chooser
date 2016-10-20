@@ -6,6 +6,7 @@ A simple selector to enabled selection of sound source and sink based on Gnome C
 ### Gnome shell versions compatible
 * 3.18
 * 3.20
+* 3.22
 
 ### Notes:
 * May conflict with extensions which modify volume menu.
@@ -13,6 +14,10 @@ A simple selector to enabled selection of sound source and sink based on Gnome C
 
 ### Changelog
 -----------------------
+#### 16
+* Redesinged preferences dialog, credits @eliandoran
+* Rewritten and restructed code
+* gnome shell 3.22 compatibility
 
 #### 15
 * New option to show/hide input devices
