@@ -3,15 +3,15 @@
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- *
+ * 
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
- *
+ * 
  * Orignal Author: Gopi Sankar Karmegam
  ******************************************************************************/
  /* jshint moz:true */
@@ -54,7 +54,6 @@ const SoundDeviceChooserBase = new Lang.Class({
 
     _onControlStateChanged: function() {
         if(this._control.get_state() == Gvc.MixerControlState.READY) {
-
             if(!this._initialised) {
                 this._initialised = true;
 
@@ -75,12 +74,12 @@ const SoundDeviceChooserBase = new Lang.Class({
                 this._portsSettings = JSON.parse(this._settings.get_string(Prefs.PORT_SETTINGS));
 
                 /**
-				 * There is no direct way to get all the UI devices from
-				 * mixercontrol. When enabled after shell loads, the signals
-				 * will not be emitted, a simple hack to look for ids, until any
-				 * uidevice is not found. The UI devices are always serialed
-				 * from from 1 to n
-				 */
+                 * There is no direct way to get all the UI devices from
+                 * mixercontrol. When enabled after shell loads, the signals
+                 * will not be emitted, a simple hack to look for ids, until any
+                 * uidevice is not found. The UI devices are always serialed
+                 * from from 1 to n
+                 */
 
                 let id = 0;
                 let maxId = -1;
@@ -110,9 +109,7 @@ const SoundDeviceChooserBase = new Lang.Class({
                     this._controlStateChangeSignal.disconnect();
                     delete this._controlStateChangeSignal;
                 }
-
-
-        		this._setVisibility();
+                this._setVisibility();
             }
         }
     },
@@ -153,6 +150,14 @@ const SoundDeviceChooserBase = new Lang.Class({
         else {
             uidevice = obj.uidevice;
         }
+        
+        global.log(obj.text);
+        
+        if (obj.profiles) {
+            for (let profile of obj.profiles) {
+            	global.log(profile.name)
+            }
+        }
 
         if(obj.active) {
             return uidevice;
@@ -164,32 +169,31 @@ const SoundDeviceChooserBase = new Lang.Class({
         obj.active = true;
         obj.activeProfile = uidevice.get_active_profile();
         let showProfiles = this._settings.get_boolean(Prefs.SHOW_PROFILES);
-        for each (let profile in obj.profiles) {
-            let profileItem = obj.profilesitems[profile.name];
-            if(!profileItem) {
-                let profileName = profile.name;
-                profileItem = this.menu.addAction( "Profile:" + profile.human_name, Lang.bind(this,function() {
-                    this.changeDevice(uidevice);
-                    control.change_profile_on_selected_device(uidevice, profileName);
-                    this._setDeviceActiveProfile(obj);
-                }));
-
-
-                obj.profilesitems[profileName] = profileItem;
-                profileItem.setProfileActive = function(active) {
-                    if(active) {
-                        this._ornamentLabel.text = "\t\u2727";
-                    }
-                    else {
-                        this._ornamentLabel.text = "\t";
-                    }
-                };
-                profileItem._ornamentLabel.width = 45;
+        if (obj.profiles) {
+            for (let profile of obj.profiles) {
+                let profileItem = obj.profilesitems[profile.name];
+                if(!profileItem) {
+                    let profileName = profile.name;
+                    profileItem = this.menu.addAction( "Profile:" + profile.human_name, Lang.bind(this,function() {
+                        this.changeDevice(uidevice);
+                        control.change_profile_on_selected_device(uidevice, profileName);
+                        this._setDeviceActiveProfile(obj);
+                    }));
+	
+                    obj.profilesitems[profileName] = profileItem;
+                    profileItem.setProfileActive = function(active) {
+                        if(active) {
+                            this._ornamentLabel.text = "\t\u2727";
+                        }
+                        else {
+                            this._ornamentLabel.text = "\t";
+                        }
+                    };
+                    profileItem._ornamentLabel.width = 45;
+                }
+                profileItem.setProfileActive(obj.activeProfile == profile.name);
             }
-
-            profileItem.setProfileActive(obj.activeProfile == profile.name);
         }
-
         if (!dontcheck  && !this._canShowDevice(uidevice, uidevice.port_available)) {
             this._deviceRemoved(control, id, true);
         }
@@ -208,10 +212,12 @@ const SoundDeviceChooserBase = new Lang.Class({
             delete this._availableDevicesIds[id] ;
             obj.item.actor.visible = false;
             obj.active = false;
-            for each (let profile in obj.profiles) {
-                let profileItem = obj.profilesitems[profile.name];
-                if(profileItem) {
-                    profileItem.actor.visible = false;
+            if (obj.profiles) {
+                for (let profile of obj.profiles) {
+                    let profileItem = obj.profilesitems[profile.name];
+                    if(profileItem) {
+                        profileItem.actor.visible = false;
+                    }
                 }
             }
 
@@ -220,14 +226,15 @@ const SoundDeviceChooserBase = new Lang.Class({
                 this.deviceRemovedTimout = null;
             }
             /**
-			 * If the active uidevice is removed, then need to activate the
-			 * first available uidevice. However for some cases like Headphones,
-			 * when the uidevice is removed, Speakers are automatically
-			 * activated. So, lets wait for sometime before activating.
-			 */
+             * If the active uidevice is removed, then need to activate the
+             * first available uidevice. However for some cases like Headphones,
+             * when the uidevice is removed, Speakers are automatically
+             * activated. So, lets wait for sometime before activating.
+             */
             this.deviceRemovedTimout = Mainloop.timeout_add(1500, Lang.bind(this,function() {
                 if (obj === this._activeDevice) {
-                    for each( let device in this._devices) {
+                    for ( let id in this._devices) {
+                        let device = this._devices[id];
                         if(device.active == true) {
                             this.changeDevice(device.uidevice);
                             break;
@@ -264,20 +271,23 @@ const SoundDeviceChooserBase = new Lang.Class({
     },
 
     _setActiveProfile: function() {
-        for each (let device in this._devices) {
-        	if(device.active) {
-        		this._setDeviceActiveProfile(device);
+    	for (let id in this._devices) {
+    	    let device = this._devices[id];
+    	    if(device.active) {
+    	        this._setDeviceActiveProfile(device);
             }
         }
         return true;
     },
 
     _setDeviceActiveProfile: function(device) {
+        if (!device.uidevice.port_name) {
+            return;
+        }
         let activeProfile = device.uidevice.get_active_profile();
         if(activeProfile && device.activeProfile != activeProfile) {
             device.activeProfile = activeProfile;
-
-            for each (let profile in device.profiles) {
+            for (let profile of device.profiles) {
                 device.profilesitems[profile.name].setProfileActive(profile.name == device.activeProfile);
             }
         }
@@ -295,7 +305,7 @@ const SoundDeviceChooserBase = new Lang.Class({
 
     _setChooserVisibility: function() {
         let visibility = this._getDeviceVisibility();
-        for each (let id in Object.keys(this._availableDevicesIds)) {
+        for (let id in this._availableDevicesIds) {
             this._devices[id].item.actor.visible = visibility;
         }
         this._triangleBin.visible = visibility;
@@ -304,18 +314,19 @@ const SoundDeviceChooserBase = new Lang.Class({
 
     _setProfileVisibility: function() {
         let visibility = this._settings.get_boolean(Prefs.SHOW_PROFILES);
-        for each (let id in Object.keys(this._availableDevicesIds)) {
+        for (let id in this._availableDevicesIds) {
             let device = this._devices[id];
-            for each (let profile in device.profiles) {
-                device.profilesitems[profile.name].actor.visible =
-                    (visibility && device.item.actor.visible && Object.keys(device.profilesitems).length > 1);
+            if ( device.profiles ) {
+                for (let profile of device.profiles) {
+                    device.profilesitems[profile.name].actor.visible =
+                        (visibility && device.item.actor.visible && Object.keys(device.profilesitems).length > 1);
+                }
             }
         }
     },
 
     _getIcon: function(name) {
         let iconsType = this._settings.get_string(Prefs.ICON_THEME);
-
         switch (iconsType) {
             case Prefs.ICON_THEME_COLORED:
                 return name;
@@ -328,7 +339,8 @@ const SoundDeviceChooserBase = new Lang.Class({
 
     _setIcons: function() {
         // Set the icons in the selection list
-        for each (let device in this._devices) {
+    	for (let id in this._devices) {
+    	    let device = this._devices[id];
             let icon = device.uidevice.get_icon_name();
             if(icon == null || icon.trim() == "")
                 icon = this.getDefaultIcon();
@@ -354,7 +366,7 @@ const SoundDeviceChooserBase = new Lang.Class({
             return defaultValue;
         }
 
-        for each(let port in this._portsSettings) {
+        for (let port of this._portsSettings) {
             if(port && port.name == uidevice.port_name && port.human_name == uidevice.description) {
                 switch(port.display_option) {
                     case 1:
@@ -373,7 +385,8 @@ const SoundDeviceChooserBase = new Lang.Class({
 
     _resetDevices: function() {
         this._portsSettings = JSON.parse(this._settings.get_string(Prefs.PORT_SETTINGS));
-        for each (let device in this._devices) {
+        for (let id in this._devices) {
+            let device = this._devices[id];
             let uidevice = device.uidevice;
             if(uidevice.port_name == null || uidevice.description == null) {
                 continue;
@@ -389,24 +402,20 @@ const SoundDeviceChooserBase = new Lang.Class({
         }
     },
 
-	_setVisibility : function() {
-		this.actor.visible =  this._settings.get_boolean(this._show_device_signal);
-	},
+    _setVisibility : function() {
+        this.actor.visible =  this._settings.get_boolean(this._show_device_signal);
+    },
 
     destroy: function() {
-       this._signalManager.disconnectAll();
-
+        this._signalManager.disconnectAll();
         if(this.deviceRemovedTimout) {
             Mainloop.source_remove(this.deviceRemovedTimout);
             this.deviceRemovedTimout = null;
         }
-
-
         if(this.activeProfileTimeout) {
             Mainloop.source_remove(this.activeProfileTimeout);
             this.activeProfileTimeout = null;
         }
-
         this.parent();
     }
 });

@@ -3,15 +3,15 @@
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- *
+ * 
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
- *
+ * 
  * Orignal Author: Gopi Sankar Karmegam
  ******************************************************************************/
  /* jshint moz:true */
@@ -23,9 +23,9 @@ const Lang = imports.lang;
 
 /**
  * getSettings:
- *
+ * 
  * @schema: (optional): the GSettings schema id
- *
+ * 
  * Builds and return a GSettings schema for
  * @schema, using schema files in extensionsdir/schemas. If
  * @schema is not provided, it is taken from metadata['settings-schema'].
@@ -38,7 +38,7 @@ function getSettings(schema) {
     const GioSSS = Gio.SettingsSchemaSource;
 
     // check if this extension was built with "make zip-file", and thus
-    // has the schema files in a subfolder
+    // has the schema files in a sub-folder
     // otherwise assume that extension has been installed in the
     // same prefix as gnome-shell (and therefore schemas are available
     // in the standard folders)
@@ -61,26 +61,24 @@ let cards;
 function getProfiles(control, uidevice)
 {
     let stream = control.lookup_stream_id(uidevice.get_stream_id());
-    if(stream)
-    {
-        if(!cards || !cards[stream.card_index])
-        {
+    if(stream) {
+        if(!cards || !cards[stream.card_index]) {
             refreshCards();
         }
 
-        if(cards && cards[stream.card_index])
-        {
-            return getProfilesForPort(uidevice.port_name, cards[stream.card_index]);
+        if(cards && cards[stream.card_index]) {
+            global.log("Getting profile form stream id " + uidevice.port_name );
+        	return getProfilesForPort(uidevice.port_name, cards[stream.card_index]);
         }
     }
     else
     {
         /* Device is not active device, lets try match with port name */
         refreshCards();
-        for each(let card in cards)
-        {
+        for (let id in cards) {
             let profiles;
-            if((profiles = getProfilesForPort(uidevice.port_name, card)))
+            global.log("Getting profile from cards " + uidevice.port_name  + " for card id " + id);
+            if((profiles = getProfilesForPort(uidevice.port_name, cards[id])))
             {
                 return profiles;
             }
@@ -89,74 +87,61 @@ function getProfiles(control, uidevice)
 
     return null;
 }
+
 let ports;
-function getPorts(refresh)
-{
-    if(!ports || refresh)
-    {
+function getPorts(refresh) {
+    if(!ports || refresh) {
         refreshCards();
     }
     return ports;
 }
 
-function refreshCards()
-{
+function refreshCards() {
     cards = {};
     ports = [];
     let [result, out, err, exit_code] = GLib.spawn_command_line_sync('pactl list cards');
-    if(result && !exit_code)
-    {
+    if(result && !exit_code) {
         parseOutput(out);
     }
     // global.log(JSON.stringify(cards));
 }
 
-function parseOutput(out)
-{
+function parseOutput(out) {
     let lines = out.toString().split('\n');
     let cardIndex;
     let parseSection = "CARDS";
     let port;
     let matches;
-    while(lines.length > 0)
-    {
+    // global.log("Unmatched line:" + out);
+    while(lines.length > 0) {
         let line = lines.shift();
 
         if( (matches = /^Card\s#(\d+)$/.exec(line) )) {
             cardIndex = matches[1];
-
-            if(!cards[cardIndex])
-            {
+            if(!cards[cardIndex]) {
                 cards[cardIndex] = {'index':cardIndex,'profiles':[], 'ports':[]};
             }
         }
-        else if (line.match(/^\t*Profiles:$/) )
-        {
+        else if (line.match(/^\t*Profiles:$/) ) {
             parseSection = "PROFILES";
         }
-        else if (line.match(/^\t*Ports:$/))
-        {
+        else if (line.match(/^\t*Ports:$/)) {
             parseSection = "PORTS";
         }
-        else if(cards[cardIndex])
-        {
-            switch(parseSection)
-            {
+        else if(cards[cardIndex]) {
+            switch(parseSection) {
                 case "PROFILES":
-                    if((matches = /.*?((?:output|input)[^+]*?):\s(.*?)\s\(sinks:/.exec(line)))
-                    {
+                    if((matches = /.*?((?:output|input)[^+]*?):\s(.*?)\s\(sinks:/.exec(line))) {
                         cards[cardIndex].profiles.push({'name': matches[1], 'human_name': matches[2]});
                     }
                     break;
                 case "PORTS":
-                    if((matches = /\t*(.*?):\s(.*?)\s\(priority:/.exec(line)))
-                    {
+                    if((matches = /\t*(.*?):\s(.*?)\s\(priority:/.exec(line))) {
                         port = {'name' : matches[1], 'human_name' : matches[2]};
                         cards[cardIndex].ports.push(port);
                         ports.push({'name' : matches[1], 'human_name' : matches[2]});
                     }
-                    else if( port && (matches = /\t*Part of profile\(s\):\s(.*)/.exec(line)))
-                    {
+                    else if( port && (matches = /\t*Part of profile\(s\):\s(.*)/.exec(line))) {
                         let profileStr = matches[1];
                         port.profiles = profileStr.split(', ');
                         port = null;
@@ -165,33 +150,6 @@ function parseOutput(out)
             }
         }
     }
-}
-
-function getProfilesForPort(portName, card)
-{
-    for each(let port in card.ports)
-    {
-        if(portName === port.name)
-        {
-            let profiles = [];
-            for each(let profile in port.profiles)
-            {
-                if(profile.indexOf('+input:') == -1)
-                {
-                    for each(let cardProfile in card.profiles)
-                    {
-                        if(profile === cardProfile.name)
-                        {
-                            profiles.push(cardProfile);
-                        }
-                    }
-                }
-            }
-            return profiles;
-            break;
-        }
-    }
-    return null;
 }
 
 const Signal = new Lang.Class({
@@ -220,6 +178,7 @@ const SignalManager = new Lang.Class({
 
 	_init: function() {
 		this._signals = [];
+		this._signalsBySource = {};
 	},
 
 	addSignal: function(signalSource, signalName, callback) {
@@ -228,11 +187,48 @@ const SignalManager = new Lang.Class({
             obj = new Signal(signalSource, signalName, callback);
             obj.connect();
             this._signals.push(obj);
+            if(!this._signalsBySource[signalSource]) {
+            	this._signalsBySource[signalSource] = [];
+            }
+            this._signalsBySource[signalSource].push(obj)
         }
 		return obj;
     },
 
     disconnectAll: function() {
-        this._signals.forEach(function(obj) {obj.disconnect();});
+    	for (let signal of this._signals){
+    		signal.disconnect();
+    	}
+    },
+    
+    disconnectBySource: function(signalSource) {
+    	if(this._signalsBySource[signalSource]) {
+    		for (let signal of this._signalsBySource[signalSource]) {
+    			signal.disconnect();
+    		}
+        }
     }
 });
+
+
+function getProfilesForPort(portName, card) {
+    if(card.ports) {
+        for (let port of card.ports) {
+            if(portName === port.name) {
+                let profiles = [];
+                for (let profile of port.profiles) {
+                    if(profile.indexOf('+input:') == -1) {
+                        for (let cardProfile of card.profiles) {
+                            if(profile === cardProfile.name) {
+                                profiles.push(cardProfile);
+                            }
+                        }
+                    }
+                }
+                return profiles;
+            }
+        }
+    }
+    return null;
+}
+

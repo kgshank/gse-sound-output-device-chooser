@@ -112,7 +112,7 @@ const SDCSettingsWidget = new GObject.Class({
 
     _populatePorts: function (){
         let ports = Lib.getPorts();
-        for each(let port in ports)
+        for (let port of ports)
         {
             this._portsStore.set(this._portsStore.append(),[0,1,2,3,4,5],[port.human_name, false, false, true, port.name,3]);
         }
@@ -142,7 +142,7 @@ const SDCSettingsWidget = new GObject.Class({
         }
         this._portsStore.set_value(iter, activeCol, active);
         this._portsStore.set_value(iter, 5, activeCol);
-        for each(let col in inactiveCols)
+        for (let col of inactiveCols)
         {
             this._portsStore.set_value(iter, col, !active);
         }
@@ -171,7 +171,7 @@ const SDCSettingsWidget = new GObject.Class({
         let ports = JSON.parse(this._settings.get_string(PORT_SETTINGS));
 
         let found;
-        for each(let port in ports) {
+        for (let port of ports) {
             found = false;
             if (!port || !port.human_name || !port.name) {
                 continue;

@@ -6,9 +6,10 @@
   "shell-version": [
     "3.18",
     "3.19",
-    "3.20"
+    "3.20",
+    "3.22"
   ],
   "url": "https://github.com/kgshank/gse-sound-output-device-chooser",
   "uuid": "sound-output-device-chooser@kgshank.net",
-  "version": "15"
+  "version": "16"
 }
