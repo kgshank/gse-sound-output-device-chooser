@@ -1,6 +1,8 @@
 # Gnome Shell Extension - Sound Input & Output Device Chooser
 A simple selector to enabled selection of sound source and sink based on Gnome Control Center
 
+# Note: Unable to concentrate much on the development, but I am still watching the issue list and most of them are related to the same problem in the extension architecture. Please feel free to update / create new issues. I will update the extension in the near future
+
 ###### Install URL: [extensions.gnome.org](https://extensions.gnome.org/extension/906/sound-output-device-chooser/)
 
 ### Gnome shell versions compatible
