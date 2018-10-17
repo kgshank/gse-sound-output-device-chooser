@@ -108,7 +108,12 @@ function refreshCards() {
 }
 
 function parseOutput(out) {
-    let lines = ByteArray.toString(out).split('\n');
+    if (out instanceof Uint8Array) {
+        let lines = ByteArray.toString(out).split('\n');
+    } else {
+        let lines = out.toString().split('\n');
+    }
+
     let cardIndex;
     let parseSection = "CARDS";
     let port;
