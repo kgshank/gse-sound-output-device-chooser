@@ -108,10 +108,11 @@ function refreshCards() {
 }
 
 function parseOutput(out) {
+    let lines;
     if (out instanceof Uint8Array) {
-        let lines = ByteArray.toString(out).split('\n');
+        lines = ByteArray.toString(out).split('\n');
     } else {
-        let lines = out.toString().split('\n');
+        lines = out.toString().split('\n');
     }
 
     let cardIndex;
