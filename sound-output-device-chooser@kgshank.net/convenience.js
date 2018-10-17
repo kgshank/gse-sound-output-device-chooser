@@ -173,7 +173,7 @@ const Signal = new Lang.Class({
     }
 });
 
-const SignalManager = new Lang.Class({
+var SignalManager = new Lang.Class({
 	Name: 'SignalManager',
 
 	_init: function() {
