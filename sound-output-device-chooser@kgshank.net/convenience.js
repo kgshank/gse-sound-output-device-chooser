@@ -216,11 +216,13 @@ function getProfilesForPort(portName, card) {
         for (let port of card.ports) {
             if(portName === port.name) {
                 let profiles = [];
-                for (let profile of port.profiles) {
-                    if(profile.indexOf('+input:') == -1) {
-                        for (let cardProfile of card.profiles) {
-                            if(profile === cardProfile.name) {
-                                profiles.push(cardProfile);
+                if (port.profiles) {
+                    for (let profile of port.profiles) {
+                        if(profile.indexOf('+input:') == -1) {
+                            for (let cardProfile of card.profiles) {
+                                if(profile === cardProfile.name) {
+                                    profiles.push(cardProfile);
+                                }
                             }
                         }
                     }
