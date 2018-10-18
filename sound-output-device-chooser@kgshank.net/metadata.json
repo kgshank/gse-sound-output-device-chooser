@@ -9,9 +9,11 @@
     "3.20",
     "3.22",
     "3.24",
-    "3.26"
+    "3.26",
+    "3.28",
+    "3.30"
   ],
   "url": "https://github.com/kgshank/gse-sound-output-device-chooser",
   "uuid": "sound-output-device-chooser@kgshank.net",
-  "version": "16"
+  "version": "17"
 }
