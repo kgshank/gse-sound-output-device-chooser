@@ -3,19 +3,20 @@
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Orignal Author: Gopi Sankar Karmegam
  ******************************************************************************/
  /* jshint moz:true */
 
+const ByteArray = imports.byteArray;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const ExtensionUtils = imports.misc.extensionUtils;
@@ -23,9 +24,9 @@ const Lang = imports.lang;
 
 /**
  * getSettings:
- * 
+ *
  * @schema: (optional): the GSettings schema id
- * 
+ *
  * Builds and return a GSettings schema for
  * @schema, using schema files in extensionsdir/schemas. If
  * @schema is not provided, it is taken from metadata['settings-schema'].
@@ -107,7 +108,13 @@ function refreshCards() {
 }
 
 function parseOutput(out) {
-    let lines = out.toString().split('\n');
+    let lines;
+    if (out instanceof Uint8Array) {
+        lines = ByteArray.toString(out).split('\n');
+    } else {
+        lines = out.toString().split('\n');
+    }
+
     let cardIndex;
     let parseSection = "CARDS";
     let port;
@@ -200,7 +207,7 @@ var SignalManager = new Lang.Class({
     		signal.disconnect();
     	}
     },
-    
+
     disconnectBySource: function(signalSource) {
     	if(this._signalsBySource[signalSource]) {
     		for (let signal of this._signalsBySource[signalSource]) {
@@ -233,4 +240,3 @@ function getProfilesForPort(portName, card) {
     }
     return null;
 }
-
