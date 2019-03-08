@@ -24,49 +24,45 @@ const SignalManager = Lib.SignalManager;
 const Prefs = Me.imports.prefs;
 const Main = imports.ui.main;
 
-const SoundOutputDeviceChooser = new Lang.Class({
-    Name : 'SoundOutputDeviceChooser',
-    Extends : Base.SoundDeviceChooserBase,
-    _init : function() {
-        this.parent("output");
-    },
-    lookupDeviceById : function(id) {
+var SoundOutputDeviceChooser = class SoundOutputDeviceChooser extends Base.SoundDeviceChooserBase {
+
+    constructor() {
+        super("output");
+    }
+    lookupDeviceById(id) {
         return this._control.lookup_output_id(id);
-    },
-    changeDevice : function(uidevice) {
+    }
+    changeDevice(uidevice) {
         this._control.change_output(uidevice);
-    },
-    getDefaultDevice : function() {
+    }
+    getDefaultDevice() {
         return this._control.get_default_sink();
-    },
-    getDefaultIcon : function() {
+    }
+    getDefaultIcon() {
         return "audio-card";
     }
-});
+}
 
-const SoundInputDeviceChooser = new Lang.Class({
-    Name : 'SoundInputDeviceChooser',
-    Extends : Base.SoundDeviceChooserBase,
-    _init : function() {
-        this.parent("input");
-    },
-    lookupDeviceById : function(id) {
+var SoundInputDeviceChooser = class SoundInputDeviceChooser extends Base.SoundDeviceChooserBase {
+    constructor() {
+        super("input");
+    }
+    lookupDeviceById(id) {
         return this._control.lookup_input_id(id);
-    },
-    changeDevice : function(uidevice) {
+    }
+    changeDevice(uidevice) {
         this._control.change_input(uidevice);
-    },
-    getDefaultDevice : function() {
+    }
+    getDefaultDevice() {
         return this._control.get_default_source();
-    },
-    getDefaultIcon : function() {
+    }
+    getDefaultIcon() {
         return "audio-input-microphone";
     }
-});
+}
 
-const InputSliderInstance = new Lang.Class({
-    Name : 'InputSliderInstance',
-    _init : function(volumeMenu) {
+const InputSliderInstance = class InputSliderInstance {
+    constructor(volumeMenu) {
         this._input = volumeMenu._input;
         this._settings = Lib.getSettings(Prefs.SETTINGS_SCHEMA);
         this._signalManager = new SignalManager();
@@ -75,29 +71,29 @@ const InputSliderInstance = new Lang.Class({
                 this._setSliderVisiblity));
         this._overrideFunction();
         this._setSliderVisiblity();
-    },
-    _overrideFunction : function() {
+    }
+    _overrideFunction() {
         this._input._shouldBeVisibleOriginal = this._input._shouldBeVisible;
         this._input._shouldBeVisibleCustom = function() {
             return this._stream != null;
         };
-    },
-    _setSliderVisiblity : function() {
+    }
+    _setSliderVisiblity() {
         if (this._settings.get_boolean(Prefs.SHOW_INPUT_SLIDER)) {
             this._input._shouldBeVisible = this._input._shouldBeVisibleCustom;
         } else {
             this._input._shouldBeVisible = this._input._shouldBeVisibleOriginal;
         }
         this._input._maybeShowInput();
-    },
-    destroy : function() {
+    }
+    destroy() {
         this._signalManager.disconnectAll();
         this._input._shouldBeVisible = this._input._shouldBeVisibleOriginal;
         this._input._maybeShowInput();
         delete this._input['_shouldBeVisibleOriginal'];
         delete this._input['_shouldBeVisibleCustom'];
     }
-});
+}
 
 var _outputInstance = null;
 var _inputInstance = null;
