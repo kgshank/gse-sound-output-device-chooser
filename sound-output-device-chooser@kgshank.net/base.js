@@ -195,6 +195,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase extends PopupMenu.Popu
             this._deviceRemoved(control, id, true);
         }
         this._setChooserVisibility();
+        this._setVisibility();
         return uidevice;
     }
 
@@ -242,6 +243,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase extends PopupMenu.Popu
                 return false;
             }));
             this._setChooserVisibility();
+            this._setVisibility();
         }
     }
 
@@ -400,7 +402,11 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase extends PopupMenu.Popu
     }
 
     _setVisibility () {
-        this.actor.visible =  this._settings.get_boolean(this._show_device_signal);
+        if (!this._settings.get_boolean(this._show_device_signal))
+            this.actor.visible = false;
+        else
+            // if setting says to show device, check for any device, otherwise hide the "actor"
+            this.actor.visible = (Object.keys(this._availableDevicesIds).length > 0);
     }
 
     destroy() {
