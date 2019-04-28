@@ -22,6 +22,8 @@ const GLib = imports.gi.GLib;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Lang = imports.lang;
 
+const DEBUG = false;
+
 /**
  * getSettings:
  *
@@ -68,7 +70,7 @@ function getProfiles(control, uidevice)
         }
 
         if(cards && cards[stream.card_index]) {
-            global.log("Getting profile form stream id " + uidevice.port_name );
+            log("Getting profile form stream id " + uidevice.port_name );
         	return getProfilesForPort(uidevice.port_name, cards[stream.card_index]);
         }
     }
@@ -78,7 +80,7 @@ function getProfiles(control, uidevice)
         refreshCards();
         for (let id in cards) {
             let profiles;
-            global.log("Getting profile from cards " + uidevice.port_name  + " for card id " + id);
+            log("Getting profile from cards " + uidevice.port_name  + " for card id " + id);
             if((profiles = getProfilesForPort(uidevice.port_name, cards[id])))
             {
                 return profiles;
@@ -104,7 +106,7 @@ function refreshCards() {
     if(result && !exit_code) {
         parseOutput(out);
     }
-    // global.log(JSON.stringify(cards));
+    // log(JSON.stringify(cards));
 }
 
 function parseOutput(out) {
@@ -119,7 +121,7 @@ function parseOutput(out) {
     let parseSection = "CARDS";
     let port;
     let matches;
-    // global.log("Unmatched line:" + out);
+    // log("Unmatched line:" + out);
     while(lines.length > 0) {
         let line = lines.shift();
 
@@ -236,4 +238,11 @@ function getProfilesForPort(portName, card) {
         }
     }
     return null;
+}
+
+
+function log(msg) {
+    if ( DEBUG == true ) {
+      global.log(msg);
+    }
 }
