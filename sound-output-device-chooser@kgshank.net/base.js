@@ -91,8 +91,11 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase extends PopupMenu.Popu
                         let stream = this._control.get_stream_from_device(uidevice);
                         if(stream) {
                             let stream_port = stream.get_port();
+                            let uidevice_port = uidevice.get_port();
 
-                            if(stream_port && stream == defaultDevice && stream_port.port === uidevice.get_port()) {
+                            if(((!stream_port && !uidevice_port) ||
+                                (stream_port && stream_port.port === uidevice_port)) &&
+                                stream == defaultDevice) {
                                 this._deviceActivated(this._control, id);
                             }
                         }
