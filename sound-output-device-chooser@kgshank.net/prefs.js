@@ -62,7 +62,7 @@ const SDCSettingsWidget = new GObject.Class({
         let builder = new Gtk.Builder();
 
         if (builder.add_from_file(uiFilePath) == 0) {
-            global.log("JS LOG: could not load the ui file: %s".format(uiFilePath));
+            Lib.log("JS LOG: could not load the ui file: %s".format(uiFilePath));
 
             let label = new Gtk.Label({
                 label: _("Could not load the preferences UI file"),
@@ -71,14 +71,14 @@ const SDCSettingsWidget = new GObject.Class({
 
             this.pack_start(label, true, true, 0);
         } else {
-            global.log('JS LOG:_UI file receive and load: '+uiFilePath);
+            Lib.log('JS LOG:_UI file receive and load: '+uiFilePath);
 
             let mainContainer = builder.get_object("main-container");
 
             this.pack_start(mainContainer, true, true, 0);
 
             this._signalManager = new SignalManager();
-            
+
             let showProfileSwitch = builder.get_object("show-profile");
             let singleDeviceSwitch = builder.get_object("single-device");
             let showInputSliderSwitch = builder.get_object("show-input-slider");

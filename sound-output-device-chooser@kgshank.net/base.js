@@ -3,15 +3,15 @@
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Orignal Author: Gopi Sankar Karmegam
  ******************************************************************************/
  /* jshint moz:true */
@@ -82,7 +82,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase extends PopupMenu.Popu
                 let maxId = -1;
                 let dummyDevice = new Gvc.MixerUIDevice();
                 maxId = dummyDevice.get_id();
-                global.log("Max Id:" + maxId);
+                Lib.log("Max Id:" + maxId);
 
                 let defaultDevice = this.getDefaultDevice();
                 while(++id < maxId) {
@@ -150,12 +150,12 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase extends PopupMenu.Popu
         else {
             uidevice = obj.uidevice;
         }
-        
-        global.log(obj.text);
-        
+
+        Lib.log(obj.text);
+
         if (obj.profiles) {
             for (let profile of obj.profiles) {
-            	global.log(profile.name)
+            	Lib.log(profile.name)
             }
         }
 
@@ -163,7 +163,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase extends PopupMenu.Popu
             return uidevice;
         }
 
-        global.log("Added: " + id + ":" + uidevice.description + ":" + uidevice.port_name);
+        Lib.log("Added: " + id + ":" + uidevice.description + ":" + uidevice.port_name);
         this._availableDevicesIds[id] ++;
 
         obj.active = true;
@@ -179,7 +179,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase extends PopupMenu.Popu
                         control.change_profile_on_selected_device(uidevice, profileName);
                         this._setDeviceActiveProfile(obj);
                     }));
-	
+
                     obj.profilesitems[profileName] = profileItem;
                     profileItem.setProfileActive = function(active) {
                         if(active) {
@@ -205,9 +205,9 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase extends PopupMenu.Popu
     _deviceRemoved(control, id, dontcheck) {
         let obj = this._devices[id];
         if(obj && obj.active) {
-            global.log("Removed: " + id);
+            Lib.log("Removed: " + id);
             if(!dontcheck && this._canShowDevice(obj.uidevice, false)) {
-                global.log('Device removed, but not hiding as its set to be shown always');
+                Lib.log('Device removed, but not hiding as its set to be shown always');
                 return;
             }
             delete this._availableDevicesIds[id] ;
@@ -253,7 +253,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase extends PopupMenu.Popu
     _deviceActivated(control, id) {
         let obj = this._devices[id];
         if(obj && obj !== this._activeDevice) {
-            global.log("Activated: " + id);
+            Lib.log("Activated: " + id);
             if(this._activeDevice) {
                 this._activeDevice.item.setOrnament(PopupMenu.Ornament.NONE);
             }
