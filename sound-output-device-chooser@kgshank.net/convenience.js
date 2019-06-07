@@ -21,8 +21,11 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Lang = imports.lang;
+const Me = ExtensionUtils.getCurrentExtension();
+const Prefs = Me.imports.prefs;
 
-const DEBUG = false;
+var DEBUG = false;
+var _settings = null;
 
 /**
  * getSettings:
@@ -57,7 +60,8 @@ function getSettings(schema) {
         throw new Error('Schema ' + schema + ' could not be found for extension '
                 + extension.metadata.uuid + '. Please check your installation.');
 
-    return new Gio.Settings({ settings_schema: schemaObj });
+    _settings = new Gio.Settings({ settings_schema: schemaObj });
+    return _settings;
 }
 
 let cards;
@@ -100,13 +104,34 @@ function getPorts(refresh) {
 }
 
 function refreshCards() {
-    cards = {};
+	cards = {};
     ports = [];
-    let [result, out, err, exit_code] = GLib.spawn_command_line_sync('pactl list cards');
-    if(result && !exit_code) {
-        parseOutput(out);
+	if(_settings == null) {getSettings(Prefs.SETTINGS_SCHEMA);}
+    //if(_settings.get_boolean(Prefs.NEW_PROFILE_ID)) 
+	{
+    	log("New logic");
+    	let pyLocation =  Me.dir.get_child('utils/pa_helper.py').get_path();
+    	log(pyLocation);
+    	let [result, out, err, exit_code] = GLib.spawn_command_line_sync('python ' + pyLocation);
+    	//log("result" + result +" out"+out + " exit_code" + exit_code + " err" +err);
+    	if(result && !exit_code) {
+    		let obj = JSON.parse(out);
+    		cards2 = obj['cards'];
+    		ports2 = obj['ports'];
+    		log(JSON.stringify(cards2));
+    		log(JSON.stringify(ports2));
+	    }
+	}
+    //}else
+    	{
+    	let [result, out, err, exit_code] = GLib.spawn_command_line_sync('pactl list cards');
+	    if(result && !exit_code) {
+	        parseOutput(out);
+	        log(JSON.stringify(cards));
+    		log(JSON.stringify(ports));
+	    }
     }
-    // log(JSON.stringify(cards));
+    
 }
 
 function parseOutput(out) {
@@ -193,10 +218,13 @@ var SignalManager = class SignalManager {
             obj = new Signal(signalSource, signalName, callback);
             obj.connect();
             this._signals.push(obj);
-            if(!this._signalsBySource[signalSource]) {
-            	this._signalsBySource[signalSource] = [];
+            let sourceSignals = this._signalsBySource[signalSource]
+            if(!sourceSignals) {
+            	sourceSignals = [];
+            	this._signalsBySource[signalSource] = sourceSignals;
             }
-            this._signalsBySource[signalSource].push(obj)
+            //this._signalsBySource[signalSource].push(obj)
+            sourceSignals.push(obj);
         }
 		return obj;
     }
@@ -240,6 +268,9 @@ function getProfilesForPort(portName, card) {
     return null;
 }
 
+function setLog(value) {
+	DEBUG = value;
+}
 
 function log(msg) {
     if ( DEBUG == true ) {

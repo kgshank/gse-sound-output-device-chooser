@@ -27,19 +27,21 @@ const Me = ExtensionUtils.getCurrentExtension();
 const Lib = Me.imports.convenience;
 const SignalManager = Lib.SignalManager;
 
-const SETTINGS_SCHEMA = "org.gnome.shell.extensions.sound-output-device-chooser";
-const HIDE_ON_SINGLE_DEVICE = "hide-on-single-device";
-const HIDE_MENU_ICONS = "hide-menu-icons";
-const SHOW_PROFILES = "show-profiles";
-const PORT_SETTINGS = "ports-settings";
-const SHOW_INPUT_SLIDER = "show-input-slider";
-const SHOW_INPUT_DEVICES = "show-input-devices";
-const SHOW_OUTPUT_DEVICES = "show-output-devices";
+var SETTINGS_SCHEMA = "org.gnome.shell.extensions.sound-output-device-chooser";
+var HIDE_ON_SINGLE_DEVICE = "hide-on-single-device";
+var HIDE_MENU_ICONS = "hide-menu-icons";
+var SHOW_PROFILES = "show-profiles";
+var PORT_SETTINGS = "ports-settings";
+var SHOW_INPUT_SLIDER = "show-input-slider";
+var SHOW_INPUT_DEVICES = "show-input-devices";
+var SHOW_OUTPUT_DEVICES = "show-output-devices";
+var ENABLE_LOG = "enable-log";
+var NEW_PROFILE_ID = "new-profile-indentification";
 
-const ICON_THEME = "icon-theme";
-const ICON_THEME_COLORED = "colored";
-const ICON_THEME_MONOCHROME = "monochrome";
-const ICON_THEME_NONE = "none";
+var ICON_THEME = "icon-theme";
+var ICON_THEME_COLORED = "colored";
+var ICON_THEME_MONOCHROME = "monochrome";
+var ICON_THEME_NONE = "none";
 
 function init(){}
 
@@ -56,6 +58,8 @@ const SDCSettingsWidget = new GObject.Class({
 
      // creates the settings
         this._settings = Lib.getSettings(SETTINGS_SCHEMA);
+        
+        Lib.setLog(this._settings.get_boolean(ENABLE_LOG)); 
 
         // creates the ui builder and add the main resource file
         let uiFilePath = Me.path + "/ui/prefs-dialog.gtkbuilder";
@@ -86,13 +90,17 @@ const SDCSettingsWidget = new GObject.Class({
             let showOutputDevicesSwitch = builder.get_object("show-output-devices");
             let hideMenuIconsSwitch = builder.get_object("hide-menu-icons");
             let iconThemeCombo = builder.get_object("icon-theme");
-
+            let logSwitch = builder.get_object("enable-log");
+            let newProfileIdSwitch = builder.get_object("new-profile-identification");
+                        
             this._settings.bind(HIDE_ON_SINGLE_DEVICE, singleDeviceSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(SHOW_PROFILES, showProfileSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(SHOW_INPUT_SLIDER, showInputSliderSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(SHOW_INPUT_DEVICES, showInputDevicesSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(SHOW_OUTPUT_DEVICES, showOutputDevicesSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(HIDE_MENU_ICONS, hideMenuIconsSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
+            this._settings.bind(ENABLE_LOG, logSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
+            this._settings.bind(NEW_PROFILE_ID, newProfileIdSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(ICON_THEME, iconThemeCombo, "active-id", Gio.SettingsBindFlags.DEFAULT);
 
             let showAlwaysToggleRender = builder.get_object("ShowAlwaysToggleRender");

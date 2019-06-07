@@ -39,8 +39,10 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase extends PopupMenu.Popu
         this._availableDevicesIds = {};
         this._control = VolumeMenu.getMixerControl();
         this._settings = Lib.getSettings(Prefs.SETTINGS_SCHEMA);
+        this._setLog();
         this._signalManager = new SignalManager();
-
+        this._signalManager.addSignal(this._settings,"changed::" + Prefs.ENABLE_LOG, Lang.bind(this, this._setLog));        
+        
         if(this._control.get_state() == Gvc.MixerControlState.READY) {
             this._onControlStateChanged();
         }
@@ -48,6 +50,8 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase extends PopupMenu.Popu
             this._controlStateChangeSignal = this._signalManager.addSignal(this._control, "state-changed", Lang.bind(this,this._onControlStateChanged));
         }
     }
+    
+    _setLog(){ Lib.setLog(this._settings.get_boolean(Prefs.ENABLE_LOG));}    
 
     _onControlStateChanged() {
         if(this._control.get_state() == Gvc.MixerControlState.READY) {
@@ -164,6 +168,9 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase extends PopupMenu.Popu
         }
 
         Lib.log("Added: " + id + ":" + uidevice.description + ":" + uidevice.port_name);
+        if(!this._availableDevicesIds[id]){
+        	this._availableDevicesIds[id] = 0;
+        }
         this._availableDevicesIds[id] ++;
 
         obj.active = true;

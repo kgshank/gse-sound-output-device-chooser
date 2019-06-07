@@ -9,7 +9,7 @@
     <key name="show-profiles" type="b">
       <default>true</default>
       <summary>Preference to show the available profiles for all devices</summary>
-      <description>Value set to true displays the individual availble profiles for each device</description>
+      <description>Value set to true displays the individual available profiles for each device</description>
     </key>
 
     <key name="use-monochrome" type="b">
@@ -50,8 +50,21 @@
 
     <key name="hide-menu-icons" type="b">
         <default>false</default>
-        <summary>Preference indicating whether the icons are hidden in the dropdown menu (but are visible in the expanded list).</summary>
+        <summary>Preference indicating whether the icons are hidden in the drop-down menu (but are visible in the expanded list).</summary>
         <description></description>
     </key>
+    
+    <key name="enable-log" type="b">
+        <default>false</default>
+        <summary>Preference indicating log messages should be written to console</summary>
+        <description></description>
+    </key>
+    
+    <key name="new-profile-indentification" type="b">
+        <default>true</default>
+        <summary>Preference to enable new logic to identify port profiles</summary>
+        <description></description>
+    </key>
+    
   </schema>
 </schemalist>
