@@ -10,7 +10,7 @@
     <target name="create_zip" depends="create_dist">
     	<echo message="Creating file ${project.name}.zip"/>
     	<zip destfile="${dir.target.dir}/${project.name}.zip" >
-    		<fileset dir="${dir.workspace}" excludes=".project,.settings/,dist/, build/"/>
+    		<fileset dir="${dir.workspace}" excludes=".project,.settings/,dist/,build/,utils/*.pyc,utils/__pycache__/"/>
     	</zip>        
     </target>
 </project>
