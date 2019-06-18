@@ -1,18 +1,15 @@
 # Gnome Shell Extension - Sound Input & Output Device Chooser
 A simple selector to enabled selection of sound source and sink based on Gnome Control Center
 
-# Note: Unable to concentrate much on the development, but I am still watching the issue list and most of them are related to the same problem in the extension architecture. Please feel free to update / create new issues. I will update the extension in the near future
+### Dependency
+Python 2 or 3. New version needs python as optional dependency. Use option to turn off new profile identification logic, if python is to be avoided. But the old logic has language dependecy and works only with English display language
 
 ###### Install URL: [extensions.gnome.org](https://extensions.gnome.org/extension/906/sound-output-device-chooser/)
 
 ### Gnome shell versions compatible
-* 3.18
-* 3.20
-* 3.22
-* 3.24
-* 3.26
-* 3.28
-* 3.30
+* 3.32
+* For older versions insall from [extensions.gnome.org](https://extensions.gnome.org/extension/906/sound-output-device-chooser/)
+
 
 ### Notes:
 * May conflict with extensions which modify volume menu.
@@ -20,6 +17,14 @@ A simple selector to enabled selection of sound source and sink based on Gnome C
 
 ### Changelog
 -----------------------
+#### 21
+* Remove unsupported shell versions from compatibility
+
+#### 20
+* Use python for identifying profiles available
+* Option to control new profile identification logic
+* Turn off/on log message in options
+
 #### 17
 * Updated to shell version 3.30.
 * Lots of bug fixes, thanks @HarlemSquirrel and @mdmower for the support
