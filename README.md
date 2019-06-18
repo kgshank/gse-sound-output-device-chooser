@@ -17,6 +17,10 @@ Python 2 or 3. New version needs python as optional dependency. Use option to tu
 
 ### Changelog
 -----------------------
+#### 22
+* Failback to old method of profile identification incase of Python
+errors.
+
 #### 21
 * Remove unsupported shell versions from compatibility
 
