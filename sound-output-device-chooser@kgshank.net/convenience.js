@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
- * Orignal Author: Gopi Sankar Karmegam
+ * Original Author: Gopi Sankar Karmegam
  ******************************************************************************/
  /* jshint moz:true */
 
@@ -33,7 +33,7 @@ var _settings = null;
  * @schema: (optional): the GSettings schema id
  *
  * Builds and return a GSettings schema for
- * @schema, using schema files in extensionsdir/schemas. If
+ * @schema, using schema files in extensions dir/schemas. If
  * @schema is not provided, it is taken from metadata['settings-schema'].
  */
 function getSettings(schema) {
@@ -69,7 +69,7 @@ function getProfiles(control, uidevice)
 {
     let stream = control.lookup_stream_id(uidevice.get_stream_id());
     if(stream) {
-        if(!cards || !cards[stream.card_index]) {
+        if(!cards || Object.keys(cards).length == 0 || !cards[stream.card_index]) {
             refreshCards();
         }
 
@@ -97,7 +97,7 @@ function getProfiles(control, uidevice)
 
 let ports;
 function getPorts(refresh) {
-    if(!ports || refresh) {
+    if(!ports || ports.length == 0 || refresh) {
         refreshCards();
     }
     return ports;
@@ -107,30 +107,40 @@ function refreshCards() {
 	cards = {};
     ports = [];
 	if(_settings == null) {getSettings(Prefs.SETTINGS_SCHEMA);}
-    //if(_settings.get_boolean(Prefs.NEW_PROFILE_ID)) 
-	{
+	let error = false;
+    if(_settings.get_boolean(Prefs.NEW_PROFILE_ID))	{
     	log("New logic");
     	let pyLocation =  Me.dir.get_child('utils/pa_helper.py').get_path();
-    	log(pyLocation);
-    	let [result, out, err, exit_code] = GLib.spawn_command_line_sync('python ' + pyLocation);
-    	//log("result" + result +" out"+out + " exit_code" + exit_code + " err" +err);
-    	if(result && !exit_code) {
-    		let obj = JSON.parse(out);
-    		cards2 = obj['cards'];
-    		ports2 = obj['ports'];
-    		log(JSON.stringify(cards2));
-    		log(JSON.stringify(ports2));
-	    }
-	}
-    //}else
-    	{
-    	let [result, out, err, exit_code] = GLib.spawn_command_line_sync('pactl list cards');
-	    if(result && !exit_code) {
-	        parseOutput(out);
-	        log(JSON.stringify(cards));
-    		log(JSON.stringify(ports));
-	    }
+    	try {
+	    	let [result, out, err, exit_code] = GLib.spawn_command_line_sync('python ' + pyLocation);
+	    	//log("result" + result +" out"+out + " exit_code" + exit_code + " err" +err);
+	    	if(result && !exit_code) {
+	    		let obj = JSON.parse(out);
+	    		cards = obj['cards'];
+	    		ports = obj['ports'];    		
+		    }
+    	}
+    	catch(e) {
+    		error = true;
+    		log('ERROR: Python execution failed. fallback to default mode');
+    		_settings.set_boolean(Prefs.NEW_PROFILE_ID, false);
+    		Gio.Settings.sync();
+    	}	
     }
+    
+    if(!_settings.get_boolean(Prefs.NEW_PROFILE_ID) || error){
+    	try {
+    		let [result, out, err, exit_code] = GLib.spawn_command_line_sync('pactl list cards');
+    		if(result && !exit_code) {
+    			parseOutput(out);	        
+    		}
+    	}
+	    catch(e) {
+    		log('ERROR: pactl execution failed. No ports/profiles will be displayed');    		
+    	}
+    }
+//    log(JSON.stringify(cards));
+//	log(JSON.stringify(ports));
     
 }
 

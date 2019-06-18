@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
- * Orignal Author: Gopi Sankar Karmegam
+ * Original Author: Gopi Sankar Karmegam
  ******************************************************************************/
  /* jshint moz:true */
 
@@ -119,7 +119,7 @@ const SDCSettingsWidget = new GObject.Class({
     },
 
     _populatePorts: function (){
-        let ports = Lib.getPorts();
+        let ports = Lib.getPorts(true);
         for (let port of ports)
         {
             this._portsStore.set(this._portsStore.append(),[0,1,2,3,4,5],[port.human_name, false, false, true, port.name,3]);
