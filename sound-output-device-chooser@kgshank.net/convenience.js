@@ -115,9 +115,9 @@ function refreshCards() {
 	    	let [result, out, err, exit_code] = GLib.spawn_command_line_sync('python ' + pyLocation);
 	    	//log("result" + result +" out"+out + " exit_code" + exit_code + " err" +err);
 	    	if(result && !exit_code) {
-	    		let obj = JSON.parse(out);
+	    		let obj =  JSON.parse(ByteArray.toString(out));
 	    		cards = obj['cards'];
-	    		ports = obj['ports'];    		
+	    		ports = obj['ports'];
 		    }
     	}
     	catch(e) {
@@ -125,23 +125,23 @@ function refreshCards() {
     		log('ERROR: Python execution failed. fallback to default mode');
     		_settings.set_boolean(Prefs.NEW_PROFILE_ID, false);
     		Gio.Settings.sync();
-    	}	
+    	}
     }
-    
+
     if(!_settings.get_boolean(Prefs.NEW_PROFILE_ID) || error){
     	try {
     		let [result, out, err, exit_code] = GLib.spawn_command_line_sync('pactl list cards');
     		if(result && !exit_code) {
-    			parseOutput(out);	        
+    			parseOutput(out);
     		}
     	}
 	    catch(e) {
-    		log('ERROR: pactl execution failed. No ports/profiles will be displayed');    		
+    		log('ERROR: pactl execution failed. No ports/profiles will be displayed');
     	}
     }
 //    log(JSON.stringify(cards));
 //	log(JSON.stringify(ports));
-    
+
 }
 
 function parseOutput(out) {
