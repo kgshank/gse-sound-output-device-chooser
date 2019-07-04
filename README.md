@@ -8,7 +8,7 @@ Python 2 or 3. New version needs python as optional dependency. Use option to tu
 
 ### Gnome shell versions compatible
 * 3.32
-* For older versions insall from [extensions.gnome.org](https://extensions.gnome.org/extension/906/sound-output-device-chooser/)
+* For older versions install from [extensions.gnome.org](https://extensions.gnome.org/extension/906/sound-output-device-chooser/)
 
 
 ### Notes:
