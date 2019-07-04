@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE schemalist PUBLIC "gschema" "https://gitlab.gnome.org/GNOME/glib/raw/master/gio/gschema.dtd">
 <schemalist >
    <schema id="org.gnome.shell.extensions.sound-output-device-chooser" path="/org/gnome/shell/extensions/sound-output-device-chooser/">
     <key name="hide-on-single-device" type="b">

@@ -25,7 +25,7 @@ const Me = ExtensionUtils.getCurrentExtension();
 const Prefs = Me.imports.prefs;
 
 var DEBUG = false;
-var _settings = null;
+//var _settings = null;
 
 /**
  * getSettings:
@@ -60,7 +60,7 @@ function getSettings(schema) {
         throw new Error('Schema ' + schema + ' could not be found for extension '
                 + extension.metadata.uuid + '. Please check your installation.');
 
-    _settings = new Gio.Settings({ settings_schema: schemaObj });
+    let _settings = new Gio.Settings({ settings_schema: schemaObj });
     return _settings;
 }
 
@@ -106,7 +106,8 @@ function getPorts(refresh) {
 function refreshCards() {
 	cards = {};
     ports = [];
-	if(_settings == null) {getSettings(Prefs.SETTINGS_SCHEMA);}
+	//if(_settings == null) {getSettings(Prefs.SETTINGS_SCHEMA);}
+    let _settings = getSettings(Prefs.SETTINGS_SCHEMA);
 	let error = false;
     if(_settings.get_boolean(Prefs.NEW_PROFILE_ID))	{
     	log("New logic");
