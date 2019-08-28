@@ -4,7 +4,17 @@ A simple selector to enabled selection of sound source and sink based on Gnome C
 ### Dependency
 Python 2 or 3. New version needs python as optional dependency. Use option to turn off new profile identification logic, if python is to be avoided. But the old logic has language dependecy and works only with English display language
 
-###### Install URL: [extensions.gnome.org](https://extensions.gnome.org/extension/906/sound-output-device-chooser/)
+### Installation Instructions
+
+The official method to install this extension is from [extensions.gnome.org](https://extensions.gnome.org/extension/906/sound-output-device-chooser).
+
+To install the extension from source, clone the repository and place it in the `gnome-shell/extensions` directory
+```
+git clone https://github.com/kgshank/gse-sound-output-device-chooser.git
+cp --recursive gse-sound-output-device-chooser $HOME/.local/share/gnome-shell/extensions/sound-output-device-chooser@kgshank.net
+```
+
+Enable the extensions from [GNOME Tweaks](https://wiki.gnome.org/Apps/Tweaks).
 
 ### Gnome shell versions compatible
 * 3.32
