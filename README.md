@@ -11,7 +11,7 @@ The official method to install this extension is from [extensions.gnome.org](htt
 To install the extension from source, clone the repository and place it in the `gnome-shell/extensions` directory
 ```
 git clone https://github.com/kgshank/gse-sound-output-device-chooser.git
-cp --recursive gse-sound-output-device-chooser $HOME/.local/share/gnome-shell/extensions/sound-output-device-chooser@kgshank.net
+cp --recursive gse-sound-output-device-chooser/sound-output-device-chooser@kgshank.net $HOME/.local/share/gnome-shell/extensions/sound-output-device-chooser@kgshank.net
 ```
 
 Enable the extensions from [GNOME Tweaks](https://wiki.gnome.org/Apps/Tweaks).
