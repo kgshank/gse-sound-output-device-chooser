@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE xml>
+<project default="create_zip" name="Create Zip file">
+    <property name="dir.buildfile" value="."/>
+    <property name="dir.workspace" value="${dir.buildfile}/.."/>
+    <property name="dir.target.dir" value="${dir.workspace}/dist/"/>
+	<basename property="project.name" file="${basedir}/.."/>
+	<target name="create_dist">
+		<mkdir dir="${dir.target.dir}" />
+	</target>
+    <target name="create_zip" depends="create_dist">
+    	<echo message="Creating file ${project.name}.zip"/>
+    	<zip destfile="${dir.target.dir}/${project.name}.zip" >
+    		<fileset dir="${dir.workspace}" excludes=".project,.settings/,dist/,build/,utils/*.pyc,utils/__pycache__/"/>
+    	</zip>        
+    </target>
+</project>
