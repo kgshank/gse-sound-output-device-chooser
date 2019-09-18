@@ -407,9 +407,9 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
             if(icon == null || icon.trim() == "")
                 icon = this.getDefaultIcon();
 
-            this.icon.icon_name = this._getIcon(icon);
+            this.menuItem.icon.icon_name = this._getIcon(icon);
         } else {
-            this.icon.icon_name = "blank";
+            this.menuItem.icon.icon_name = "blank";
         }
     }
 
