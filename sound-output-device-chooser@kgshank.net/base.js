@@ -203,13 +203,25 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
                         if(active) {
                             // this._ornamentLabel.text = "\u2727";
                             this._ornamentLabel.text = "\t\u266A";
-                            this.add_style_pseudo_class('checked');
-                            this.remove_style_pseudo_class('insensitive');
+                            if(this.add_style_pseudo_class) {
+                            	this.add_style_pseudo_class('checked');
+                            	this.remove_style_pseudo_class('insensitive');
+                            }
+                            else {
+                            	this.actor.add_style_pseudo_class('checked');
+                            	this.actor.remove_style_pseudo_class('insensitive');
+                            }
                         }
                         else {
                             this._ornamentLabel.text = "\t";
-                            this.remove_style_pseudo_class('checked');
-                            this.add_style_pseudo_class('insensitive');
+                            if(this.add_style_pseudo_class) {
+	                            this.remove_style_pseudo_class('checked');
+    	                        this.add_style_pseudo_class('insensitive');
+    	                    }
+    	                    else {
+	                            this.actor.remove_style_pseudo_class('checked');
+    	                        this.actor.add_style_pseudo_class('insensitive');
+    	                    }
                         }
                     };
                     // profileItem._ornamentLabel.width = "500em";
@@ -280,11 +292,21 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
             Lib.log("Activated: " + id);
             if(this._activeDevice) {
                 this._activeDevice.item.setOrnament(PopupMenu.Ornament.NONE);
-                this._activeDevice.item.remove_style_pseudo_class('checked');
+                if(this._activeDevice.item.remove_style_pseudo_class) {
+ 	               this._activeDevice.item.remove_style_pseudo_class('checked');
+ 	            }
+ 	            else {
+ 	               this._activeDevice.item.actor.remove_style_pseudo_class('checked');
+ 	            }
             }
             this._activeDevice = obj;
             obj.item.setOrnament(PopupMenu.Ornament.CHECK);
-            obj.item.add_style_pseudo_class('checked');
+            if(obj.item.add_style_pseudo_class) {
+            	obj.item.add_style_pseudo_class('checked');
+            }
+            else {
+            	obj.item.actor.add_style_pseudo_class('checked');
+            }
 
             obj.item._ornamentLabel.text = '\u266B';
             this.menuItem.label.text = obj.text;

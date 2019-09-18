@@ -111,6 +111,9 @@ function refreshCards() {
             let [result, out, err, exit_code] = GLib.spawn_command_line_sync('python ' + pyLocation);
             //log("result" + result +" out"+out + " exit_code" + exit_code + " err" +err);
             if(result && !exit_code) {
+            	if (out instanceof Uint8Array) {
+        			out = ByteArray.toString(out);
+    			}
                 let obj = JSON.parse(out);
                 cards = obj['cards'];
                 ports = obj['ports'];    		
