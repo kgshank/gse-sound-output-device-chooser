@@ -11,7 +11,7 @@
  ******************************************************************************/
 /* jshint moz:true */
 
-//const Lang = imports.lang;
+// const Lang = imports.lang;
 const Main = imports.ui.main;
 const PopupMenu = imports.ui.popupMenu;
 const VolumeMenu = imports.ui.status.volume;
@@ -204,24 +204,24 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
                             // this._ornamentLabel.text = "\u2727";
                             this._ornamentLabel.text = "\t\u266A";
                             if(this.add_style_pseudo_class) {
-                            	this.add_style_pseudo_class('checked');
-                            	this.remove_style_pseudo_class('insensitive');
+                                this.add_style_pseudo_class('checked');
+                                this.remove_style_pseudo_class('insensitive');
                             }
                             else {
-                            	this.actor.add_style_pseudo_class('checked');
-                            	this.actor.remove_style_pseudo_class('insensitive');
+                                this.actor.add_style_pseudo_class('checked');
+                                this.actor.remove_style_pseudo_class('insensitive');
                             }
                         }
                         else {
                             this._ornamentLabel.text = "\t";
                             if(this.add_style_pseudo_class) {
-	                            this.remove_style_pseudo_class('checked');
-    	                        this.add_style_pseudo_class('insensitive');
-    	                    }
-    	                    else {
-	                            this.actor.remove_style_pseudo_class('checked');
-    	                        this.actor.add_style_pseudo_class('insensitive');
-    	                    }
+                                this.remove_style_pseudo_class('checked');
+                                this.add_style_pseudo_class('insensitive');
+                            }
+                            else {
+                                this.actor.remove_style_pseudo_class('checked');
+                                this.actor.add_style_pseudo_class('insensitive');
+                            }
                         }
                     };
                     // profileItem._ornamentLabel.width = "500em";
@@ -293,19 +293,19 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
             if(this._activeDevice) {
                 this._activeDevice.item.setOrnament(PopupMenu.Ornament.NONE);
                 if(this._activeDevice.item.remove_style_pseudo_class) {
- 	               this._activeDevice.item.remove_style_pseudo_class('checked');
- 	            }
- 	            else {
- 	               this._activeDevice.item.actor.remove_style_pseudo_class('checked');
- 	            }
+                    this._activeDevice.item.remove_style_pseudo_class('checked');
+                }
+                else {
+                    this._activeDevice.item.actor.remove_style_pseudo_class('checked');
+                }
             }
             this._activeDevice = obj;
             obj.item.setOrnament(PopupMenu.Ornament.CHECK);
             if(obj.item.add_style_pseudo_class) {
-            	obj.item.add_style_pseudo_class('checked');
+                obj.item.add_style_pseudo_class('checked');
             }
             else {
-            	obj.item.actor.add_style_pseudo_class('checked');
+                obj.item.actor.add_style_pseudo_class('checked');
             }
 
             obj.item._ornamentLabel.text = '\u266B';

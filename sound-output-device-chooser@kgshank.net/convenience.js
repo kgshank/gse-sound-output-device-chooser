@@ -15,19 +15,18 @@ const ByteArray = imports.byteArray;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const ExtensionUtils = imports.misc.extensionUtils;
-//const Lang = imports.lang;
+// const Lang = imports.lang;
 const Me = ExtensionUtils.getCurrentExtension();
 const Prefs = Me.imports.prefs;
 
 var DEBUG = false;
-//var _settings = null;
+// var _settings = null;
 
 /**
  * getSettings:
- *
- * @schema: (optional): the GSettings schema id
- *
- * Builds and return a GSettings schema for
+ * 
+ * @schema: (optional): the GSettings schema id Builds and return a GSettings
+ *          schema for
  * @schema, using schema files in extensions dir/schemas. If
  * @schema is not provided, it is taken from metadata['settings-schema'].
  */
@@ -101,7 +100,7 @@ function getPorts(refresh) {
 function refreshCards() {
     cards = {};
     ports = [];
-    //if(_settings == null) {getSettings(Prefs.SETTINGS_SCHEMA);}
+    // if(_settings == null) {getSettings(Prefs.SETTINGS_SCHEMA);}
     let _settings = getSettings(Prefs.SETTINGS_SCHEMA);
     let error = false;
     if(_settings.get_boolean(Prefs.NEW_PROFILE_ID))	{
@@ -109,11 +108,12 @@ function refreshCards() {
         let pyLocation =  Me.dir.get_child('utils/pa_helper.py').get_path();
         try {
             let [result, out, err, exit_code] = GLib.spawn_command_line_sync('python ' + pyLocation);
-            //log("result" + result +" out"+out + " exit_code" + exit_code + " err" +err);
+            // log("result" + result +" out"+out + " exit_code" + exit_code + "
+            // err" +err);
             if(result && !exit_code) {
-            	if (out instanceof Uint8Array) {
-        			out = ByteArray.toString(out);
-    			}
+                if (out instanceof Uint8Array) {
+                    out = ByteArray.toString(out);
+                }
                 let obj = JSON.parse(out);
                 cards = obj['cards'];
                 ports = obj['ports'];    		
@@ -138,8 +138,8 @@ function refreshCards() {
             log('ERROR: pactl execution failed. No ports/profiles will be displayed');    		
         }
     }
-//  log(JSON.stringify(cards));
-//  log(JSON.stringify(ports));
+// log(JSON.stringify(cards));
+// log(JSON.stringify(ports));
 
 }
 
@@ -232,7 +232,7 @@ var SignalManager = class SignalManager {
                 sourceSignals = [];
                 this._signalsBySource[signalSource] = sourceSignals;
             }
-            //this._signalsBySource[signalSource].push(obj)
+            // this._signalsBySource[signalSource].push(obj)
             sourceSignals.push(obj);
         }
         return obj;
