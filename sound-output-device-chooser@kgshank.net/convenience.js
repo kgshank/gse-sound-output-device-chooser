@@ -2,19 +2,14 @@
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
- * version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- *
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
- *
- * Original Author: Gopi Sankar Karmegam
+ * version. This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details. You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>. Original
+ * Author: Gopi Sankar Karmegam
  ******************************************************************************/
- /* jshint moz:true */
+/* jshint moz:true */
 
 const ByteArray = imports.byteArray;
 const Gio = imports.gi.Gio;
@@ -75,7 +70,7 @@ function getProfiles(control, uidevice)
 
         if(cards && cards[stream.card_index]) {
             log("Getting profile form stream id " + uidevice.port_name );
-        	return getProfilesForPort(uidevice.port_name, cards[stream.card_index]);
+            return getProfilesForPort(uidevice.port_name, cards[stream.card_index]);
         }
     }
     else
@@ -104,45 +99,45 @@ function getPorts(refresh) {
 }
 
 function refreshCards() {
-	cards = {};
+    cards = {};
     ports = [];
-	//if(_settings == null) {getSettings(Prefs.SETTINGS_SCHEMA);}
+    //if(_settings == null) {getSettings(Prefs.SETTINGS_SCHEMA);}
     let _settings = getSettings(Prefs.SETTINGS_SCHEMA);
-	let error = false;
+    let error = false;
     if(_settings.get_boolean(Prefs.NEW_PROFILE_ID))	{
-    	log("New logic");
-    	let pyLocation =  Me.dir.get_child('utils/pa_helper.py').get_path();
-    	try {
-	    	let [result, out, err, exit_code] = GLib.spawn_command_line_sync('python ' + pyLocation);
-	    	//log("result" + result +" out"+out + " exit_code" + exit_code + " err" +err);
-	    	if(result && !exit_code) {
-	    		let obj = JSON.parse(out);
-	    		cards = obj['cards'];
-	    		ports = obj['ports'];    		
-		    }
-    	}
-    	catch(e) {
-    		error = true;
-    		log('ERROR: Python execution failed. fallback to default mode');
-    		_settings.set_boolean(Prefs.NEW_PROFILE_ID, false);
-    		Gio.Settings.sync();
-    	}	
+        log("New logic");
+        let pyLocation =  Me.dir.get_child('utils/pa_helper.py').get_path();
+        try {
+            let [result, out, err, exit_code] = GLib.spawn_command_line_sync('python ' + pyLocation);
+            //log("result" + result +" out"+out + " exit_code" + exit_code + " err" +err);
+            if(result && !exit_code) {
+                let obj = JSON.parse(out);
+                cards = obj['cards'];
+                ports = obj['ports'];    		
+            }
+        }
+        catch(e) {
+            error = true;
+            log('ERROR: Python execution failed. fallback to default mode');
+            _settings.set_boolean(Prefs.NEW_PROFILE_ID, false);
+            Gio.Settings.sync();
+        }	
     }
-    
+
     if(!_settings.get_boolean(Prefs.NEW_PROFILE_ID) || error){
-    	try {
-    		let [result, out, err, exit_code] = GLib.spawn_command_line_sync('pactl list cards');
-    		if(result && !exit_code) {
-    			parseOutput(out);	        
-    		}
-    	}
-	    catch(e) {
-    		log('ERROR: pactl execution failed. No ports/profiles will be displayed');    		
-    	}
+        try {
+            let [result, out, err, exit_code] = GLib.spawn_command_line_sync('pactl list cards');
+            if(result && !exit_code) {
+                parseOutput(out);	        
+            }
+        }
+        catch(e) {
+            log('ERROR: pactl execution failed. No ports/profiles will be displayed');    		
+        }
     }
-//    log(JSON.stringify(cards));
-//	log(JSON.stringify(ports));
-    
+//  log(JSON.stringify(cards));
+//  log(JSON.stringify(ports));
+
 }
 
 function parseOutput(out) {
@@ -175,23 +170,23 @@ function parseOutput(out) {
         }
         else if(cards[cardIndex]) {
             switch(parseSection) {
-                case "PROFILES":
-                    if((matches = /.*?((?:output|input)[^+]*?):\s(.*?)\s\(sinks:/.exec(line))) {
-                        cards[cardIndex].profiles.push({'name': matches[1], 'human_name': matches[2]});
-                    }
-                    break;
-                case "PORTS":
-                    if((matches = /\t*(.*?):\s(.*?)\s\(priority:/.exec(line))) {
-                        port = {'name' : matches[1], 'human_name' : matches[2]};
-                        cards[cardIndex].ports.push(port);
-                        ports.push({'name' : matches[1], 'human_name' : matches[2]});
-                    }
-                    else if( port && (matches = /\t*Part of profile\(s\):\s(.*)/.exec(line))) {
-                        let profileStr = matches[1];
-                        port.profiles = profileStr.split(', ');
-                        port = null;
-                    }
-                    break;
+            case "PROFILES":
+                if((matches = /.*?((?:output|input)[^+]*?):\s(.*?)\s\(sinks:/.exec(line))) {
+                    cards[cardIndex].profiles.push({'name': matches[1], 'human_name': matches[2]});
+                }
+                break;
+            case "PORTS":
+                if((matches = /\t*(.*?):\s(.*?)\s\(priority:/.exec(line))) {
+                    port = {'name' : matches[1], 'human_name' : matches[2]};
+                    cards[cardIndex].ports.push(port);
+                    ports.push({'name' : matches[1], 'human_name' : matches[2]});
+                }
+                else if( port && (matches = /\t*Part of profile\(s\):\s(.*)/.exec(line))) {
+                    let profileStr = matches[1];
+                    port.profiles = profileStr.split(', ');
+                    port = null;
+                }
+                break;
             }
         }
     }
@@ -224,33 +219,33 @@ var SignalManager = class SignalManager {
     }
 
     addSignal(signalSource, signalName, callback) {
-	let obj = null;
-	if(signalSource && signalName && callback) {
+        let obj = null;
+        if(signalSource && signalName && callback) {
             obj = new Signal(signalSource, signalName, callback);
             obj.connect();
             this._signals.push(obj);
             let sourceSignals = this._signalsBySource[signalSource]
             if(!sourceSignals) {
-            	sourceSignals = [];
-            	this._signalsBySource[signalSource] = sourceSignals;
+                sourceSignals = [];
+                this._signalsBySource[signalSource] = sourceSignals;
             }
             //this._signalsBySource[signalSource].push(obj)
             sourceSignals.push(obj);
         }
-		return obj;
+        return obj;
     }
 
     disconnectAll() {
-    	for (let signal of this._signals){
-    		signal.disconnect();
-    	}
+        for (let signal of this._signals){
+            signal.disconnect();
+        }
     }
 
     disconnectBySource(signalSource) {
-    	if(this._signalsBySource[signalSource]) {
-    		for (let signal of this._signalsBySource[signalSource]) {
-    			signal.disconnect();
-    		}
+        if(this._signalsBySource[signalSource]) {
+            for (let signal of this._signalsBySource[signalSource]) {
+                signal.disconnect();
+            }
         }
     }
 }
@@ -280,11 +275,11 @@ function getProfilesForPort(portName, card) {
 }
 
 function setLog(value) {
-	DEBUG = value;
+    DEBUG = value;
 }
 
 function log(msg) {
     if ( DEBUG == true ) {
-      global.log("SDC Debug: " + msg);
+        global.log("SDC Debug: " + msg);
     }
 }
