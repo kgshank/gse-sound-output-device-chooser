@@ -20,7 +20,7 @@ const ByteArray = imports.byteArray;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const ExtensionUtils = imports.misc.extensionUtils;
-const Lang = imports.lang;
+//const Lang = imports.lang;
 const Me = ExtensionUtils.getCurrentExtension();
 const Prefs = Me.imports.prefs;
 
@@ -285,6 +285,6 @@ function setLog(value) {
 
 function log(msg) {
     if ( DEBUG == true ) {
-      global.log(msg);
+      global.log("SDC Debug: " + msg);
     }
 }

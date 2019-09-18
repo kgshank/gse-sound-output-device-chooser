@@ -15,7 +15,8 @@
  * Original Author: Gopi Sankar Karmegam
  ******************************************************************************/
 /* jshint moz:true */
-const Lang = imports.lang;
+//const Lang = imports.lang;
+const {GObject} = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Base = Me.imports.base;
@@ -24,8 +25,8 @@ const SignalManager = Lib.SignalManager;
 const Prefs = Me.imports.prefs;
 const Main = imports.ui.main;
 
-var SoundOutputDeviceChooser = class SoundOutputDeviceChooser extends Base.SoundDeviceChooserBase {
-
+var SoundOutputDeviceChooser =  class SoundOutputDeviceChooser 
+extends Base.SoundDeviceChooserBase {
     constructor() {
         super("output");
     }
@@ -41,9 +42,10 @@ var SoundOutputDeviceChooser = class SoundOutputDeviceChooser extends Base.Sound
     getDefaultIcon() {
         return "audio-card";
     }
-}
+};
 
-var SoundInputDeviceChooser = class SoundInputDeviceChooser extends Base.SoundDeviceChooserBase {
+var SoundInputDeviceChooser =  class SoundInputDeviceChooser 
+extends Base.SoundDeviceChooserBase {
     constructor() {
         super("input");
     }
@@ -59,7 +61,7 @@ var SoundInputDeviceChooser = class SoundInputDeviceChooser extends Base.SoundDe
     getDefaultIcon() {
         return "audio-input-microphone";
     }
-}
+};
 
 const InputSliderInstance = class InputSliderInstance {
     constructor(volumeMenu) {
@@ -67,8 +69,7 @@ const InputSliderInstance = class InputSliderInstance {
         this._settings = Lib.getSettings(Prefs.SETTINGS_SCHEMA);
         this._signalManager = new SignalManager();
         this._signalManager.addSignal(this._settings, "changed::"
-                + Prefs.SHOW_INPUT_SLIDER, Lang.bind(this,
-                this._setSliderVisiblity));
+                + Prefs.SHOW_INPUT_SLIDER, this._setSliderVisiblity.bind(this));
         this._overrideFunction();
         this._setSliderVisiblity();
     }
@@ -105,13 +106,17 @@ function init(extensionMeta) {
 }
 
 function enable() {
+    let _volumeMenu = Main.panel.statusArea.aggregateMenu._volume._volumeMenu;
+   // _volumeMenu.box.set_style("min-width: 15em");
+    Main.panel.statusArea.aggregateMenu.menu.box.get_layout_manager().addSizeChild(_volumeMenu.actor);
+
     if (_outputInstance == null) {
         _outputInstance = new SoundOutputDeviceChooser();
     }
     if (_inputInstance == null) {
         _inputInstance = new SoundInputDeviceChooser();
     }
-    let _volumeMenu = Main.panel.statusArea.aggregateMenu._volume._volumeMenu;
+    
     if (_inputSliderInstance == null) {
         _inputSliderInstance = new InputSliderInstance(_volumeMenu);
     }
@@ -122,14 +127,14 @@ function enable() {
             break;
         }
     }
-    _volumeMenu.addMenuItem(_outputInstance, ++i);
+    _volumeMenu.addMenuItem(_outputInstance.menuItem, ++i);
     menuItems = _volumeMenu._getMenuItems();
     for (i = 0; i < menuItems.length; i++) {
         if (menuItems[i] === _volumeMenu._input.item) {
             break;
         }
     }
-    _volumeMenu.addMenuItem(_inputInstance, ++i);
+    _volumeMenu.addMenuItem(_inputInstance.menuItem, ++i);
 }
 
 function disable() {

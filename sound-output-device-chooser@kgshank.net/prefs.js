@@ -20,7 +20,7 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
-const Lang = imports.lang;
+//const Lang = imports.lang;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
@@ -107,9 +107,9 @@ const SDCSettingsWidget = new GObject.Class({
             let hideAlwaysToggleRender = builder.get_object("HideAlwaysToggleRender");
             let showActiveToggleRender = builder.get_object("ShowActiveToggleRender");
 
-            this._signalManager.addSignal(showAlwaysToggleRender, "toggled", Lang.bind(this, this._showAlwaysToggleRenderCallback));
-            this._signalManager.addSignal(hideAlwaysToggleRender, "toggled", Lang.bind(this, this._hideAlwaysToggleRenderCallback));
-            this._signalManager.addSignal(showActiveToggleRender, "toggled", Lang.bind(this, this._showActiveToggleRenderCallback));
+            this._signalManager.addSignal(showAlwaysToggleRender, "toggled", this._showAlwaysToggleRenderCallback.bind(this));
+            this._signalManager.addSignal(hideAlwaysToggleRender, "toggled", this._hideAlwaysToggleRenderCallback.bind(this));
+            this._signalManager.addSignal(showActiveToggleRender, "toggled", this._showActiveToggleRenderCallback.bind(this));
 
             this._portsStore = builder.get_object("ports-store");
 
