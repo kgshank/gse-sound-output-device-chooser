@@ -97,63 +97,68 @@ var InputSliderInstance = class InputSliderInstance {
 };
 
 var SDCInstance = class SDCInstance {
-  constructor(){
-    this._settings = Lib.getSettings(Prefs.SETTINGS_SCHEMA);
-    this._aggregateMenu = Main.panel.statusArea.aggregateMenu;
-    this._volumeMenu = this._aggregateMenu._volume._volumeMenu;
-    this._aggregateLayout = this._aggregateMenu.menu.box.get_layout_manager();
-  }
-
-  enable(){
-      if (this._outputInstance == null) {
-          this._outputInstance = new SoundOutputDeviceChooser();
-      }
-      if (this._inputInstance == null) {
-          this._inputInstance = new SoundInputDeviceChooser();
-      }
-
-      if (this._inputSliderInstance == null) {
-          this._inputSliderInstance = new InputSliderInstance(this._volumeMenu, this._settings);
-      }
-      
-      this._addMenuItem(this._volumeMenu, this._volumeMenu._output.item, this._outputInstance.menuItem);
-      this._addMenuItem(this._volumeMenu, this._volumeMenu._input.item, this._inputInstance.menuItem);
-      
-      this._expSignalId = this._settings.connect("changed::" + Prefs.EXPAND_VOL_MENU, this._expandVolMenu.bind(this));
+    constructor(){
+        this._settings = Lib.getSettings(Prefs.SETTINGS_SCHEMA);
+        this._aggregateMenu = Main.panel.statusArea.aggregateMenu;
+        this._volumeMenu = this._aggregateMenu._volume._volumeMenu;
+        this._aggregateLayout = this._aggregateMenu.menu.box.get_layout_manager();
     }
 
-  _addMenuItem(_volumeMenu, checkItem, menuItem){
-      let menuItems = _volumeMenu._getMenuItems();
-      let i = 0;
-      for (; i < menuItems.length; i++) {
-          if (menuItems[i] === checkItem) {
-              break;
-          }
-      }
-      _volumeMenu.addMenuItem(menuItem, ++i);
-  }
-  
-  _expandVolMenu() {
-    if (this._settings.get_boolean(Prefs.EXPAND_VOL_MENU)) {
-      this._aggregateLayout.addSizeChild(this._volumeMenu.actor);
-    } else {
-      this._aggregateLayout._sizeChildren = this._aggregateLayout._sizeChildren.filter(item => item !== this._volumeMenu.actor);
-      this._aggregateLayout.layout_changed();
-    }
-  }
+    enable(){
+        if (this._outputInstance == null) {
+            this._outputInstance = new SoundOutputDeviceChooser();
+        }
+        if (this._inputInstance == null) {
+            this._inputInstance = new SoundInputDeviceChooser();
+        }
 
-  disable(){
-      this._outputInstance.destroy();
-      this._outputInstance = null;
-      this._inputInstance.destroy();
-      this._inputInstance = null;
-      this._inputSliderInstance.destroy();
-      this._inputSliderInstance = null;
-      if(this._expSignalId) {
+        if (this._inputSliderInstance == null) {
+            this._inputSliderInstance = new InputSliderInstance(this._volumeMenu, this._settings);
+        }
+
+        this._addMenuItem(this._volumeMenu, this._volumeMenu._output.item, this._outputInstance.menuItem);
+        this._addMenuItem(this._volumeMenu, this._volumeMenu._input.item, this._inputInstance.menuItem);
+
+        this._expSignalId = this._settings.connect("changed::" + Prefs.EXPAND_VOL_MENU, this._expandVolMenu.bind(this));
+    }
+
+    _addMenuItem(_volumeMenu, checkItem, menuItem){
+        let menuItems = _volumeMenu._getMenuItems();
+        let i = 0;
+        for (; i < menuItems.length; i++) {
+            if (menuItems[i] === checkItem) {
+                break;
+            }
+        }
+        _volumeMenu.addMenuItem(menuItem, ++i);
+    }
+
+    _expandVolMenu() {
+        if (this._settings.get_boolean(Prefs.EXPAND_VOL_MENU)) {
+            this._aggregateLayout.addSizeChild(this._volumeMenu.actor);
+        } else {
+            this._revertVolMenuChanges();
+        }
+    }
+
+    _revertVolMenuChanges() {
+        this._aggregateLayout._sizeChildren = this._aggregateLayout._sizeChildren.filter(item => item !== this._volumeMenu.actor);
+        this._aggregateLayout.layout_changed();
+    }
+
+    disable(){
+        this._revertVolMenuChanges();
+        this._outputInstance.destroy();
+        this._outputInstance = null;
+        this._inputInstance.destroy();
+        this._inputInstance = null;
+        this._inputSliderInstance.destroy();
+        this._inputSliderInstance = null;
+        if(this._expSignalId) {
             this._settings.disconnect(this._expSignalId);
             this._expSignalId = null;
-      }
-  }
+        }
+    }
 };
 
 function init(extensionMeta) {

@@ -3,24 +3,24 @@
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- *
+ * 
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
- *
+ * 
  * Original Author: Gopi Sankar Karmegam
  ******************************************************************************/
- /* jshint moz:true */
+/* jshint moz:true */
 
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
-//const Lang = imports.lang;
+// const Lang = imports.lang;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
@@ -57,9 +57,9 @@ const SDCSettingsWidget = new GObject.Class({
         this.orientation = Gtk.Orientation.VERTICAL;
         this.spacing = 0;
 
-     // creates the settings
+        // creates the settings
         this._settings = Lib.getSettings(SETTINGS_SCHEMA);
-        
+
         Lib.setLog(this._settings.get_boolean(ENABLE_LOG)); 
 
         // creates the ui builder and add the main resource file
@@ -94,7 +94,7 @@ const SDCSettingsWidget = new GObject.Class({
             let iconThemeCombo = builder.get_object("icon-theme");
             let logSwitch = builder.get_object("enable-log");
             let newProfileIdSwitch = builder.get_object("new-profile-identification");
-                        
+
             this._settings.bind(HIDE_ON_SINGLE_DEVICE, singleDeviceSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(SHOW_PROFILES, showProfileSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(EXPAND_VOL_MENU, volMenuSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
@@ -105,7 +105,7 @@ const SDCSettingsWidget = new GObject.Class({
             this._settings.bind(ENABLE_LOG, logSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(NEW_PROFILE_ID, newProfileIdSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(ICON_THEME, iconThemeCombo, "active-id", Gio.SettingsBindFlags.DEFAULT);
-            
+
 
             let showAlwaysToggleRender = builder.get_object("ShowAlwaysToggleRender");
             let hideAlwaysToggleRender = builder.get_object("HideAlwaysToggleRender");
