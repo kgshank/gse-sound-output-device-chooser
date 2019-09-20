@@ -28,6 +28,9 @@ Enable the extensions from [GNOME Tweaks](https://wiki.gnome.org/Apps/Tweaks).
 
 ### Changelog
 -----------------------
+#### 24 (Not released)
+* Remove Mainloop timeout  
+
 #### 23
 * Updates for Gnome Shell 3.34 compatibility
 * Minor UI changes
