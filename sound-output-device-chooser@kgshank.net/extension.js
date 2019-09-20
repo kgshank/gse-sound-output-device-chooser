@@ -63,10 +63,10 @@ extends Base.SoundDeviceChooserBase {
     }
 };
 
-const InputSliderInstance = class InputSliderInstance {
-    constructor(volumeMenu) {
+var InputSliderInstance = class InputSliderInstance {
+    constructor(volumeMenu, settings ) {
         this._input = volumeMenu._input;
-        this._settings = Lib.getSettings(Prefs.SETTINGS_SCHEMA);
+        this._settings = settings;
         this._signalManager = new SignalManager();
         this._signalManager.addSignal(this._settings, "changed::"
                 + Prefs.SHOW_INPUT_SLIDER, this._setSliderVisiblity.bind(this));
@@ -94,54 +94,70 @@ const InputSliderInstance = class InputSliderInstance {
         delete this._input['_shouldBeVisibleOriginal'];
         delete this._input['_shouldBeVisibleCustom'];
     }
-}
+};
 
-var _outputInstance = null;
-var _inputInstance = null;
-var _inputSliderInstance = null;
+var SDCInstance = class SDCInstance {
+  constructor(){
+    this._settings = Lib.getSettings(Prefs.SETTINGS_SCHEMA);
+    this._aggregateMenu = Main.panel.statusArea.aggregateMenu;
+    this._volumeMenu = this._aggregateMenu._volume._volumeMenu;
+    this._aggregateLayout = this._aggregateMenu.menu.box.get_layout_manager();
+  }
+
+  enable(){
+      if (this._outputInstance == null) {
+          this._outputInstance = new SoundOutputDeviceChooser();
+      }
+      if (this._inputInstance == null) {
+          this._inputInstance = new SoundInputDeviceChooser();
+      }
+
+      if (this._inputSliderInstance == null) {
+          this._inputSliderInstance = new InputSliderInstance(this._volumeMenu, this._settings);
+      }
+      
+      this._addMenuItem(this._volumeMenu, this._volumeMenu._output.item, this._outputInstance.menuItem);
+      this._addMenuItem(this._volumeMenu, this._volumeMenu._input.item, this._inputInstance.menuItem);
+      
+      this._expSignalId = this._settings.connect("changed::" + Prefs.EXPAND_VOL_MENU, this._expandVolMenu.bind(this));
+    }
+
+  _addMenuItem(_volumeMenu, checkItem, menuItem){
+      let menuItems = _volumeMenu._getMenuItems();
+      let i = 0;
+      for (; i < menuItems.length; i++) {
+          if (menuItems[i] === checkItem) {
+              break;
+          }
+      }
+      _volumeMenu.addMenuItem(menuItem, ++i);
+  }
+  
+  _expandVolMenu() {
+    if (this._settings.get_boolean(Prefs.EXPAND_VOL_MENU)) {
+      this._aggregateLayout.addSizeChild(this._volumeMenu.actor);
+    } else {
+      this._aggregateLayout._sizeChildren = this._aggregateLayout._sizeChildren.filter(item => item !== this._volumeMenu.actor);
+      this._aggregateLayout.layout_changed();
+    }
+  }
+
+  disable(){
+      this._outputInstance.destroy();
+      this._outputInstance = null;
+      this._inputInstance.destroy();
+      this._inputInstance = null;
+      this._inputSliderInstance.destroy();
+      this._inputSliderInstance = null;
+      if(this._expSignalId) {
+            this._settings.disconnect(this._expSignalId);
+            this._expSignalId = null;
+      }
+  }
+};
 
 function init(extensionMeta) {
     let theme = imports.gi.Gtk.IconTheme.get_default();
     theme.append_search_path(extensionMeta.path + "/icons");
-}
-
-function enable() {
-    let _volumeMenu = Main.panel.statusArea.aggregateMenu._volume._volumeMenu;
-    // _volumeMenu.box.set_style("min-width: 15em");
-    Main.panel.statusArea.aggregateMenu.menu.box.get_layout_manager().addSizeChild(_volumeMenu.actor);
-
-    if (_outputInstance == null) {
-        _outputInstance = new SoundOutputDeviceChooser();
-    }
-    if (_inputInstance == null) {
-        _inputInstance = new SoundInputDeviceChooser();
-    }
-
-    if (_inputSliderInstance == null) {
-        _inputSliderInstance = new InputSliderInstance(_volumeMenu);
-    }
-    let menuItems = _volumeMenu._getMenuItems();
-    let i = 0;
-    for (; i < menuItems.length; i++) {
-        if (menuItems[i] === _volumeMenu._output.item) {
-            break;
-        }
-    }
-    _volumeMenu.addMenuItem(_outputInstance.menuItem, ++i);
-    menuItems = _volumeMenu._getMenuItems();
-    for (i = 0; i < menuItems.length; i++) {
-        if (menuItems[i] === _volumeMenu._input.item) {
-            break;
-        }
-    }
-    _volumeMenu.addMenuItem(_inputInstance.menuItem, ++i);
-}
-
-function disable() {
-    _outputInstance.destroy();
-    _outputInstance = null;
-    _inputInstance.destroy();
-    _inputInstance = null;
-    _inputSliderInstance.destroy();
-    _inputSliderInstance = null;
+    return new SDCInstance();
 }

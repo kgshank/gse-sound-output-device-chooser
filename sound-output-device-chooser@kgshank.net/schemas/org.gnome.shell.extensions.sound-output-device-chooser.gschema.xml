@@ -13,6 +13,12 @@
       <summary>Preference to show the available profiles for all devices</summary>
       <description>Value set to true displays the individual available profiles for each device</description>
     </key>
+     
+    <key name="expand-volume-menu" type="b">
+      <default>true</default>
+      <summary>Preference to expand volume menu to fit the name of the sound devices</summary>
+      <description>Value set to true expands the volume menu to fit the names of sound devices displayed in the selector</description>
+    </key>
 
     <key name="use-monochrome" type="b">
       <default>true</default>

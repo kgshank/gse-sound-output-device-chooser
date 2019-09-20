@@ -37,6 +37,7 @@ var SHOW_INPUT_DEVICES = "show-input-devices";
 var SHOW_OUTPUT_DEVICES = "show-output-devices";
 var ENABLE_LOG = "enable-log";
 var NEW_PROFILE_ID = "new-profile-indentification";
+var EXPAND_VOL_MENU = "expand-volume-menu";
 
 var ICON_THEME = "icon-theme";
 var ICON_THEME_COLORED = "colored";
@@ -84,6 +85,7 @@ const SDCSettingsWidget = new GObject.Class({
             this._signalManager = new SignalManager();
 
             let showProfileSwitch = builder.get_object("show-profile");
+            let volMenuSwitch = builder.get_object(EXPAND_VOL_MENU);
             let singleDeviceSwitch = builder.get_object("single-device");
             let showInputSliderSwitch = builder.get_object("show-input-slider");
             let showInputDevicesSwitch = builder.get_object("show-input-devices");
@@ -95,6 +97,7 @@ const SDCSettingsWidget = new GObject.Class({
                         
             this._settings.bind(HIDE_ON_SINGLE_DEVICE, singleDeviceSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(SHOW_PROFILES, showProfileSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
+            this._settings.bind(EXPAND_VOL_MENU, volMenuSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(SHOW_INPUT_SLIDER, showInputSliderSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(SHOW_INPUT_DEVICES, showInputDevicesSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(SHOW_OUTPUT_DEVICES, showOutputDevicesSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
@@ -102,6 +105,7 @@ const SDCSettingsWidget = new GObject.Class({
             this._settings.bind(ENABLE_LOG, logSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(NEW_PROFILE_ID, newProfileIdSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(ICON_THEME, iconThemeCombo, "active-id", Gio.SettingsBindFlags.DEFAULT);
+            
 
             let showAlwaysToggleRender = builder.get_object("ShowAlwaysToggleRender");
             let hideAlwaysToggleRender = builder.get_object("HideAlwaysToggleRender");
