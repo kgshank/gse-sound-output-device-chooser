@@ -2,21 +2,25 @@
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
- * version. This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details. You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>. Original
- * Author: Gopi Sankar Karmegam
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ * *****************************************************************************
+ * Original Author: Gopi Sankar Karmegam
  ******************************************************************************/
 /* jshint moz:true */
 
-// const Lang = imports.lang;
 const Main = imports.ui.main;
 const PopupMenu = imports.ui.popupMenu;
 const VolumeMenu = imports.ui.status.volume;
-const {Atk, St, GObject} = imports.gi;
-const Mainloop = imports.mainloop;
+const {Atk, St, GObject, GLib} = imports.gi;
+
 const Gvc = imports.gi.Gvc;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
@@ -104,7 +108,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
                     }
                 }
 
-                this.activeProfileTimeout =  Mainloop.timeout_add(1000, 
+                this.activeProfileTimeout =  GLib.timeout_add(GLib.PRIORITY_DEFAULT, 1000, 
                         this._setActiveProfile.bind(this));
 
                 if(this._controlStateChangeSignal) {
@@ -259,7 +263,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
             }
 
             if(this.deviceRemovedTimout) {
-                Mainloop.source_remove(this.deviceRemovedTimout);
+                GLib.source_remove(this.deviceRemovedTimout);
                 this.deviceRemovedTimout = null;
             }
             /**
@@ -268,7 +272,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
              * when the uidevice is removed, Speakers are automatically
              * activated. So, lets wait for sometime before activating.
              */
-            this.deviceRemovedTimout = Mainloop.timeout_add(1500, function() {
+            this.deviceRemovedTimout = GLib.timeout_add(GLib.PRIORITY_DEFAULT,1500, function() {
                 if (obj === this._activeDevice) {
                     for ( let id in this._devices) {
                         let device = this._devices[id];
@@ -467,11 +471,11 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
     destroy() {
         this._signalManager.disconnectAll();
         if(this.deviceRemovedTimout) {
-            Mainloop.source_remove(this.deviceRemovedTimout);
+            GLib.source_remove(this.deviceRemovedTimout);
             this.deviceRemovedTimout = null;
         }
         if(this.activeProfileTimeout) {
-            Mainloop.source_remove(this.activeProfileTimeout);
+            GLib.source_remove(this.activeProfileTimeout);
             this.activeProfileTimeout = null;
         }
         super.destroy();
