@@ -28,7 +28,7 @@ Enable the extensions from [GNOME Tweaks](https://wiki.gnome.org/Apps/Tweaks).
 
 ### Change log
 -----------------------
-#### 24 (Not released)
+#### 24
 * Remove Mainloop timeout
 * New option to expand volume menu based on length of device names
 
