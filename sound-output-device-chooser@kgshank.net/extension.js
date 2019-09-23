@@ -120,6 +120,8 @@ var SDCInstance = class SDCInstance {
         this._addMenuItem(this._volumeMenu, this._volumeMenu._input.item, this._inputInstance.menuItem);
 
         this._expSignalId = this._settings.connect("changed::" + Prefs.EXPAND_VOL_MENU, this._expandVolMenu.bind(this));
+        
+        this._expandVolMenu();
     }
 
     _addMenuItem(_volumeMenu, checkItem, menuItem){
