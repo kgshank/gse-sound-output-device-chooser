@@ -477,7 +477,8 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
         if(this.activeProfileTimeout) {
             GLib.source_remove(this.activeProfileTimeout);
             this.activeProfileTimeout = null;
-        }        
+        }
+        this.menuItem.destroy();
     }
 };
 
