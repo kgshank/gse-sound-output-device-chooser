@@ -1,0 +1,106 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-09-24 23:47+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: prefs-dialog.gtkbuilder:15
+msgid "Monochrome"
+msgstr ""
+
+#: prefs-dialog.gtkbuilder:19
+msgid "Colored"
+msgstr ""
+
+#: prefs-dialog.gtkbuilder:23
+msgid "None"
+msgstr ""
+
+#: prefs-dialog.gtkbuilder:100
+msgid "Hide selector if there's only one device"
+msgstr ""
+
+#: prefs-dialog.gtkbuilder:142
+msgid "Display audio profiles for selection"
+msgstr ""
+
+#: prefs-dialog.gtkbuilder:175
+msgid "General Settings"
+msgstr ""
+
+#: prefs-dialog.gtkbuilder:220
+msgid "Show output devices"
+msgstr ""
+
+#: prefs-dialog.gtkbuilder:253
+msgid "Output Devices"
+msgstr ""
+
+#: prefs-dialog.gtkbuilder:300
+msgid "Show input devices"
+msgstr ""
+
+#: prefs-dialog.gtkbuilder:343
+msgid "Show volume control for default device"
+msgstr ""
+
+#: prefs-dialog.gtkbuilder:376
+msgid "Input Devices"
+msgstr ""
+
+#: prefs-dialog.gtkbuilder:422
+msgid "Icon Theme"
+msgstr ""
+
+#: prefs-dialog.gtkbuilder:472
+msgid "Display icons only in selection list"
+msgstr ""
+
+#: prefs-dialog.gtkbuilder:504
+msgid "Icons"
+msgstr ""
+
+#: prefs-dialog.gtkbuilder:549
+msgid "Enable Log messages"
+msgstr ""
+
+#: prefs-dialog.gtkbuilder:588
+msgid "Enable new profile identification "
+msgstr ""
+
+#: prefs-dialog.gtkbuilder:620
+msgid "Miscellaneous"
+msgstr ""
+
+#: prefs-dialog.gtkbuilder:688
+msgid "Name"
+msgstr ""
+
+#: prefs-dialog.gtkbuilder:702
+msgid "Show"
+msgstr ""
+
+#: prefs-dialog.gtkbuilder:716
+msgid "Hide"
+msgstr ""
+
+#: prefs-dialog.gtkbuilder:730
+msgid "Default"
+msgstr ""
+
+#: prefs-dialog.gtkbuilder:756
+msgid "Port Settings"
+msgstr ""
