@@ -28,6 +28,9 @@ Enable the extensions from [GNOME Tweaks](https://wiki.gnome.org/Apps/Tweaks).
 
 ### Change log
 -----------------------
+#### 25
+* Fix #67 / #68 - duplicate list after screen lock and unlock 
+
 #### 24
 * Remove Mainloop timeout
 * New option to expand volume menu based on length of device names
