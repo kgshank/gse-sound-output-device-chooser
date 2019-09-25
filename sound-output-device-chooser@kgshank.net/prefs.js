@@ -20,12 +20,15 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
-// const Lang = imports.lang;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Lib = Me.imports.convenience;
 const SignalManager = Lib.SignalManager;
+
+const Gettext = imports.gettext;
+Gettext.bindtextdomain("sound-output-device-chooser", Me.path + '/locale');
+const _ = Gettext.gettext;
 
 var SETTINGS_SCHEMA = "org.gnome.shell.extensions.sound-output-device-chooser";
 var HIDE_ON_SINGLE_DEVICE = "hide-on-single-device";
@@ -65,6 +68,7 @@ const SDCSettingsWidget = new GObject.Class({
         // creates the ui builder and add the main resource file
         let uiFilePath = Me.path + "/ui/prefs-dialog.gtkbuilder";
         let builder = new Gtk.Builder();
+	builder.set_translation_domain('sound-output-device-chooser');
 
         if (builder.add_from_file(uiFilePath) == 0) {
             Lib.log("JS LOG: could not load the ui file: %s".format(uiFilePath));
