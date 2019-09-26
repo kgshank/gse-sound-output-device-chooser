@@ -1,0 +1,107 @@
+# Slovak translation for sound-output-device-chooser.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the sound-output-device-chooser package.
+# Jose Riha <jose1711 gmail com>, 2019.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-09-24 23:42+0200\n"
+"PO-Revision-Date: 2019-09-24 23:56+0200\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2.1\n"
+"Last-Translator: Jose Riha <jose1711@gmail.com>\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n>=2 && n<=4 ? 1 : 2);\n"
+"Language: sk_SK\n"
+
+#: prefs-dialog.gtkbuilder:15
+msgid "Monochrome"
+msgstr "Čiernobiela"
+
+#: prefs-dialog.gtkbuilder:19
+msgid "Colored"
+msgstr "Farebná"
+
+#: prefs-dialog.gtkbuilder:23
+msgid "None"
+msgstr "Žiadna"
+
+#: prefs-dialog.gtkbuilder:100
+msgid "Hide selector if there's only one device"
+msgstr "Skryť nastavenie, ak existuje iba jedno zariadenie"
+
+#: prefs-dialog.gtkbuilder:142
+msgid "Display audio profiles for selection"
+msgstr "Zobraziť výber profilov audia"
+
+#: prefs-dialog.gtkbuilder:175
+msgid "General Settings"
+msgstr "Všeobecné nastavenia"
+
+#: prefs-dialog.gtkbuilder:220
+msgid "Show output devices"
+msgstr "Zobraziť výstupné zariadenia"
+
+#: prefs-dialog.gtkbuilder:253
+msgid "Output Devices"
+msgstr "Výstupné zariadenia"
+
+#: prefs-dialog.gtkbuilder:300
+msgid "Show input devices"
+msgstr "Zobraziť vstupné zariadenia"
+
+#: prefs-dialog.gtkbuilder:343
+msgid "Show volume control for default device"
+msgstr "Zobraziť ovládač hlasitosti predvoleného zariadenia"
+
+#: prefs-dialog.gtkbuilder:376
+msgid "Input Devices"
+msgstr "Vstupné zariadenia"
+
+#: prefs-dialog.gtkbuilder:422
+msgid "Icon Theme"
+msgstr "Téma ikon"
+
+#: prefs-dialog.gtkbuilder:472
+msgid "Display icons only in selection list"
+msgstr "Zobraziť ikony v zozname s výberom"
+
+#: prefs-dialog.gtkbuilder:504
+msgid "Icons"
+msgstr "Ikony"
+
+#: prefs-dialog.gtkbuilder:549
+msgid "Enable Log messages"
+msgstr "Povoliť protokolovanie"
+
+#: prefs-dialog.gtkbuilder:588
+msgid "Enable new profile identification "
+msgstr "Povoliť identifikáciu nového profilu "
+
+#: prefs-dialog.gtkbuilder:620
+msgid "Miscellaneous"
+msgstr "Rôzne"
+
+#: prefs-dialog.gtkbuilder:688
+msgid "Name"
+msgstr "Názov"
+
+#: prefs-dialog.gtkbuilder:702
+msgid "Show"
+msgstr "Zobraziť"
+
+#: prefs-dialog.gtkbuilder:716
+msgid "Hide"
+msgstr "Skryť"
+
+#: prefs-dialog.gtkbuilder:730
+msgid "Default"
+msgstr "Predvolené"
+
+#: prefs-dialog.gtkbuilder:756
+msgid "Port Settings"
+msgstr "Nastavenia portu"
