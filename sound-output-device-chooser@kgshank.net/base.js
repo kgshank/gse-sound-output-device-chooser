@@ -25,6 +25,7 @@ const Gvc = imports.gi.Gvc;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Lib = Me.imports.convenience;
+const _d = Lib.log;
 const Prefs = Me.imports.prefs;
 const SignalManager = Lib.SignalManager;
 
@@ -32,14 +33,14 @@ const SignalManager = Lib.SignalManager;
 var SoundDeviceChooserBase = class SoundDeviceChooserBase{
 
     constructor(deviceType) {
-        Lib.log("SDC: init");
+        _d("SDC: init");
         this.menuItem = new PopupMenu.PopupSubMenuMenuItem ('Extension initialising...', true);
         this.deviceType = deviceType;
         this._devices = {};
         this._availableDevicesIds = {};
         this._control = VolumeMenu.getMixerControl();
         this._settings = Lib.getSettings(Prefs.SETTINGS_SCHEMA);
-        Lib.log("Constructor" + deviceType);
+        _d("Constructor" + deviceType);
 
         this._setLog();
         this._signalManager = new SignalManager();
@@ -88,7 +89,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
                 let maxId = -1;
                 let dummyDevice = new Gvc.MixerUIDevice();
                 maxId = dummyDevice.get_id();
-                Lib.log("Max Id:" + maxId);
+                _d("Max Id:" + maxId);
 
                 let defaultDevice = this.getDefaultDevice();
                 while(++id < maxId) {
@@ -166,11 +167,11 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
             uidevice = obj.uidevice;
         }
 
-        Lib.log(obj.text);
+        _d("Device Name:" + obj.text);
 
         if (obj.profiles) {
             for (let profile of obj.profiles) {
-                Lib.log(profile.name)
+                _d("Profile:" + profile.name);
             }
         }
 
@@ -178,7 +179,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
             return uidevice;
         }
 
-        Lib.log("Added: " + id + ":" + uidevice.description + ":" + uidevice.port_name);
+        _d("Added: " + id + ":" + uidevice.description + ":" + uidevice.port_name);
         if(!this._availableDevicesIds[id]){
             this._availableDevicesIds[id] = 0;
         }
@@ -193,9 +194,9 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
                 if(!profileItem) {
                     let profileName = profile.name;
                     profileItem = this.menuItem.menu.addAction( "Profile: " + profile.human_name, function() {
-                        Lib.log("i am setting profile, " + profile.human_name + ":" + uidevice.description + ":" + uidevice.port_name);
+                        _d("i am setting profile, " + profile.human_name + ":" + uidevice.description + ":" + uidevice.port_name);
                         if(this._activeDevice && this._activeDevice.uidevice !== uidevice) {
-                            Lib.log("Changing active device to " + uidevice.description + ":" + uidevice.port_name);
+                            _d("Changing active device to " + uidevice.description + ":" + uidevice.port_name);
                             this.changeDevice(uidevice);
                         }
                         this._control.change_profile_on_selected_device(uidevice, profileName);
@@ -206,7 +207,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
                     profileItem.setProfileActive = function(active) {
                         if(active) {
                             // this._ornamentLabel.text = "\u2727";
-                            this._ornamentLabel.text = "\t\u266A";
+                            this._ornamentLabel.text = "\u266A";
                             if(this.add_style_pseudo_class) {
                                 this.add_style_pseudo_class('checked');
                                 this.remove_style_pseudo_class('insensitive');
@@ -217,7 +218,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
                             }
                         }
                         else {
-                            this._ornamentLabel.text = "\t";
+                            this._ornamentLabel.text = "";
                             if(this.add_style_pseudo_class) {
                                 this.remove_style_pseudo_class('checked');
                                 this.add_style_pseudo_class('insensitive');
@@ -229,7 +230,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
                         }
                     };
                     // profileItem._ornamentLabel.width = "500em";
-                    profileItem._ornamentLabel.set_style("min-width: 3em;");
+                    profileItem._ornamentLabel.set_style("min-width: 3em;margin-left: 3em;");
                 }
                 profileItem.setProfileActive(obj.activeProfile == profile.name);
             }
@@ -245,9 +246,9 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
     _deviceRemoved(control, id, dontcheck) {
         let obj = this._devices[id];
         if(obj && obj.active) {
-            Lib.log("Removed: " + id);
+            _d("Removed: " + id);
             if(!dontcheck && this._canShowDevice(obj.uidevice, false)) {
-                Lib.log('Device removed, but not hiding as its set to be shown always');
+                _d('Device removed, but not hiding as its set to be shown always');
                 return;
             }
             delete this._availableDevicesIds[id] ;
@@ -293,7 +294,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
     _deviceActivated(control, id) {
         let obj = this._devices[id];
         if(obj && obj !== this._activeDevice) {
-            Lib.log("Activated: " + id);
+            _d("Activated: " + id);
             if(this._activeDevice) {
                 this._activeDevice.item.setOrnament(PopupMenu.Ornament.NONE);
                 if(this._activeDevice.item.remove_style_pseudo_class) {
