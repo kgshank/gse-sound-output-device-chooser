@@ -290,3 +290,14 @@ function log(msg) {
         global.log("SDC Debug: " + msg);
     }
 }
+
+function dump(obj) {
+    var propValue;
+    for(var propName in obj) {
+        try{                
+            propValue = obj[propName];
+            log(propName + propValue);
+        }
+        catch(e){log(propName + "!!!Error!!!");}
+    } 
+}
