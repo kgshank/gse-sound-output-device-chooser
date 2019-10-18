@@ -1,0 +1,107 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Onno Giesmann <nutzer3105@gmail.com>, 2019.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-09-24 23:47+0200\n"
+"PO-Revision-Date: 2019-10-17 23:45+0200\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2.4\n"
+"Last-Translator: Onno Giesmann <nutzer3105@gmail.com>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: de_DE\n"
+
+#: prefs-dialog.gtkbuilder:15
+msgid "Monochrome"
+msgstr "Einfarbig"
+
+#: prefs-dialog.gtkbuilder:19
+msgid "Colored"
+msgstr "Farbig"
+
+#: prefs-dialog.gtkbuilder:23
+msgid "None"
+msgstr "Keine"
+
+#: prefs-dialog.gtkbuilder:100
+msgid "Hide selector if there's only one device"
+msgstr "Auswahl ausblenden, wenn nur ein Gerät vorhanden ist"
+
+#: prefs-dialog.gtkbuilder:142
+msgid "Display audio profiles for selection"
+msgstr "Audioprofile zur Auswahl anzeigen"
+
+#: prefs-dialog.gtkbuilder:175
+msgid "General Settings"
+msgstr "Allgemeine Einstellungen"
+
+#: prefs-dialog.gtkbuilder:220
+msgid "Show output devices"
+msgstr "Ausgabegeräte anzeigen"
+
+#: prefs-dialog.gtkbuilder:253
+msgid "Output Devices"
+msgstr "Ausgabegeräte"
+
+#: prefs-dialog.gtkbuilder:300
+msgid "Show input devices"
+msgstr "Eingabegeräte anzeigen"
+
+#: prefs-dialog.gtkbuilder:343
+msgid "Show volume control for default device"
+msgstr "Lautstärkeregler für Standardgerät anzeigen"
+
+#: prefs-dialog.gtkbuilder:376
+msgid "Input Devices"
+msgstr "Eingabegeräte"
+
+#: prefs-dialog.gtkbuilder:422
+msgid "Icon Theme"
+msgstr "Symboldesign"
+
+#: prefs-dialog.gtkbuilder:472
+msgid "Display icons only in selection list"
+msgstr "Symbole nur in Auswahlliste anzeigen"
+
+#: prefs-dialog.gtkbuilder:504
+msgid "Icons"
+msgstr "Symbole"
+
+#: prefs-dialog.gtkbuilder:549
+msgid "Enable Log messages"
+msgstr "Berichte aktivieren"
+
+#: prefs-dialog.gtkbuilder:588
+msgid "Enable new profile identification "
+msgstr "Identifikation neuer Profile aktivieren "
+
+#: prefs-dialog.gtkbuilder:620
+msgid "Miscellaneous"
+msgstr "Verschiedenes"
+
+#: prefs-dialog.gtkbuilder:688
+msgid "Name"
+msgstr "Name"
+
+#: prefs-dialog.gtkbuilder:702
+msgid "Show"
+msgstr "Zeigen"
+
+#: prefs-dialog.gtkbuilder:716
+msgid "Hide"
+msgstr "Verstecken"
+
+#: prefs-dialog.gtkbuilder:730
+msgid "Default"
+msgstr "Standard"
+
+#: prefs-dialog.gtkbuilder:756
+msgid "Port Settings"
+msgstr "Port-Einstellungen"
