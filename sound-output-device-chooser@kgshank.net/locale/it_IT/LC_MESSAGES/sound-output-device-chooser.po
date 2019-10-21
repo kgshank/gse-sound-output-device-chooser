@@ -1,0 +1,107 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-09-24 23:47+0200\n"
+"PO-Revision-Date: 2019-10-21 00:44+0200\n"
+"Language-Team: Luca Bandini (@Vombato) - luca.vombato@gmail.com\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2.4\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: it_IT\n"
+
+#: prefs-dialog.gtkbuilder:15
+msgid "Monochrome"
+msgstr "Monocromatiche"
+
+#: prefs-dialog.gtkbuilder:19
+msgid "Colored"
+msgstr "Colorate"
+
+#: prefs-dialog.gtkbuilder:23
+msgid "None"
+msgstr "Nessuno"
+
+#: prefs-dialog.gtkbuilder:100
+msgid "Hide selector if there's only one device"
+msgstr "Nascondi selettore se è presente un solo dispositivo"
+
+#: prefs-dialog.gtkbuilder:142
+msgid "Display audio profiles for selection"
+msgstr "Mostra profili audio per la selezione"
+
+#: prefs-dialog.gtkbuilder:175
+msgid "General Settings"
+msgstr "Impostazioni Generali"
+
+#: prefs-dialog.gtkbuilder:220
+msgid "Show output devices"
+msgstr "Mostra dispositivi di riproduzione"
+
+#: prefs-dialog.gtkbuilder:253
+msgid "Output Devices"
+msgstr "Dispositivi di Riproduzione"
+
+#: prefs-dialog.gtkbuilder:300
+msgid "Show input devices"
+msgstr "Mostra dispositivi di registrazione"
+
+#: prefs-dialog.gtkbuilder:343
+msgid "Show volume control for default device"
+msgstr "Mostra i controlli volume per il dispositivo di default"
+
+#: prefs-dialog.gtkbuilder:376
+msgid "Input Devices"
+msgstr "Dispositivi di Registrazione"
+
+#: prefs-dialog.gtkbuilder:422
+msgid "Icon Theme"
+msgstr "Tema Icone"
+
+#: prefs-dialog.gtkbuilder:472
+msgid "Display icons only in selection list"
+msgstr "Mostra le icone solo nella lista di selezione"
+
+#: prefs-dialog.gtkbuilder:504
+msgid "Icons"
+msgstr "Icone"
+
+#: prefs-dialog.gtkbuilder:549
+msgid "Enable Log messages"
+msgstr "Abilita messaggi di log"
+
+#: prefs-dialog.gtkbuilder:588
+msgid "Enable new profile identification "
+msgstr "Abilita identificazione nuovo profilo"
+
+#: prefs-dialog.gtkbuilder:620
+msgid "Miscellaneous"
+msgstr "Varie"
+
+#: prefs-dialog.gtkbuilder:688
+msgid "Name"
+msgstr "Nome"
+
+#: prefs-dialog.gtkbuilder:702
+msgid "Show"
+msgstr "Mostra"
+
+#: prefs-dialog.gtkbuilder:716
+msgid "Hide"
+msgstr "Nascondi"
+
+#: prefs-dialog.gtkbuilder:730
+msgid "Default"
+msgstr "Default"
+
+#: prefs-dialog.gtkbuilder:756
+msgid "Port Settings"
+msgstr "Impostazioni Porta"
