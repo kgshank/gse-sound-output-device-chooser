@@ -30,6 +30,7 @@
 
 # Updated to determine libpulse.so location
 import ctypes
+from ctypes.util import find_library
 
 
 
@@ -84,12 +85,17 @@ else:
         return _class
 
 _libraries = {}
-import os.path
-if os.path.isfile('/usr/lib/x86_64-linux-gnu/libpulse.so'):
-    _libraries['libpulse.so'] = ctypes.CDLL('/usr/lib/x86_64-linux-gnu/libpulse.so')
-else:
-    _libraries['libpulse.so'] = ctypes.CDLL('/usr/lib/libpulse.so')
-    
+
+libpulse_library_name = find_library('pulse')
+if libpulse_library_name is None:
+    raise Exception('No libpulse.so library found!')
+
+try:
+    _libraries['libpulse.so'] = ctypes.cdll.LoadLibrary(libpulse_library_name)
+except OSError:
+    raise Exception('Cannot load libpulse.so library!')
+
+
 uint32_t = ctypes.c_uint32
 
 size_t = ctypes.c_uint64
