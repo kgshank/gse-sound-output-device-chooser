@@ -105,6 +105,11 @@ var SDCInstance = class SDCInstance {
     }
 
     enable(){
+        let theme = imports.gi.Gtk.IconTheme.get_default();
+        if(theme != null) {
+            theme.append_search_path(extensionMeta.path + "/icons");
+        }
+    
         if (this._outputInstance == null) {
             this._outputInstance = new SoundOutputDeviceChooser();
         }
@@ -164,7 +169,5 @@ var SDCInstance = class SDCInstance {
 };
 
 function init(extensionMeta) {
-    let theme = imports.gi.Gtk.IconTheme.get_default();
-    theme.append_search_path(extensionMeta.path + "/icons");
     return new SDCInstance();
 }
