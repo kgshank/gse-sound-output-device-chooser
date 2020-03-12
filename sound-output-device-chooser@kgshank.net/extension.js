@@ -168,6 +168,6 @@ var SDCInstance = class SDCInstance {
     }
 };
 
-function init(extensionMeta) {
+function init() {
     return new SDCInstance();
 }

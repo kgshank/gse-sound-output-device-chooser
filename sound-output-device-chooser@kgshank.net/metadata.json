@@ -4,11 +4,11 @@
   "name": "Sound Input & Output Device Chooser",
   "original-author": "GopI",
   "shell-version": [
-    "3.32",
     "3.34",
+    "3.32",
     "3.36"
   ],
   "url": "https://github.com/kgshank/gse-sound-output-device-chooser",
   "uuid": "sound-output-device-chooser@kgshank.net",
-  "version": "25"
+  "version": 27
 }
