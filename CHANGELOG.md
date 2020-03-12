@@ -1,5 +1,8 @@
 ### Change log
 -----------------------
+#### 27 & 28
+* Fixes for broken updates from extension.gnome.org
+
 #### 26
 * Updatas for Gnome Shell 3.36 compatibility
 
