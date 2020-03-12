@@ -108,8 +108,9 @@ var SDCInstance = class SDCInstance {
         let theme = imports.gi.Gtk.IconTheme.get_default();
         if(theme != null) {
             let iconPath = Me.dir.get_child('icons');
-            if (iconPath.query_exists(null))
+            if (iconPath != null && iconPath.query_exists(null)){
             	theme.append_search_path(iconPath.get_path());
+            }
         }
     
         if (this._outputInstance == null) {
