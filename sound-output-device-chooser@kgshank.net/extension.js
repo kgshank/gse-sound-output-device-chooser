@@ -107,7 +107,9 @@ var SDCInstance = class SDCInstance {
     enable(){
         let theme = imports.gi.Gtk.IconTheme.get_default();
         if(theme != null) {
-            theme.append_search_path(extensionMeta.path + "/icons");
+            let iconPath = Me.dir.get_child('icons');
+            if (iconPath.query_exists(null))
+            	theme.append_search_path(iconPath.get_path());
         }
     
         if (this._outputInstance == null) {
