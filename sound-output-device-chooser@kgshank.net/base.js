@@ -3,12 +3,12 @@
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  * *****************************************************************************
@@ -44,7 +44,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
 
         this._setLog();
         this._signalManager = new SignalManager();
-        this._signalManager.addSignal(this._settings,"changed::" + Prefs.ENABLE_LOG, this._setLog.bind(this));        
+        this._signalManager.addSignal(this._settings,"changed::" + Prefs.ENABLE_LOG, this._setLog.bind(this));
 
         if(this._control.get_state() == Gvc.MixerControlState.READY) {
             this._onControlStateChanged();
@@ -54,7 +54,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
         }
     }
 
-    _setLog(){ Lib.setLog(this._settings.get_boolean(Prefs.ENABLE_LOG));}    
+    _setLog(){ Lib.setLog(this._settings.get_boolean(Prefs.ENABLE_LOG));}
 
     _onControlStateChanged() {
         if(this._control.get_state() == Gvc.MixerControlState.READY) {
@@ -109,7 +109,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
                     }
                 }
 
-                this.activeProfileTimeout =  GLib.timeout_add(GLib.PRIORITY_DEFAULT, 1000, 
+                this.activeProfileTimeout =  GLib.timeout_add(GLib.PRIORITY_DEFAULT, 1000,
                         this._setActiveProfile.bind(this));
 
                 if(this._controlStateChangeSignal) {
@@ -148,7 +148,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
             let icon = uidevice.get_icon_name();
             if(icon == null || icon.trim() == "")
                 icon = this.getDefaultIcon();
-            let icon_name = this._getIcon(icon);            
+            let icon_name = this._getIcon(icon);
 
             obj.item = this.menuItem.menu.addAction( obj.text, function() {
                 this.changeDevice(uidevice);
@@ -322,7 +322,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
                     icon = this.getDefaultIcon();
                 this.menuItem.icon.icon_name = this._getIcon(icon);
             } else {
-                this.menuItem.icon.icon_name = "blank";
+                this.menuItem.icon.gicon = null;
             }
         }
     }
@@ -414,7 +414,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
 
             this.menuItem.icon.icon_name = this._getIcon(icon);
         } else {
-            this.menuItem.icon.icon_name = "blank";
+            this.menuItem.icon.gicon = null;
         }
     }
 
@@ -482,4 +482,3 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
         this.menuItem.destroy();
     }
 };
-
