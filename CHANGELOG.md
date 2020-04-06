@@ -1,5 +1,7 @@
 ### Change log
 -----------------------
+#### 29
+* Fixes for issue [95](issues/95)
 #### 27 & 28
 * Fixes for broken updates from extension.gnome.org
 
