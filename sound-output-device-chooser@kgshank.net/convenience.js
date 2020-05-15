@@ -138,8 +138,8 @@ function refreshCards() {
            
         if(pyVer <= 1) {
             _log('ERROR: Python not found. fallback to default mode' + e);
-        _settings.set_boolean(Prefs.NEW_PROFILE_ID, false);
-        Gio.Settings.sync();
+            _settings.set_boolean(Prefs.NEW_PROFILE_ID, false);
+            Gio.Settings.sync();
         }
         else {
             try {
