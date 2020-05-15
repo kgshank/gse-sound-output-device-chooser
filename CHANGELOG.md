@@ -1,6 +1,10 @@
 ### Change log
 -----------------------
 #### 29
+* Fixes for issue [97](https://github.com/kgshank/gse-sound-output-device-chooser/issues/97)
+* Error in preferences dialog due to log
+
+#### 29
 * Fixes for issue [95](https://github.com/kgshank/gse-sound-output-device-chooser/issues/95)
 #### 27 & 28
 * Fixes for broken updates from extension.gnome.org
