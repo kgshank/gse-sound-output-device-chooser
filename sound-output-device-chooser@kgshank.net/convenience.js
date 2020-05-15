@@ -43,7 +43,7 @@ else {
  * @schema is not provided, it is taken from metadata['settings-schema'].
  */
 function getSettings(schema) {
-    //let extension = ExtensionUtils.getCurrentExtension();
+    // let extension = ExtensionUtils.getCurrentExtension();
 
     schema = schema || Me.metadata['settings-schema'];
 
@@ -110,14 +110,14 @@ function getPorts(refresh) {
 }
 
 function isCmdFound(cmd){
-	try {
-	     let [result, out, err, exit_code] = GLib.spawn_command_line_sync(cmd);
-	     return true;
-	}
-	catch(e) {
-	   _log('ERROR: '+ cmd +' execution failed. ' + e);
-	   return false;
-	}
+    try {
+         let [result, out, err, exit_code] = GLib.spawn_command_line_sync(cmd);
+         return true;
+    }
+    catch(e) {
+       _log('ERROR: '+ cmd +' execution failed. ' + e);
+       return false;
+    }
 }
 
 function refreshCards() {
@@ -126,7 +126,7 @@ function refreshCards() {
     // if(_settings == null) {getSettings(Prefs.SETTINGS_SCHEMA);}
     let _settings = getSettings(Prefs.SETTINGS_SCHEMA);
     let error = false;
-    if(_settings.get_boolean(Prefs.NEW_PROFILE_ID))	{
+    if(_settings.get_boolean(Prefs.NEW_PROFILE_ID))    {
         _log("New logic");
         let pyLocation =  Me.dir.get_child('utils/pa_helper.py').get_path();
         let pythonExec = 'python';
@@ -135,31 +135,32 @@ function refreshCards() {
             _log(pythonExec + " is not found. Try next");
             pythonExec = 'python' + pyVer--;
         }
-       	
+           
         if(pyVer <= 1) {
-		_log('ERROR: Python not found. fallback to default mode' + e);
-	    _settings.set_boolean(Prefs.NEW_PROFILE_ID, false);
-	    Gio.Settings.sync();
+            _log('ERROR: Python not found. fallback to default mode' + e);
+        _settings.set_boolean(Prefs.NEW_PROFILE_ID, false);
+        Gio.Settings.sync();
         }
         else {
-		try {
-		    let [result, out, err, exit_code] = GLib.spawn_command_line_sync(pythonExec+ ' ' + pyLocation);
-		    //_log("result" + result +" out"+out + " exit_code" + exit_code + "err" +err);
-		    if(result && !exit_code) {
-		        if (out instanceof Uint8Array) {
-		            out = ByteArray.toString(out);
-		        }
-		        let obj = JSON.parse(out);
-		        cards = obj['cards'];
-		        ports = obj['ports'];    		
-		    }
-		}
-		catch(e) {
-		    error = true;
-		    _log('ERROR: Python execution failed. fallback to default mode' + e);
-		    _settings.set_boolean(Prefs.NEW_PROFILE_ID, false);
-		    Gio.Settings.sync();
-		}	
+            try {
+                let [result, out, err, exit_code] = GLib.spawn_command_line_sync(pythonExec+ ' ' + pyLocation);
+                // _log("result" + result +" out"+out + " exit_code" +
+                // exit_code + "err" +err);
+                if(result && !exit_code) {
+                    if (out instanceof Uint8Array) {
+                        out = ByteArray.toString(out);
+                    }
+                    let obj = JSON.parse(out);
+                    cards = obj['cards'];
+                    ports = obj['ports'];            
+                }
+            }
+            catch(e) {
+                error = true;
+                _log('ERROR: Python execution failed. fallback to default mode' + e);
+                _settings.set_boolean(Prefs.NEW_PROFILE_ID, false);
+                Gio.Settings.sync();
+            }    
         }
     }
 
@@ -167,11 +168,11 @@ function refreshCards() {
         try {
             let [result, out, err, exit_code] = GLib.spawn_command_line_sync('pactl list cards');
             if(result && !exit_code) {
-                parseOutput(out);	        
+                parseOutput(out);            
             }
         }
         catch(e) {
-            _log('ERROR: pactl execution failed. No ports/profiles will be displayed');    		
+            _log('ERROR: pactl execution failed. No ports/profiles will be displayed');            
         }
     }
 // _log(JSON.stringify(cards));
@@ -319,7 +320,7 @@ function setLog(value) {
 
 function _log(msg) {
     if ( DEBUG == true ) {
-        //global.log("SDC Debug: " + msg);
+        // global.log("SDC Debug: " + msg);
         logWrap("SDC Debug: " + msg);
     }
 }

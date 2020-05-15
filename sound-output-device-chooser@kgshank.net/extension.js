@@ -110,7 +110,7 @@ var SDCInstance = class SDCInstance {
         if(theme != null) {
             let iconPath = Me.dir.get_child('icons');
             if (iconPath != null && iconPath.query_exists(null)){
-            	theme.append_search_path(iconPath.get_path());
+                theme.append_search_path(iconPath.get_path());
             }
         }
     
