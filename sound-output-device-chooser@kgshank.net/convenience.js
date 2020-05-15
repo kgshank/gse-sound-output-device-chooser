@@ -26,6 +26,14 @@ const Prefs = Me.imports.prefs;
 
 var DEBUG = false;
 
+var logWrap;
+if(log != undefined){
+   logWrap = log;
+}
+else {
+   logWrap = global.log
+}
+
 /**
  * getSettings:
  * 
@@ -72,7 +80,7 @@ function getProfiles(control, uidevice)
         }
 
         if(cards && cards[stream.card_index]) {
-            log("Getting profile form stream id " + uidevice.port_name );
+            _log("Getting profile form stream id " + uidevice.port_name );
             return getProfilesForPort(uidevice.port_name, cards[stream.card_index]);
         }
     }
@@ -82,7 +90,7 @@ function getProfiles(control, uidevice)
         refreshCards();
         for (let id in cards) {
             let profiles;
-            log("Getting profile from cards " + uidevice.port_name  + " for card id " + id);
+            _log("Getting profile from cards " + uidevice.port_name  + " for card id " + id);
             if((profiles = getProfilesForPort(uidevice.port_name, cards[id])))
             {
                 return profiles;
@@ -101,6 +109,17 @@ function getPorts(refresh) {
     return ports;
 }
 
+function isCmdFound(cmd){
+	try {
+	     let [result, out, err, exit_code] = GLib.spawn_command_line_sync(cmd);
+	     return true;
+	}
+	catch(e) {
+	   _log('ERROR: '+ cmd +' execution failed. ' + e);
+	   return false;
+	}
+}
+
 function refreshCards() {
     cards = {};
     ports = [];
@@ -108,27 +127,40 @@ function refreshCards() {
     let _settings = getSettings(Prefs.SETTINGS_SCHEMA);
     let error = false;
     if(_settings.get_boolean(Prefs.NEW_PROFILE_ID))	{
-        log("New logic");
+        _log("New logic");
         let pyLocation =  Me.dir.get_child('utils/pa_helper.py').get_path();
-        try {
-            let [result, out, err, exit_code] = GLib.spawn_command_line_sync('python ' + pyLocation);
-            // log("result" + result +" out"+out + " exit_code" + exit_code + "
-            // err" +err);
-            if(result && !exit_code) {
-                if (out instanceof Uint8Array) {
-                    out = ByteArray.toString(out);
-                }
-                let obj = JSON.parse(out);
-                cards = obj['cards'];
-                ports = obj['ports'];    		
-            }
+        let pythonExec = 'python';
+        let pyVer = 3;
+        while(!isCmdFound(pythonExec) && pyVer >=2){
+            _log(pythonExec + " is not found. Try next");
+            pythonExec = 'python' + pyVer--;
         }
-        catch(e) {
-            error = true;
-            log('ERROR: Python execution failed. fallback to default mode');
-            _settings.set_boolean(Prefs.NEW_PROFILE_ID, false);
-            Gio.Settings.sync();
-        }	
+       	
+        if(pyVer <= 1) {
+		_log('ERROR: Python not found. fallback to default mode' + e);
+	    _settings.set_boolean(Prefs.NEW_PROFILE_ID, false);
+	    Gio.Settings.sync();
+        }
+        else {
+		try {
+		    let [result, out, err, exit_code] = GLib.spawn_command_line_sync(pythonExec+ ' ' + pyLocation);
+		    //_log("result" + result +" out"+out + " exit_code" + exit_code + "err" +err);
+		    if(result && !exit_code) {
+		        if (out instanceof Uint8Array) {
+		            out = ByteArray.toString(out);
+		        }
+		        let obj = JSON.parse(out);
+		        cards = obj['cards'];
+		        ports = obj['ports'];    		
+		    }
+		}
+		catch(e) {
+		    error = true;
+		    _log('ERROR: Python execution failed. fallback to default mode' + e);
+		    _settings.set_boolean(Prefs.NEW_PROFILE_ID, false);
+		    Gio.Settings.sync();
+		}	
+        }
     }
 
     if(!_settings.get_boolean(Prefs.NEW_PROFILE_ID) || error){
@@ -139,11 +171,11 @@ function refreshCards() {
             }
         }
         catch(e) {
-            log('ERROR: pactl execution failed. No ports/profiles will be displayed');    		
+            _log('ERROR: pactl execution failed. No ports/profiles will be displayed');    		
         }
     }
-// log(JSON.stringify(cards));
-// log(JSON.stringify(ports));
+// _log(JSON.stringify(cards));
+// _log(JSON.stringify(ports));
 
 }
 
@@ -159,7 +191,7 @@ function parseOutput(out) {
     let parseSection = "CARDS";
     let port;
     let matches;
-    // log("Unmatched line:" + out);
+    // _log("Unmatched line:" + out);
     while(lines.length > 0) {
         let line = lines.shift();
 
@@ -285,9 +317,10 @@ function setLog(value) {
     DEBUG = value;
 }
 
-function log(msg) {
+function _log(msg) {
     if ( DEBUG == true ) {
-        global.log("SDC Debug: " + msg);
+        //global.log("SDC Debug: " + msg);
+        logWrap("SDC Debug: " + msg);
     }
 }
 
@@ -296,8 +329,8 @@ function dump(obj) {
     for(var propName in obj) {
         try{                
             propValue = obj[propName];
-            log(propName + propValue);
+            _log(propName + propValue);
         }
-        catch(e){log(propName + "!!!Error!!!");}
+        catch(e){_log(propName + "!!!Error!!!");}
     } 
 }

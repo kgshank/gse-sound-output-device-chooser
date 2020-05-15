@@ -25,7 +25,7 @@ const Gvc = imports.gi.Gvc;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Lib = Me.imports.convenience;
-const _d = Lib.log;
+const _d = Lib._log;
 const Prefs = Me.imports.prefs;
 const SignalManager = Lib.SignalManager;
 

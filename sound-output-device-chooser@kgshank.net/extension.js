@@ -21,6 +21,7 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Base = Me.imports.base;
 const Lib = Me.imports.convenience;
+const _d = Lib._log;
 const SignalManager = Lib.SignalManager;
 const Prefs = Me.imports.prefs;
 const Main = imports.ui.main;

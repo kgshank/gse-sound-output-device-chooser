@@ -24,6 +24,7 @@ const Gtk = imports.gi.Gtk;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Lib = Me.imports.convenience;
+const _d = Lib._log;
 const SignalManager = Lib.SignalManager;
 
 const Gettext = imports.gettext;
@@ -71,7 +72,7 @@ const SDCSettingsWidget = new GObject.Class({
 	builder.set_translation_domain('sound-output-device-chooser');
 
         if (builder.add_from_file(uiFilePath) == 0) {
-            Lib.log("JS LOG: could not load the ui file: %s".format(uiFilePath));
+            _d("JS LOG: could not load the ui file: %s".format(uiFilePath));
 
             let label = new Gtk.Label({
                 label: _("Could not load the preferences UI file"),
@@ -80,7 +81,7 @@ const SDCSettingsWidget = new GObject.Class({
 
             this.pack_start(label, true, true, 0);
         } else {
-            Lib.log('JS LOG:_UI file receive and load: '+uiFilePath);
+            _d('JS LOG:_UI file receive and load: '+uiFilePath);
 
             let mainContainer = builder.get_object("main-container");
 
