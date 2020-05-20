@@ -1,6 +1,9 @@
 ### Change log
 -----------------------
-#### 29
+#### 31
+* Translation update - Portuguese 
+
+#### 30
 * Fixes for issue [97](https://github.com/kgshank/gse-sound-output-device-chooser/issues/97)
 * Error in preferences dialog due to log
 
