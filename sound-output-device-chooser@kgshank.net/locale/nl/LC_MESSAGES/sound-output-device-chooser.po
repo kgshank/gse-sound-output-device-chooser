@@ -1,0 +1,107 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-09-24 23:47+0200\n"
+"PO-Revision-Date: 2020-09-02 18:22+0200\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.1\n"
+"Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: nl\n"
+
+#: prefs-dialog.gtkbuilder:15
+msgid "Monochrome"
+msgstr "Monochroom"
+
+#: prefs-dialog.gtkbuilder:19
+msgid "Colored"
+msgstr "Gekleurd"
+
+#: prefs-dialog.gtkbuilder:23
+msgid "None"
+msgstr "Geen"
+
+#: prefs-dialog.gtkbuilder:100
+msgid "Hide selector if there's only one device"
+msgstr "Keuzemenu verbergen als er slechts één apparaat is"
+
+#: prefs-dialog.gtkbuilder:142
+msgid "Display audio profiles for selection"
+msgstr "Audioprofielen tonen in keuzemenu"
+
+#: prefs-dialog.gtkbuilder:175
+msgid "General Settings"
+msgstr "Algemene instellingen"
+
+#: prefs-dialog.gtkbuilder:220
+msgid "Show output devices"
+msgstr "Uitvoerapparaten tonen"
+
+#: prefs-dialog.gtkbuilder:253
+msgid "Output Devices"
+msgstr "Uitvoerapparaten"
+
+#: prefs-dialog.gtkbuilder:300
+msgid "Show input devices"
+msgstr "Invoerapparaten tonen"
+
+#: prefs-dialog.gtkbuilder:343
+msgid "Show volume control for default device"
+msgstr "Volumebediening van standaardapparaat tonen"
+
+#: prefs-dialog.gtkbuilder:376
+msgid "Input Devices"
+msgstr "Invoerapparaten"
+
+#: prefs-dialog.gtkbuilder:422
+msgid "Icon Theme"
+msgstr "Pictogramthema"
+
+#: prefs-dialog.gtkbuilder:472
+msgid "Display icons only in selection list"
+msgstr "Alleen pictogrammen tonen in keuzelijst"
+
+#: prefs-dialog.gtkbuilder:504
+msgid "Icons"
+msgstr "Pictogrammen"
+
+#: prefs-dialog.gtkbuilder:549
+msgid "Enable Log messages"
+msgstr "Logboek bijhouden"
+
+#: prefs-dialog.gtkbuilder:588
+msgid "Enable new profile identification "
+msgstr "Nieuwe profielidentificatie inschakelen "
+
+#: prefs-dialog.gtkbuilder:620
+msgid "Miscellaneous"
+msgstr "Overig"
+
+#: prefs-dialog.gtkbuilder:688
+msgid "Name"
+msgstr "Naam"
+
+#: prefs-dialog.gtkbuilder:702
+msgid "Show"
+msgstr "Tonen"
+
+#: prefs-dialog.gtkbuilder:716
+msgid "Hide"
+msgstr "Verbergen"
+
+#: prefs-dialog.gtkbuilder:730
+msgid "Default"
+msgstr "Standaard"
+
+#: prefs-dialog.gtkbuilder:756
+msgid "Port Settings"
+msgstr "Poortinstellingen"
