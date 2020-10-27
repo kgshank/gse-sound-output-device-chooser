@@ -1,5 +1,8 @@
 ### Change log
 -----------------------
+#### 38
+* Updates for Gnome Shell 3.38 compatibility
+
 #### 31
 * Translation update - Portuguese 
 
@@ -13,7 +16,7 @@
 * Fixes for broken updates from extension.gnome.org
 
 #### 26
-* Updatas for Gnome Shell 3.36 compatibility
+* Updates for Gnome Shell 3.36 compatibility
 
 #### 25
 * Fix Issues [66](https://github.com/kgshank/gse-sound-output-device-chooser/issues/66) / [68](https://github.com/kgshank/gse-sound-output-device-chooser/issues/68) - duplicate list after screen lock and unlock 
