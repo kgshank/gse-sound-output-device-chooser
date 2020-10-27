@@ -17,6 +17,7 @@ cp --recursive gse-sound-output-device-chooser/sound-output-device-chooser@kgsha
 Enable the extensions from [GNOME Tweaks](https://wiki.gnome.org/Apps/Tweaks).
 
 ### Gnome shell versions compatible
+* 3.38
 * 3.36
 * 3.34
 * 3.32
