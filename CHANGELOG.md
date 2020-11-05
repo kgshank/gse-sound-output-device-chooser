@@ -1,6 +1,6 @@
 ### Change log
 -----------------------
-#### 38
+#### 32
 * Updates for Gnome Shell 3.38 compatibility
 
 #### 31
