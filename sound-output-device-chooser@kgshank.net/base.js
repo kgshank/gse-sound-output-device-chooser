@@ -245,6 +245,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
 
     _deviceRemoved(control, id, dontcheck) {
         let obj = this._devices[id];
+        delete this._devices[id];
         if(obj && obj.active) {
             _d("Removed: " + id);
             if(!dontcheck && this._canShowDevice(obj.uidevice, false)) {
