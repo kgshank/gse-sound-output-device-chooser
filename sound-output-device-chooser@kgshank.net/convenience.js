@@ -27,11 +27,11 @@ const Prefs = Me.imports.prefs;
 var DEBUG = false;
 
 var logWrap;
-if(log != undefined){
-   logWrap = log;
+if (log != undefined) {
+    logWrap = log;
 }
 else {
-   logWrap = global.log
+    logWrap = global.log
 }
 
 /**
@@ -57,42 +57,48 @@ function getSettings(schema) {
     let schemaDir = Me.dir.get_child('schemas');
     let schemaSource;
     if (schemaDir.query_exists(null))
-        schemaSource = GioSSS.new_from_directory(schemaDir.get_path(),GioSSS.get_default(),false);
+        schemaSource = GioSSS.new_from_directory(schemaDir.get_path(), GioSSS.get_default(), false);
     else
         schemaSource = GioSSS.get_default();
 
     let schemaObj = schemaSource.lookup(schema, true);
     if (!schemaObj)
         throw new Error('Schema ' + schema + ' could not be found for extension '
-                + Me.metadata.uuid + '. Please check your installation.');
+            + Me.metadata.uuid + '. Please check your installation.');
 
     let _settings = new Gio.Settings({ settings_schema: schemaObj });
     return _settings;
 }
 
 let cards;
-function getProfiles(control, uidevice)
-{
+
+function getCard(card_index) {
+    if (!cards || Object.keys(cards).length == 0) {
+        refreshCards();
+    }
+    return cards[card_index];
+}
+
+
+function getProfiles(control, uidevice) {
     let stream = control.lookup_stream_id(uidevice.get_stream_id());
-    if(stream) {
-        if(!cards || Object.keys(cards).length == 0 || !cards[stream.card_index]) {
+    if (stream) {
+        if (!cards || Object.keys(cards).length == 0 || !cards[stream.card_index]) {
             refreshCards();
         }
 
-        if(cards && cards[stream.card_index]) {
-            _log("Getting profile form stream id " + uidevice.port_name );
+        if (cards && cards[stream.card_index]) {
+            _log("Getting profile form stream id " + uidevice.port_name);
             return getProfilesForPort(uidevice.port_name, cards[stream.card_index]);
         }
     }
-    else
-    {
+    else {
         /* Device is not active device, lets try match with port name */
         refreshCards();
         for (let id in cards) {
             let profiles;
-            _log("Getting profile from cards " + uidevice.port_name  + " for card id " + id);
-            if((profiles = getProfilesForPort(uidevice.port_name, cards[id])))
-            {
+            _log("Getting profile from cards " + uidevice.port_name + " for card id " + id);
+            if ((profiles = getProfilesForPort(uidevice.port_name, cards[id]))) {
                 return profiles;
             }
         }
@@ -103,20 +109,20 @@ function getProfiles(control, uidevice)
 
 let ports;
 function getPorts(refresh) {
-    if(!ports || ports.length == 0 || refresh) {
+    if (!ports || ports.length == 0 || refresh) {
         refreshCards();
     }
     return ports;
 }
 
-function isCmdFound(cmd){
+function isCmdFound(cmd) {
     try {
-         let [result, out, err, exit_code] = GLib.spawn_command_line_sync(cmd);
-         return true;
+        let [result, out, err, exit_code] = GLib.spawn_command_line_sync(cmd);
+        return true;
     }
-    catch(e) {
-       _log('ERROR: '+ cmd +' execution failed. ' + e);
-       return false;
+    catch (e) {
+        _log('ERROR: ' + cmd + ' execution failed. ' + e);
+        return false;
     }
 }
 
@@ -126,58 +132,60 @@ function refreshCards() {
     // if(_settings == null) {getSettings(Prefs.SETTINGS_SCHEMA);}
     let _settings = getSettings(Prefs.SETTINGS_SCHEMA);
     let error = false;
-    if(_settings.get_boolean(Prefs.NEW_PROFILE_ID))    {
+    let newProfLogic = _settings.get_boolean(Prefs.NEW_PROFILE_ID);
+    if (newProfLogic) {
         _log("New logic");
-        let pyLocation =  Me.dir.get_child('utils/pa_helper.py').get_path();
+        let pyLocation = Me.dir.get_child('utils/pa_helper.py').get_path();
         let pythonExec = 'python';
         let pyVer = 3;
-        while(!isCmdFound(pythonExec) && pyVer >=2){
+        while (!isCmdFound(pythonExec) && pyVer >= 2) {
             _log(pythonExec + " is not found. Try next");
             pythonExec = 'python' + pyVer--;
         }
-           
-        if(pyVer <= 1) {
+
+        if (pyVer <= 1) {
             _log('ERROR: Python not found. fallback to default mode' + e);
             _settings.set_boolean(Prefs.NEW_PROFILE_ID, false);
             Gio.Settings.sync();
         }
         else {
             try {
-                let [result, out, err, exit_code] = GLib.spawn_command_line_sync(pythonExec+ ' ' + pyLocation);
+                let [result, out, err, exit_code] = GLib.spawn_command_line_sync(pythonExec + ' ' + pyLocation);
                 // _log("result" + result +" out"+out + " exit_code" +
                 // exit_code + "err" +err);
-                if(result && !exit_code) {
+                if (result && !exit_code) {
                     if (out instanceof Uint8Array) {
                         out = ByteArray.toString(out);
                     }
                     let obj = JSON.parse(out);
                     cards = obj['cards'];
-                    ports = obj['ports'];            
+                    ports = obj['ports'];
                 }
             }
-            catch(e) {
+            catch (e) {
                 error = true;
                 _log('ERROR: Python execution failed. fallback to default mode' + e);
                 _settings.set_boolean(Prefs.NEW_PROFILE_ID, false);
                 Gio.Settings.sync();
-            }    
-        }
-    }
-
-    if(!_settings.get_boolean(Prefs.NEW_PROFILE_ID) || error){
-        try {
-            let [result, out, err, exit_code] = GLib.spawn_command_line_sync('pactl list cards');
-            if(result && !exit_code) {
-                parseOutput(out);            
             }
         }
-        catch(e) {
-            _log('ERROR: pactl execution failed. No ports/profiles will be displayed');            
+    }
+    //error = true;
+    if (!newProfLogic || error) {
+        try {
+            let [result, out, err, exit_code] = GLib.spawn_command_line_sync('pactl list cards');
+            if (result && !exit_code) {
+                parseOutput(out);
+            }
+        }
+        catch (e) {
+            _log('ERROR: pactl execution failed. No ports/profiles will be displayed');
         }
     }
-// _log(JSON.stringify(cards));
-// _log(JSON.stringify(ports));
-
+    //_log(Array.isArray(cards));
+    //_log(JSON.stringify(cards));
+    //_log(Array.isArray(ports));
+    //_log(JSON.stringify(ports));
 }
 
 function parseOutput(out) {
@@ -193,40 +201,55 @@ function parseOutput(out) {
     let port;
     let matches;
     // _log("Unmatched line:" + out);
-    while(lines.length > 0) {
+    while (lines.length > 0) {
         let line = lines.shift();
 
-        if( (matches = /^Card\s#(\d+)$/.exec(line) )) {
+        if ((matches = /^Card\s#(\d+)$/.exec(line))) {
             cardIndex = matches[1];
-            if(!cards[cardIndex]) {
-                cards[cardIndex] = {'index':cardIndex,'profiles':[], 'ports':[]};
+            if (!cards[cardIndex]) {
+                cards[cardIndex] = { 'index': cardIndex, 'profiles': [], 'ports': [] };
             }
         }
-        else if (line.match(/^\t*Profiles:$/) ) {
+        else if ((matches = /^\t*Name:\s+(.*?)$/.exec(line)) && cards[cardIndex]) {
+            cards[cardIndex].name = matches[1];
+            parseSection = "CARDS"
+        }
+        else if (line.match(/^\tProperties:$/) && parseSection == "CARDS") {
+            parseSection = "PROPS";
+        }
+        else if (line.match(/^\t*Profiles:$/)) {
             parseSection = "PROFILES";
         }
         else if (line.match(/^\t*Ports:$/)) {
             parseSection = "PORTS";
         }
-        else if(cards[cardIndex]) {
-            switch(parseSection) {
-            case "PROFILES":
-                if((matches = /.*?((?:output|input)[^+]*?):\s(.*?)\s\(sinks:/.exec(line))) {
-                    cards[cardIndex].profiles.push({'name': matches[1], 'human_name': matches[2]});
-                }
-                break;
-            case "PORTS":
-                if((matches = /\t*(.*?):\s(.*?)\s\(priority:/.exec(line))) {
-                    port = {'name' : matches[1], 'human_name' : matches[2]};
-                    cards[cardIndex].ports.push(port);
-                    ports.push({'name' : matches[1], 'human_name' : matches[2]});
-                }
-                else if( port && (matches = /\t*Part of profile\(s\):\s(.*)/.exec(line))) {
-                    let profileStr = matches[1];
-                    port.profiles = profileStr.split(', ');
-                    port = null;
-                }
-                break;
+        else if (cards[cardIndex]) {
+            switch (parseSection) {
+                case "PROPS":
+                    if ((matches = /alsa\.card_name\s+=\s+"(.*?)"/.exec(line))) {
+                        cards[cardIndex].alsa_name = matches[1];
+                    }
+                    else if((matches = /device\.description\s+=\s+"(.*?)"/.exec(line))) {
+                        cards[cardIndex].card_description = matches[1];
+                    }
+                    break;
+                case "PROFILES":
+                    if ((matches = /.*?((?:output|input)[^+]*?):\s(.*?)\s\(sinks:/.exec(line))) {
+                        cards[cardIndex].profiles.push({ 'name': matches[1], 'human_name': matches[2] });
+                    }
+                    break;
+                case "PORTS":
+                    if ((matches = /\t*(.*?):\s(.*?)\s\(.*?priority:/.exec(line))) {
+                        port = { 'name': matches[1], 'human_name': matches[2], 'card_name': cards[cardIndex].name, 'card_description' : cards[cardIndex].card_description  };
+                        cards[cardIndex].ports.push(port);
+                        ports.push(port);
+                    }
+                    else if (port && (matches = /\t*Part of profile\(s\):\s(.*)/.exec(line))) {
+                        let profileStr = matches[1];
+                        port.profiles = profileStr.split(', ');
+                        port = null;
+                    }
+                    break;
             }
         }
     }
@@ -245,7 +268,7 @@ var Signal = class Signal {
     }
 
     disconnect() {
-        if(this._signalId) {
+        if (this._signalId) {
             this._signalSource.disconnect(this._signalId);
             this._signalId = null;
         }
@@ -260,12 +283,12 @@ var SignalManager = class SignalManager {
 
     addSignal(signalSource, signalName, callback) {
         let obj = null;
-        if(signalSource && signalName && callback) {
+        if (signalSource && signalName && callback) {
             obj = new Signal(signalSource, signalName, callback);
             obj.connect();
             this._signals.push(obj);
             let sourceSignals = this._signalsBySource[signalSource]
-            if(!sourceSignals) {
+            if (!sourceSignals) {
                 sourceSignals = [];
                 this._signalsBySource[signalSource] = sourceSignals;
             }
@@ -276,13 +299,13 @@ var SignalManager = class SignalManager {
     }
 
     disconnectAll() {
-        for (let signal of this._signals){
+        for (let signal of this._signals) {
             signal.disconnect();
         }
     }
 
     disconnectBySource(signalSource) {
-        if(this._signalsBySource[signalSource]) {
+        if (this._signalsBySource[signalSource]) {
             for (let signal of this._signalsBySource[signalSource]) {
                 signal.disconnect();
             }
@@ -292,15 +315,15 @@ var SignalManager = class SignalManager {
 
 
 function getProfilesForPort(portName, card) {
-    if(card.ports) {
+    if (card.ports) {
         for (let port of card.ports) {
-            if(portName === port.name) {
+            if (portName === port.name) {
                 let profiles = [];
                 if (port.profiles) {
                     for (let profile of port.profiles) {
-                        if(profile.indexOf('+input:') == -1) {
+                        if (profile.indexOf('+input:') == -1) {
                             for (let cardProfile of card.profiles) {
-                                if(profile === cardProfile.name) {
+                                if (profile === cardProfile.name) {
                                     profiles.push(cardProfile);
                                 }
                             }
@@ -319,7 +342,7 @@ function setLog(value) {
 }
 
 function _log(msg) {
-    if ( DEBUG == true ) {
+    if (DEBUG == true) {
         // global.log("SDC Debug: " + msg);
         logWrap("SDC Debug: " + msg);
     }
@@ -327,11 +350,11 @@ function _log(msg) {
 
 function dump(obj) {
     var propValue;
-    for(var propName in obj) {
-        try{                
+    for (var propName in obj) {
+        try {
             propValue = obj[propName];
-            _log(propName + propValue);
+            _log(propName + "=" +  propValue);
         }
-        catch(e){_log(propName + "!!!Error!!!");}
-    } 
+        catch (e) { _log(propName + "!!!Error!!!"); }
+    }
 }

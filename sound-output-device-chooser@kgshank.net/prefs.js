@@ -48,7 +48,55 @@ var ICON_THEME_COLORED = "colored";
 var ICON_THEME_MONOCHROME = "monochrome";
 var ICON_THEME_NONE = "none";
 
-function init(){}
+const PORT_SETTINGS_VERSION = 2;
+
+function init() { }
+
+function getPortsFromSettings(_settings) {
+    let obj = JSON.parse(_settings.get_string(PORT_SETTINGS));
+    let currentSettingsVersion = PORT_SETTINGS_VERSION;
+    if (Array.isArray(obj)) {
+        currentSettingsVersion = 1;
+    }
+    if (currentSettingsVersion < PORT_SETTINGS_VERSION) {
+        obj = migratePortSettings(currentSettingsVersion, obj, _settings);
+    }
+    return obj.ports;
+}
+
+function setPortsSettings(ports,_settings) {
+    let settingsObj = { 'version': PORT_SETTINGS_VERSION };
+    settingsObj.ports = ports;
+    _d(JSON.stringify(settingsObj));
+    _settings.set_string(PORT_SETTINGS, JSON.stringify(settingsObj));
+    return settingsObj;
+}
+
+function getPortDisplayName(port) {
+        return port.card_description + " - " + port.human_name;
+}
+
+function migratePortSettings(currVersion, currSettings, _settings) {
+    let ports = [];
+    switch (currVersion) {
+        case 1:
+            let _lPorts = Lib.getPorts(true).slice();
+            for (let port of currSettings) {
+                for (var i = 0; i < _lPorts.length; i++) {
+                    let _lPort = _lPorts[i];
+                    if (port.human_name == _lPort.human_name && port.name == _lPort.name) {
+                        port.card_name = _lPort.card_name;
+                        port.display_name = getPortDisplayName(_lPort);
+                        _lPorts.splice(i, 1);
+                        ports.push(port);
+                        break;
+                    }
+                }
+            }
+            break;
+    }
+    return setPortsSettings(ports,_settings);
+}
 
 
 const SDCSettingsWidget = new GObject.Class({
@@ -64,12 +112,12 @@ const SDCSettingsWidget = new GObject.Class({
         // creates the settings
         this._settings = Lib.getSettings(SETTINGS_SCHEMA);
 
-        Lib.setLog(this._settings.get_boolean(ENABLE_LOG)); 
+        Lib.setLog(this._settings.get_boolean(ENABLE_LOG));
 
         // creates the ui builder and add the main resource file
         let uiFilePath = Me.path + "/ui/prefs-dialog.gtkbuilder";
         let builder = new Gtk.Builder();
-	builder.set_translation_domain('sound-output-device-chooser');
+        builder.set_translation_domain('sound-output-device-chooser');
 
         if (builder.add_from_file(uiFilePath) == 0) {
             _d("JS LOG: could not load the ui file: %s".format(uiFilePath));
@@ -81,7 +129,7 @@ const SDCSettingsWidget = new GObject.Class({
 
             this.pack_start(label, true, true, 0);
         } else {
-            _d('JS LOG:_UI file receive and load: '+uiFilePath);
+            _d('JS LOG:_UI file receive and load: ' + uiFilePath);
 
             let mainContainer = builder.get_object("main-container");
 
@@ -127,11 +175,10 @@ const SDCSettingsWidget = new GObject.Class({
         }
     },
 
-    _populatePorts: function (){
+    _populatePorts: function() {
         let ports = Lib.getPorts(true);
-        for (let port of ports)
-        {
-            this._portsStore.set(this._portsStore.append(),[0,1,2,3,4,5],[port.human_name, false, false, true, port.name,3]);
+        for (let port of ports) {
+            this._portsStore.set(this._portsStore.append(), [0, 1, 2, 3, 4, 5, 6, 7], [port.human_name, false, false, true, port.name, 3, port.card_name, getPortDisplayName(port)]);
         }
     },
 
@@ -149,8 +196,7 @@ const SDCSettingsWidget = new GObject.Class({
 
     _toggleCallback: function(widget, path, activeCol, inactiveCols) {
         let active = !widget.active;
-        if(!active)
-        {
+        if (!active) {
             return;
         }
         let [success, iter] = this._portsStore.get_iter_from_string(path);
@@ -159,8 +205,7 @@ const SDCSettingsWidget = new GObject.Class({
         }
         this._portsStore.set_value(iter, activeCol, active);
         this._portsStore.set_value(iter, 5, activeCol);
-        for (let col of inactiveCols)
-        {
+        for (let col of inactiveCols) {
             this._portsStore.set_value(iter, col, !active);
         }
         this._commitSettings();
@@ -171,21 +216,23 @@ const SDCSettingsWidget = new GObject.Class({
         let [success, iter] = this._portsStore.get_iter_first();
 
         while (iter && success) {
-            if(!this._portsStore.get_value(iter,3)) {
+            if (!this._portsStore.get_value(iter, 3)) {
                 ports.push({
                     human_name: this._portsStore.get_value(iter, 0),
                     name: this._portsStore.get_value(iter, 4),
-                    display_option: this._portsStore.get_value(iter, 5)
+                    display_option: this._portsStore.get_value(iter, 5),
+                    card_name: this._portsStore.get_value(iter, 6),
+                    display_name: this._portsStore.get_value(iter, 7)
                 });
             }
             success = this._portsStore.iter_next(iter);
         }
 
-        this._settings.set_string(PORT_SETTINGS, JSON.stringify(ports));
+        setPortsSettings(ports, this._settings);
     },
 
     _restorePortsFromSettings: function() {
-        let ports = JSON.parse(this._settings.get_string(PORT_SETTINGS));
+        let ports = getPortsFromSettings(this._settings);
 
         let found;
         for (let port of ports) {
@@ -199,8 +246,9 @@ const SDCSettingsWidget = new GObject.Class({
             while (iter && success) {
                 let human_name = this._portsStore.get_value(iter, 0);
                 let name = this._portsStore.get_value(iter, 4);
+                let card_name = this._portsStore.get_value(iter, 6);
 
-                if(port.name == name && port.human_name == human_name) {
+                if (port.name == name && port.human_name == human_name && port.card_name == card_name) {
                     this._portsStore.set_value(iter, 3, false);
                     this._portsStore.set_value(iter, port.display_option, true);
                     this._portsStore.set_value(iter, 5, port.display_option);
@@ -210,10 +258,10 @@ const SDCSettingsWidget = new GObject.Class({
                 success = this._portsStore.iter_next(iter);
             }
 
-            if(!found){
+            if (!found) {
                 iter = this._portsStore.append();
-                this._portsStore.set(iter, [0,1,2,3,4,5],
-                        [port.human_name, false, false, false, port.name,port.display_option]);
+                this._portsStore.set(iter, [0, 1, 2, 3, 4, 5, 6, 7],
+                    [port.human_name, false, false, false, port.name, port.display_option, port.card_name, port.display_name]);
                 this._portsStore.set_value(iter, port.display_option, true);
             }
         }

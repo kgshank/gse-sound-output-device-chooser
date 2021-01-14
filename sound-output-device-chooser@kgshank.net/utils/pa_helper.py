@@ -18,7 +18,7 @@
 
 import libpulse_introspect as pa
 import sys
-from ctypes import c_int,byref
+from ctypes import c_int,byref, c_char_p, cast
 import time
 from json import dumps
 
@@ -58,8 +58,8 @@ class PAHelper():
 
             pa.pa_mainloop_iterate(self.mainloop, 0, byref(retVal))
         
-#         print(dumps(self._ports, indent = 5))      
-        print(dumps({'cards': self._cards, 'ports':self._ports}, indent = 5))
+    
+       	print(dumps({'cards': self._cards, 'ports':self._ports}, indent = 5))
         
         try:    
             if operation:
@@ -82,6 +82,13 @@ class PAHelper():
         card_obj['index'] = str(card.index)
         self._cards[card.index] = card_obj
         card_obj['profiles'] = [] 
+        
+        card_name = cast(pa.pa_proplist_gets(card.proplist,c_char_p(b'alsa.card_name')),c_char_p)
+        card_obj['alsa_name'] = card_name.value.decode('utf8') if card_name else ''
+        description = cast(pa.pa_proplist_gets(card.proplist,c_char_p(b'device.description')),c_char_p)
+        card_obj['card_description'] = description.value.decode('utf8') if description else ''
+        
+        card_obj['name'] = card.name.decode('utf8') if card.name else ''
         for k in range(0, card.n_profiles):
             if(card.profiles2[k]):
                 profile = card.profiles2[k].contents 
@@ -102,6 +109,7 @@ class PAHelper():
             obj['available'] = port.available
             obj['n_profiles'] = port.n_profiles
             obj['profiles'] = []
+            obj['card_name'] = card_obj['name']
             for j in range(0, port.n_profiles):
                 if(port.profiles2[j]):
                     profile = port.profiles2[j].contents 
