@@ -748,6 +748,7 @@
                             </child>
                             <child>
                               <object class="GtkTreeViewColumn" id="ShowAlwaysColumn">
+                                <property name="visible">False</property>
                                 <property name="sizing">autosize</property>
                                 <property name="title" translatable="yes">Show</property>
                                 <child>

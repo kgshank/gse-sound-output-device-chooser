@@ -159,7 +159,7 @@ const SDCSettingsWidget = new GObject.Class({
             this._settings.bind(NEW_PROFILE_ID, newProfileIdSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(ICON_THEME, iconThemeCombo, "active-id", Gio.SettingsBindFlags.DEFAULT);
 
-
+            //Show always is not working always, hidden in the UI directly
             let showAlwaysToggleRender = builder.get_object("ShowAlwaysToggleRender");
             let hideAlwaysToggleRender = builder.get_object("HideAlwaysToggleRender");
             let showActiveToggleRender = builder.get_object("ShowActiveToggleRender");
@@ -201,6 +201,12 @@ const SDCSettingsWidget = new GObject.Class({
         }
         let [success, iter] = this._portsStore.get_iter_from_string(path);
         if (!success) {
+            return;
+        }
+        /*Dont support non-pci cards for show always*/
+        let card_name = this._portsStore.get_value(iter, 6);
+        if(!/\.pci-/.exec(card_name) && activeCol == 1){
+            this._toggleCallback(widget, path, 3, [1, 2]);
             return;
         }
         this._portsStore.set_value(iter, activeCol, active);
