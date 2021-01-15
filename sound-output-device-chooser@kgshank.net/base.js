@@ -96,7 +96,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
                     maxId = dummyDevice.get_id();
                 }
                 _d("Max Id:" + maxId);
-
+                
                 let defaultDevice = this.getDefaultDevice();
                 while (++id < maxId) {
                     let uidevice = this._deviceAdded(this._control, id);
@@ -139,10 +139,12 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
     _deviceAdded(control, id, dontcheck) {
         let obj = this._devices[id];
         let uidevice = null;
+        
+        _d("Added - "+ id);
 
         if (!obj) {
             uidevice = this.lookupDeviceById(id);
-            if (!uidevice || !uidevice.port_name || uidevice.description.match(/Dummy\s+(Output|Input)/gi)) {
+            if (!uidevice || uidevice.description.match(/Dummy\s+(Output|Input)/gi)) {
                 return null;
             }
 
@@ -197,7 +199,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
             return uidevice;
         }
 
-        _d("Added: " + id + ":" + uidevice.description + ":" + uidevice.port_name + ":" + obj.uidevice.origin);
+        _d("Added: " + id + ":" + uidevice.description + ":" + uidevice.port_name + ":" + uidevice.origin);
         if (!this._availableDevicesIds[id]) {
             this._availableDevicesIds[id] = 0;
         }
@@ -323,6 +325,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
     }
 
     _deviceActivated(control, id) {
+        _d("Activated:- " + id);
         let obj = this._devices[id];
         if (obj && obj !== this._activeDevice) {
             _d("Activated: " + id + ":" + obj.uidevice.description + ":" + obj.uidevice.port_name + ":" + obj.uidevice.origin);
@@ -503,6 +506,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
             let device = this._devices[id];
             let uidevice = device.uidevice;
             if (uidevice.port_name == null || uidevice.description == null) {
+                _d("Device port_name null or description null");
                 continue;
             }
             switch (this._canShowDevice(uidevice, uidevice.port_available)) {

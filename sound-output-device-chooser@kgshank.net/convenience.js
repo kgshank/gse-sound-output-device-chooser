@@ -239,7 +239,7 @@ function parseOutput(out) {
                     }
                     break;
                 case "PORTS":
-                    if ((matches = /\t*(.*?):\s(.*?)\s\(.*?priority:/.exec(line))) {
+                    if ((matches = /\t*(.*?):\s(.*)\s\(.*?priority:/.exec(line))) {
                         port = { 'name': matches[1], 'human_name': matches[2], 'card_name': cards[cardIndex].name, 'card_description' : cards[cardIndex].card_description  };
                         cards[cardIndex].ports.push(port);
                         ports.push(port);

@@ -43,6 +43,9 @@ extends Base.SoundDeviceChooserBase {
     getDefaultIcon() {
         return "audio-card";
     }
+    getStreams() {
+        return this._control.get_sinks();
+    }
 };
 
 var SoundInputDeviceChooser =  class SoundInputDeviceChooser 
@@ -61,6 +64,9 @@ extends Base.SoundDeviceChooserBase {
     }
     getDefaultIcon() {
         return "audio-input-microphone";
+    }
+    getStreams() {
+        return this._control.get_sources();
     }
 };
 

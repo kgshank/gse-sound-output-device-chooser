@@ -67,7 +67,7 @@ function getPortsFromSettings(_settings) {
 function setPortsSettings(ports,_settings) {
     let settingsObj = { 'version': PORT_SETTINGS_VERSION };
     settingsObj.ports = ports;
-    _d(JSON.stringify(settingsObj));
+    //_d(JSON.stringify(settingsObj));
     _settings.set_string(PORT_SETTINGS, JSON.stringify(settingsObj));
     return settingsObj;
 }
