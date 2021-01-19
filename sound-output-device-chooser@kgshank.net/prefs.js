@@ -73,7 +73,9 @@ function setPortsSettings(ports,_settings) {
 }
 
 function getPortDisplayName(port) {
-        return port.card_description + " - " + port.human_name;
+    const card = Lib.getCardByName(port.card_name);
+    const description = card && card.card_description
+    return `${port.human_name} - ${description}`;
 }
 
 function migratePortSettings(currVersion, currSettings, _settings) {
