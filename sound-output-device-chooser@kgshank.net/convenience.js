@@ -79,6 +79,12 @@ function getCard(card_index) {
     return cards[card_index];
 }
 
+function getCardByName(card_name) {
+    if (!cards || Object.keys(cards).length == 0) {
+        refreshCards();
+    }
+    return Object.keys(cards).map((index) => cards[index]).find(({name}) => name === card_name)
+}
 
 function getProfiles(control, uidevice) {
     let stream = control.lookup_stream_id(uidevice.get_stream_id());
