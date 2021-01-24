@@ -7,7 +7,7 @@
   * [109](../../issues/109)
   * [108](../../issues/108)
   * [105](../../issues/105)
-* Removed option to Hide device in port settings, due to inconsistent behaviour and shell crashes
+* Removed option to "Show" device always in port settings, due to inconsistent behaviour and shell crashes
 
 #### 32
 * Updates for Gnome Shell 3.38 compatibility
