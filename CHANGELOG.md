@@ -1,7 +1,13 @@
 ### Change log
 -----------------------
 #### 34 & 33
-* Fixes for issue [131](../../issues/137)
+* Fixes for issues 
+  * [131](../../issues/131)
+  * [123](../../issues/123)
+  * [109](../../issues/109)
+  * [108](../../issues/108)
+  * [105](../../issues/105)
+* Removed option to Hide device in port settings, due to inconsistent behaviour and shell crashes
 
 #### 32
 * Updates for Gnome Shell 3.38 compatibility
