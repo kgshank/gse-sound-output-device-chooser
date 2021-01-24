@@ -369,7 +369,9 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
                 this._setDeviceActiveProfile(device);
             }
         }*/
-        this._setDeviceActiveProfile(this._activeDevice);
+        if(this._activeDevice){
+            this._setDeviceActiveProfile(this._activeDevice);
+        }
         return true;
     }
 
