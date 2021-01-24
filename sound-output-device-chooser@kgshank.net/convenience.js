@@ -142,20 +142,16 @@ function refreshCards() {
     if (newProfLogic) {
         _log("New logic");
         let pyLocation = Me.dir.get_child('utils/pa_helper.py').get_path();
-        let pythonExec = 'python';
-        let pyVer = 3;
-        while (!isCmdFound(pythonExec) && pyVer >= 2) {
-            _log(pythonExec + " is not found. Try next");
-            pythonExec = 'python' + pyVer--;
-        }
-
-        if (pyVer <= 1) {
-            _log('ERROR: Python not found. fallback to default mode' + e);
+        let pythonExec = ['python', 'python3', 'python2'].find(cmd => isCmdFound(cmd));
+        if (!pythonExec) {
+            _log('ERROR: Python not found. fallback to default mode');
             _settings.set_boolean(Prefs.NEW_PROFILE_ID, false);
             Gio.Settings.sync();
+            newProfLogic = false;
         }
         else {
             try {
+                _log('Python found.' + pythonExec);
                 let [result, out, err, exit_code] = GLib.spawn_command_line_sync(pythonExec + ' ' + pyLocation);
                 // _log("result" + result +" out"+out + " exit_code" +
                 // exit_code + "err" +err);
@@ -178,6 +174,7 @@ function refreshCards() {
     }
     //error = true;
     if (!newProfLogic || error) {
+        _log("Old logic");
         try {
             let [result, out, err, exit_code] = GLib.spawn_command_line_sync('pactl list cards');
             if (result && !exit_code) {
