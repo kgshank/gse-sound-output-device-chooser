@@ -376,11 +376,11 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
     }
 
     _setDeviceActiveProfile(device) {
-        if (!device.uidevice.port_name || !this._availableDevicesIds[device.id]) {
+        if (!device || !device.uidevice|| !device.uidevice.port_name || !this._availableDevicesIds[device.id]) {
             return;
         }
         let stream = this._control.get_stream_from_device(device.uidevice);
-        if (stream) {
+        if (!stream) {
             return;
         }
         let activeProfile = device.uidevice.get_active_profile();
