@@ -328,6 +328,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         if(!obj){
             _d("Activated device not found in the list of devices, try to add");
             this._deviceAdded(control, id);
+            obj = this._devices[id];
         }
         if (obj && obj !== this._activeDevice) {
             _d("Activated: " + id + ":" + obj.uidevice.description + ":" + obj.uidevice.port_name + ":" + obj.uidevice.origin);
