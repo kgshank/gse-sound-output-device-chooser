@@ -29,8 +29,6 @@ const _d = Lib._log;
 const Prefs = Me.imports.prefs;
 const SignalManager = Lib.SignalManager;
 
-let maxId = -1;
-
 var SoundDeviceChooserBase = class SoundDeviceChooserBase {
 
     constructor(deviceType) {
@@ -91,10 +89,10 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
                  */
 
                 let id = 0;
-                if (maxId < 0) {
-                    let dummyDevice = new Gvc.MixerUIDevice();
-                    maxId = dummyDevice.get_id();
-                }
+                
+                let dummyDevice = new Gvc.MixerUIDevice();
+                let maxId = dummyDevice.get_id();
+                
                 _d("Max Id:" + maxId);
                 
                 let defaultDevice = this.getDefaultDevice();
@@ -327,6 +325,10 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
     _deviceActivated(control, id) {
         _d("Activated:- " + id);
         let obj = this._devices[id];
+        if(!obj){
+            _d("Activated device not found in the list of devices, try to add");
+            this._deviceAdded(control, id);
+        }
         if (obj && obj !== this._activeDevice) {
             _d("Activated: " + id + ":" + obj.uidevice.description + ":" + obj.uidevice.port_name + ":" + obj.uidevice.origin);
             if (this._activeDevice) {
