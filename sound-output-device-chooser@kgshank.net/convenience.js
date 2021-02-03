@@ -176,13 +176,16 @@ function refreshCards() {
     if (!newProfLogic || error) {
         _log("Old logic");
         try {
-            let [result, out, err, exit_code] = GLib.spawn_command_line_sync('pactl list cards');
+            let env = GLib.get_environ ();
+            env = GLib.environ_setenv (env, "LANG", "C", true);
+            let [result, out, err, exit_code] = GLib.spawn_sync(null,['pactl', 'list','cards'], env, GLib.SpawnFlags.Default,null);
+            //_log(result+"--"+out+"--"+ err+"--"+ exit_code)
             if (result && !exit_code) {
                 parseOutput(out);
             }
         }
         catch (e) {
-            _log('ERROR: pactl execution failed. No ports/profiles will be displayed');
+            _log('ERROR: pactl execution failed. No ports/profiles will be displayed' + e);
         }
     }
     //_log(Array.isArray(cards));
