@@ -178,7 +178,7 @@ function refreshCards() {
         try {
             let env = GLib.get_environ ();
             env = GLib.environ_setenv (env, "LANG", "C", true);
-            let [result, out, err, exit_code] = GLib.spawn_sync(null,['pactl', 'list','cards'], env, GLib.SpawnFlags.Default,null);
+            let [result, out, err, exit_code] = GLib.spawn_sync(null,['pactl' , 'list', 'cards'], env, GLib.SpawnFlags.SEARCH_PATH,null);
             //_log(result+"--"+out+"--"+ err+"--"+ exit_code)
             if (result && !exit_code) {
                 parseOutput(out);
