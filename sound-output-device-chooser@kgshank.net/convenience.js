@@ -83,7 +83,7 @@ function getCardByName(card_name) {
     if (!cards || Object.keys(cards).length == 0) {
         refreshCards();
     }
-    return Object.keys(cards).map((index) => cards[index]).find(({name}) => name === card_name)
+    return Object.keys(cards).map((index) => cards[index]).find(({name}) => name === card_name);
 }
 
 function getProfiles(control, uidevice) {

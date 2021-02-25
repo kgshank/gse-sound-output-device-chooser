@@ -31,21 +31,18 @@ extends Base.SoundDeviceChooserBase {
     constructor() {
         super("output");
     }
-    lookupDeviceById(id) {
-        return this._control.lookup_output_id(id);
+    lookupDeviceById(control, id) {
+        return control.lookup_output_id(id);
     }
-    changeDevice(uidevice) {
-        this._control.change_output(uidevice);
+    changeDevice(control, uidevice) {
+        control.change_output(uidevice);        
     }
-    getDefaultDevice() {
-        return this._control.get_default_sink();
+    getDefaultDevice(control) {
+        return control.get_default_sink();
     }
     getDefaultIcon() {
         return "audio-card";
-    }
-    getStreams() {
-        return this._control.get_sinks();
-    }
+    }    
 };
 
 var SoundInputDeviceChooser =  class SoundInputDeviceChooser 
@@ -53,21 +50,18 @@ extends Base.SoundDeviceChooserBase {
     constructor() {
         super("input");
     }
-    lookupDeviceById(id) {
-        return this._control.lookup_input_id(id);
+    lookupDeviceById(control, id) {
+        return control.lookup_input_id(id);
     }
-    changeDevice(uidevice) {
-        this._control.change_input(uidevice);
+    changeDevice(control, uidevice) {
+        control.change_input(uidevice);
     }
-    getDefaultDevice() {
-        return this._control.get_default_source();
+    getDefaultDevice(control) {
+        return control.get_default_source();
     }
     getDefaultIcon() {
         return "audio-input-microphone";
-    }
-    getStreams() {
-        return this._control.get_sources();
-    }
+    }    
 };
 
 var InputSliderInstance = class InputSliderInstance {
@@ -141,11 +135,9 @@ var SDCInstance = class SDCInstance {
 
     _addMenuItem(_volumeMenu, checkItem, menuItem){
         let menuItems = _volumeMenu._getMenuItems();
-        let i = 0;
-        for (; i < menuItems.length; i++) {
-            if (menuItems[i] === checkItem) {
-                break;
-            }
+        let i = menuItems.findIndex(elem => elem === checkItem);
+        if( i < 0 ){
+            i = menuItems.length;
         }
         _volumeMenu.addMenuItem(menuItem, ++i);
     }
@@ -165,12 +157,18 @@ var SDCInstance = class SDCInstance {
 
     disable(){
         this._revertVolMenuChanges();
-        this._outputInstance.destroy();
-        this._outputInstance = null;
-        this._inputInstance.destroy();
-        this._inputInstance = null;
-        this._inputSliderInstance.destroy();
-        this._inputSliderInstance = null;
+        if(this._outputInstance) {
+            this._outputInstance.destroy();
+            this._outputInstance = null;
+        }
+        if(this._inputInstance){
+            this._inputInstance.destroy();
+            this._inputInstance = null;
+        }
+        if(this._inputSliderInstance){
+            this._inputSliderInstance.destroy();
+            this._inputSliderInstance = null;
+        }
         if(this._expSignalId) {
             this._settings.disconnect(this._expSignalId);
             this._expSignalId = null;

@@ -225,13 +225,16 @@ const SDCSettingsWidget = new GObject.Class({
 
         while (iter && success) {
             if (!this._portsStore.get_value(iter, 3)) {
-                ports.push({
-                    human_name: this._portsStore.get_value(iter, 0),
-                    name: this._portsStore.get_value(iter, 4),
-                    display_option: this._portsStore.get_value(iter, 5),
-                    card_name: this._portsStore.get_value(iter, 6),
-                    display_name: this._portsStore.get_value(iter, 7)
-                });
+                let display_option = this._portsStore.get_value(iter, 5);
+                if(display_option != 3) {//Dont store default value
+                    ports.push({
+                        human_name: this._portsStore.get_value(iter, 0),
+                        name: this._portsStore.get_value(iter, 4),
+                        display_option: display_option,
+                        card_name: this._portsStore.get_value(iter, 6),
+                        display_name: this._portsStore.get_value(iter, 7)
+                    });
+                }
             }
             success = this._portsStore.iter_next(iter);
         }
