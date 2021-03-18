@@ -162,7 +162,7 @@ var SoundDeviceMenuItem = GObject.registerClass(
         }
 
         canShowProfile() {
-            return (this.isVisible() && this.profilesitems.size >= 1);
+            return (this.isVisible() && this.profilesitems.size > 1);
         }
     });
 
