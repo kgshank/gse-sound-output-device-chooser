@@ -83,7 +83,7 @@ function getCardByName(card_name) {
     if (!cards || Object.keys(cards).length == 0) {
         refreshCards();
     }
-    return Object.keys(cards).map((index) => cards[index]).find(({name}) => name === card_name);
+    return Object.keys(cards).map((index) => cards[index]).find(({ name }) => name === card_name);
 }
 
 function getProfiles(control, uidevice) {
@@ -110,7 +110,7 @@ function getProfiles(control, uidevice) {
         }
     }
 
-    return null;
+    return [];
 }
 
 let ports;
@@ -176,9 +176,9 @@ function refreshCards() {
     if (!newProfLogic || error) {
         _log("Old logic");
         try {
-            let env = GLib.get_environ ();
-            env = GLib.environ_setenv (env, "LANG", "C", true);
-            let [result, out, err, exit_code] = GLib.spawn_sync(null,['pactl' , 'list', 'cards'], env, GLib.SpawnFlags.SEARCH_PATH,null);
+            let env = GLib.get_environ();
+            env = GLib.environ_setenv(env, "LANG", "C", true);
+            let [result, out, err, exit_code] = GLib.spawn_sync(null, ['pactl', 'list', 'cards'], env, GLib.SpawnFlags.SEARCH_PATH, null);
             //_log(result+"--"+out+"--"+ err+"--"+ exit_code)
             if (result && !exit_code) {
                 parseOutput(out);
@@ -235,7 +235,7 @@ function parseOutput(out) {
                     if ((matches = /alsa\.card_name\s+=\s+"(.*?)"/.exec(line))) {
                         cards[cardIndex].alsa_name = matches[1];
                     }
-                    else if((matches = /device\.description\s+=\s+"(.*?)"/.exec(line))) {
+                    else if ((matches = /device\.description\s+=\s+"(.*?)"/.exec(line))) {
                         cards[cardIndex].card_description = matches[1];
                     }
                     break;
@@ -246,7 +246,7 @@ function parseOutput(out) {
                     break;
                 case "PORTS":
                     if ((matches = /\t*(.*?):\s(.*)\s\(.*?priority:/.exec(line))) {
-                        port = { 'name': matches[1], 'human_name': matches[2], 'card_name': cards[cardIndex].name, 'card_description' : cards[cardIndex].card_description  };
+                        port = { 'name': matches[1], 'human_name': matches[2], 'card_name': cards[cardIndex].name, 'card_description': cards[cardIndex].card_description };
                         cards[cardIndex].ports.push(port);
                         ports.push(port);
                     }
@@ -283,8 +283,7 @@ var Signal = class Signal {
 
 var SignalManager = class SignalManager {
     constructor() {
-        this._signals = [];
-        this._signalsBySource = {};
+        this._signalsBySource = new Map();
     }
 
     addSignal(signalSource, signalName, callback) {
@@ -292,29 +291,31 @@ var SignalManager = class SignalManager {
         if (signalSource && signalName && callback) {
             obj = new Signal(signalSource, signalName, callback);
             obj.connect();
-            this._signals.push(obj);
-            let sourceSignals = this._signalsBySource[signalSource]
-            if (!sourceSignals) {
-                sourceSignals = [];
-                this._signalsBySource[signalSource] = sourceSignals;
+
+            if (!this._signalsBySource.has(signalSource)) {
+                this._signalsBySource.set(signalSource, []);
             }
-            // this._signalsBySource[signalSource].push(obj)
-            sourceSignals.push(obj);
+            this._signalsBySource.get(signalSource).push(obj)
+            //_log(this._signalsBySource.get(signalSource).length + "Signal length");
         }
         return obj;
     }
 
     disconnectAll() {
-        for (let signal of this._signals) {
-            signal.disconnect();
-        }
+        this._signalsBySource.forEach(signals => this._disconnectSignals(signals));
     }
 
     disconnectBySource(signalSource) {
-        if (this._signalsBySource[signalSource]) {
-            for (let signal of this._signalsBySource[signalSource]) {
-                signal.disconnect();
-            }
+        if (this._signalsBySource.has(signalSource)) {
+            this._disconnectSignals(this._signalsBySource.get(signalSource));
+        }
+    }
+
+    _disconnectSignals(signals) {
+        while (signals.length) {
+            var signal = signals.shift();
+            signal.disconnect();
+            signal = null;
         }
     }
 }
@@ -322,25 +323,14 @@ var SignalManager = class SignalManager {
 
 function getProfilesForPort(portName, card) {
     if (card.ports) {
-        for (let port of card.ports) {
-            if (portName === port.name) {
-                let profiles = [];
-                if (port.profiles) {
-                    for (let profile of port.profiles) {
-                        if (profile.indexOf('+input:') == -1) {
-                            for (let cardProfile of card.profiles) {
-                                if (profile === cardProfile.name) {
-                                    profiles.push(cardProfile);
-                                }
-                            }
-                        }
-                    }
-                }
-                return profiles;
+        let port = card.ports.find(port => (portName === port.name));
+        if (port) {
+            if (port.profiles) {
+                return card.profiles.filter(profile => (profile.name.indexOf('+input:') == -1 && port.profiles.includes(profile.name)))
             }
         }
     }
-    return null;
+    return [];
 }
 
 function setLog(value) {
@@ -359,7 +349,7 @@ function dump(obj) {
     for (var propName in obj) {
         try {
             propValue = obj[propName];
-            _log(propName + "=" +  propValue);
+            _log(propName + "=" + propValue);
         }
         catch (e) { _log(propName + "!!!Error!!!"); }
     }

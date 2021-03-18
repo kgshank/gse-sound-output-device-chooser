@@ -100,7 +100,6 @@ function migratePortSettings(currVersion, currSettings, _settings) {
     return setPortsSettings(ports,_settings);
 }
 
-
 const SDCSettingsWidget = new GObject.Class({
     Name: 'SDC.Prefs.Widget',
     GTypeName: 'SDCSettingsWidget',
@@ -123,12 +122,10 @@ const SDCSettingsWidget = new GObject.Class({
 
         if (builder.add_from_file(uiFilePath) == 0) {
             _d("JS LOG: could not load the ui file: %s".format(uiFilePath));
-
             let label = new Gtk.Label({
                 label: _("Could not load the preferences UI file"),
                 vexpand: true
             });
-
             this.pack_start(label, true, true, 0);
         } else {
             _d('JS LOG:_UI file receive and load: ' + uiFilePath);
@@ -222,7 +219,6 @@ const SDCSettingsWidget = new GObject.Class({
     _commitSettings: function() {
         let ports = [];
         let [success, iter] = this._portsStore.get_iter_first();
-
         while (iter && success) {
             if (!this._portsStore.get_value(iter, 3)) {
                 let display_option = this._portsStore.get_value(iter, 5);
@@ -238,7 +234,6 @@ const SDCSettingsWidget = new GObject.Class({
             }
             success = this._portsStore.iter_next(iter);
         }
-
         setPortsSettings(ports, this._settings);
     },
 

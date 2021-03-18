@@ -16,7 +16,7 @@
  ******************************************************************************/
 /* jshint moz:true */
 
-const {GObject} = imports.gi;
+const { GObject } = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Base = Me.imports.base;
@@ -26,8 +26,8 @@ const SignalManager = Lib.SignalManager;
 const Prefs = Me.imports.prefs;
 const Main = imports.ui.main;
 
-var SoundOutputDeviceChooser =  class SoundOutputDeviceChooser 
-extends Base.SoundDeviceChooserBase {
+var SoundOutputDeviceChooser = class SoundOutputDeviceChooser
+    extends Base.SoundDeviceChooserBase {
     constructor() {
         super("output");
     }
@@ -35,18 +35,18 @@ extends Base.SoundDeviceChooserBase {
         return control.lookup_output_id(id);
     }
     changeDevice(control, uidevice) {
-        control.change_output(uidevice);        
+        control.change_output(uidevice);
     }
-    getDefaultDevice(control) {
+    getDefaultStream(control) {
         return control.get_default_sink();
     }
     getDefaultIcon() {
         return "audio-card";
-    }    
+    }
 };
 
-var SoundInputDeviceChooser =  class SoundInputDeviceChooser 
-extends Base.SoundDeviceChooserBase {
+var SoundInputDeviceChooser = class SoundInputDeviceChooser
+    extends Base.SoundDeviceChooserBase {
     constructor() {
         super("input");
     }
@@ -56,28 +56,29 @@ extends Base.SoundDeviceChooserBase {
     changeDevice(control, uidevice) {
         control.change_input(uidevice);
     }
-    getDefaultDevice(control) {
+    getDefaultStream(control) {
         return control.get_default_source();
     }
     getDefaultIcon() {
         return "audio-input-microphone";
-    }    
+    }
 };
 
+
 var InputSliderInstance = class InputSliderInstance {
-    constructor(volumeMenu, settings ) {
+    constructor(volumeMenu, settings) {
         this._input = volumeMenu._input;
         this._settings = settings;
         this._signalManager = new SignalManager();
         this._signalManager.addSignal(this._settings, "changed::"
-                + Prefs.SHOW_INPUT_SLIDER, this._setSliderVisiblity.bind(this));
+            + Prefs.SHOW_INPUT_SLIDER, this._setSliderVisiblity.bind(this));
         this._overrideFunction();
         this._setSliderVisiblity();
     }
     _overrideFunction() {
         this._input._shouldBeVisibleOriginal = this._input._shouldBeVisible;
         this._input._shouldBeVisibleCustom = function() {
-            return this._stream != null;
+             return this._stream != null;            
         };
     }
     _setSliderVisiblity() {
@@ -98,22 +99,22 @@ var InputSliderInstance = class InputSliderInstance {
 };
 
 var SDCInstance = class SDCInstance {
-    constructor(){
+    constructor() {
         this._settings = Lib.getSettings(Prefs.SETTINGS_SCHEMA);
         this._aggregateMenu = Main.panel.statusArea.aggregateMenu;
         this._volumeMenu = this._aggregateMenu._volume._volumeMenu;
         this._aggregateLayout = this._aggregateMenu.menu.box.get_layout_manager();
     }
 
-    enable(){
+    enable() {
         let theme = imports.gi.Gtk.IconTheme.get_default();
-        if(theme != null) {
+        if (theme != null) {
             let iconPath = Me.dir.get_child('icons');
-            if (iconPath != null && iconPath.query_exists(null)){
+            if (iconPath != null && iconPath.query_exists(null)) {
                 theme.append_search_path(iconPath.get_path());
             }
         }
-    
+
         if (this._outputInstance == null) {
             this._outputInstance = new SoundOutputDeviceChooser();
         }
@@ -129,14 +130,14 @@ var SDCInstance = class SDCInstance {
         this._addMenuItem(this._volumeMenu, this._volumeMenu._input.item, this._inputInstance.menuItem);
 
         this._expSignalId = this._settings.connect("changed::" + Prefs.EXPAND_VOL_MENU, this._expandVolMenu.bind(this));
-        
+
         this._expandVolMenu();
     }
 
-    _addMenuItem(_volumeMenu, checkItem, menuItem){
+    _addMenuItem(_volumeMenu, checkItem, menuItem) {
         let menuItems = _volumeMenu._getMenuItems();
         let i = menuItems.findIndex(elem => elem === checkItem);
-        if( i < 0 ){
+        if (i < 0) {
             i = menuItems.length;
         }
         _volumeMenu.addMenuItem(menuItem, ++i);
@@ -155,21 +156,21 @@ var SDCInstance = class SDCInstance {
         this._aggregateLayout.layout_changed();
     }
 
-    disable(){
+    disable() {
         this._revertVolMenuChanges();
-        if(this._outputInstance) {
+        if (this._outputInstance) {
             this._outputInstance.destroy();
             this._outputInstance = null;
         }
-        if(this._inputInstance){
+        if (this._inputInstance) {
             this._inputInstance.destroy();
             this._inputInstance = null;
         }
-        if(this._inputSliderInstance){
+        if (this._inputSliderInstance) {
             this._inputSliderInstance.destroy();
             this._inputSliderInstance = null;
         }
-        if(this._expSignalId) {
+        if (this._expSignalId) {
             this._settings.disconnect(this._expSignalId);
             this._expSignalId = null;
         }
