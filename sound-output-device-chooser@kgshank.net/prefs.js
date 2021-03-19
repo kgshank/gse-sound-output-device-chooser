@@ -28,7 +28,7 @@ const _d = Lib._log;
 const SignalManager = Lib.SignalManager;
 
 const Gettext = imports.gettext;
-Gettext.bindtextdomain("sound-output-device-chooser", Me.path + '/locale');
+Gettext.bindtextdomain("sound-output-device-chooser", Me.path + "/locale");
 const _ = Gettext.gettext;
 
 var SETTINGS_SCHEMA = "org.gnome.shell.extensions.sound-output-device-chooser";
@@ -65,7 +65,7 @@ function getPortsFromSettings(_settings) {
 }
 
 function setPortsSettings(ports,_settings) {
-    let settingsObj = { 'version': PORT_SETTINGS_VERSION };
+    let settingsObj = { "version": PORT_SETTINGS_VERSION };
     settingsObj.ports = ports;
     //_d(JSON.stringify(settingsObj));
     _settings.set_string(PORT_SETTINGS, JSON.stringify(settingsObj));
@@ -101,8 +101,8 @@ function migratePortSettings(currVersion, currSettings, _settings) {
 }
 
 const SDCSettingsWidget = new GObject.Class({
-    Name: 'SDC.Prefs.Widget',
-    GTypeName: 'SDCSettingsWidget',
+    Name: "SDC.Prefs.Widget",
+    GTypeName: "SDCSettingsWidget",
     Extends: Gtk.Box,
 
     _init: function(params) {
@@ -118,7 +118,7 @@ const SDCSettingsWidget = new GObject.Class({
         // creates the ui builder and add the main resource file
         let uiFilePath = Me.path + "/ui/prefs-dialog.gtkbuilder";
         let builder = new Gtk.Builder();
-        builder.set_translation_domain('sound-output-device-chooser');
+        builder.set_translation_domain("sound-output-device-chooser");
 
         if (builder.add_from_file(uiFilePath) == 0) {
             _d("JS LOG: could not load the ui file: %s".format(uiFilePath));
@@ -128,7 +128,7 @@ const SDCSettingsWidget = new GObject.Class({
             });
             this.pack_start(label, true, true, 0);
         } else {
-            _d('JS LOG:_UI file receive and load: ' + uiFilePath);
+            _d("JS LOG:_UI file receive and load: " + uiFilePath);
 
             let mainContainer = builder.get_object("main-container");
 
