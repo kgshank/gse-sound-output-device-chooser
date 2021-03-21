@@ -57,9 +57,7 @@ class PAHelper():
                              self._pa_card_info_cb_t , None)
 
             pa.pa_mainloop_iterate(self.mainloop, 0, byref(retVal))
-        
-    
-       	print(dumps({'cards': self._cards, 'ports':self._ports}, indent = 5))
+        print(dumps({'cards': self._cards, 'ports':self._ports}, indent = 5))
         
         try:    
             if operation:
@@ -105,7 +103,7 @@ class PAHelper():
             obj = {}
             obj['name'] = port.name.decode('utf8') if port.name  else ''
             obj['human_name'] = port.description.decode('utf8') if port.description  else ''
-            obj['direction'] = port.direction
+            obj['direction'] =  'Output' if (port.direction &  pa.PA_DIRECTION_OUTPUT) else  'Input'
             obj['available'] = port.available
             obj['n_profiles'] = port.n_profiles
             obj['profiles'] = []

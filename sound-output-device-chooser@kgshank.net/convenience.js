@@ -40,12 +40,12 @@ else {
  * @schema: (optional): the GSettings schema id Builds and return a GSettings
  *          schema for
  * @schema, using schema files in extensions dir/schemas. If
- * @schema is not provided, it is taken from metadata['settings-schema'].
+ * @schema is not provided, it is taken from metadata["settings-schema"].
  */
 function getSettings(schema) {
     // let extension = ExtensionUtils.getCurrentExtension();
 
-    schema = schema || Me.metadata['settings-schema'];
+    schema = schema || Me.metadata["settings-schema"];
 
     const GioSSS = Gio.SettingsSchemaSource;
 
@@ -54,7 +54,7 @@ function getSettings(schema) {
     // otherwise assume that extension has been installed in the
     // same prefix as gnome-shell (and therefore schemas are available
     // in the standard folders)
-    let schemaDir = Me.dir.get_child('schemas');
+    let schemaDir = Me.dir.get_child("schemas");
     let schemaSource;
     if (schemaDir.query_exists(null))
         schemaSource = GioSSS.new_from_directory(schemaDir.get_path(), GioSSS.get_default(), false);
@@ -63,8 +63,8 @@ function getSettings(schema) {
 
     let schemaObj = schemaSource.lookup(schema, true);
     if (!schemaObj)
-        throw new Error('Schema ' + schema + ' could not be found for extension '
-            + Me.metadata.uuid + '. Please check your installation.');
+        throw new Error("Schema " + schema + " could not be found for extension "
+            + Me.metadata.uuid + ". Please check your installation.");
 
     let _settings = new Gio.Settings({ settings_schema: schemaObj });
     return _settings;
@@ -127,7 +127,7 @@ function isCmdFound(cmd) {
         return true;
     }
     catch (e) {
-        _log('ERROR: ' + cmd + ' execution failed. ' + e);
+        _log("ERROR: " + cmd + " execution failed. " + e);
         return false;
     }
 }
@@ -141,18 +141,18 @@ function refreshCards() {
     let newProfLogic = _settings.get_boolean(Prefs.NEW_PROFILE_ID);
     if (newProfLogic) {
         _log("New logic");
-        let pyLocation = Me.dir.get_child('utils/pa_helper.py').get_path();
-        let pythonExec = ['python', 'python3', 'python2'].find(cmd => isCmdFound(cmd));
+        let pyLocation = Me.dir.get_child("utils/pa_helper.py").get_path();
+        let pythonExec = ["python", "python3", "python2"].find(cmd => isCmdFound(cmd));
         if (!pythonExec) {
-            _log('ERROR: Python not found. fallback to default mode');
+            _log("ERROR: Python not found. fallback to default mode");
             _settings.set_boolean(Prefs.NEW_PROFILE_ID, false);
             Gio.Settings.sync();
             newProfLogic = false;
         }
         else {
             try {
-                _log('Python found.' + pythonExec);
-                let [result, out, err, exit_code] = GLib.spawn_command_line_sync(pythonExec + ' ' + pyLocation);
+                _log("Python found." + pythonExec);
+                let [result, out, err, exit_code] = GLib.spawn_command_line_sync(pythonExec + " " + pyLocation);
                 // _log("result" + result +" out"+out + " exit_code" +
                 // exit_code + "err" +err);
                 if (result && !exit_code) {
@@ -160,13 +160,13 @@ function refreshCards() {
                         out = ByteArray.toString(out);
                     }
                     let obj = JSON.parse(out);
-                    cards = obj['cards'];
-                    ports = obj['ports'];
+                    cards = obj["cards"];
+                    ports = obj["ports"];
                 }
             }
             catch (e) {
                 error = true;
-                _log('ERROR: Python execution failed. fallback to default mode' + e);
+                _log("ERROR: Python execution failed. fallback to default mode" + e);
                 _settings.set_boolean(Prefs.NEW_PROFILE_ID, false);
                 Gio.Settings.sync();
             }
@@ -178,14 +178,14 @@ function refreshCards() {
         try {
             let env = GLib.get_environ();
             env = GLib.environ_setenv(env, "LANG", "C", true);
-            let [result, out, err, exit_code] = GLib.spawn_sync(null, ['pactl', 'list', 'cards'], env, GLib.SpawnFlags.SEARCH_PATH, null);
+            let [result, out, err, exit_code] = GLib.spawn_sync(null, ["pactl", "list", "cards"], env, GLib.SpawnFlags.SEARCH_PATH, null);
             //_log(result+"--"+out+"--"+ err+"--"+ exit_code)
             if (result && !exit_code) {
                 parseOutput(out);
             }
         }
         catch (e) {
-            _log('ERROR: pactl execution failed. No ports/profiles will be displayed' + e);
+            _log("ERROR: pactl execution failed. No ports/profiles will be displayed." + e);
         }
     }
     //_log(Array.isArray(cards));
@@ -197,9 +197,9 @@ function refreshCards() {
 function parseOutput(out) {
     let lines;
     if (out instanceof Uint8Array) {
-        lines = ByteArray.toString(out).split('\n');
+        lines = ByteArray.toString(out).split("\n");
     } else {
-        lines = out.toString().split('\n');
+        lines = out.toString().split("\n");
     }
 
     let cardIndex;
@@ -213,7 +213,7 @@ function parseOutput(out) {
         if ((matches = /^Card\s#(\d+)$/.exec(line))) {
             cardIndex = matches[1];
             if (!cards[cardIndex]) {
-                cards[cardIndex] = { 'index': cardIndex, 'profiles': [], 'ports': [] };
+                cards[cardIndex] = { "index": cardIndex, "profiles": [], "ports": [] };
             }
         }
         else if ((matches = /^\t*Name:\s+(.*?)$/.exec(line)) && cards[cardIndex]) {
@@ -241,23 +241,28 @@ function parseOutput(out) {
                     break;
                 case "PROFILES":
                     if ((matches = /.*?((?:output|input)[^+]*?):\s(.*?)\s\(sinks:/.exec(line))) {
-                        cards[cardIndex].profiles.push({ 'name': matches[1], 'human_name': matches[2] });
+                        cards[cardIndex].profiles.push({ "name": matches[1], "human_name": matches[2] });
                     }
                     break;
                 case "PORTS":
                     if ((matches = /\t*(.*?):\s(.*)\s\(.*?priority:/.exec(line))) {
-                        port = { 'name': matches[1], 'human_name': matches[2], 'card_name': cards[cardIndex].name, 'card_description': cards[cardIndex].card_description };
+                        port = { "name": matches[1], "human_name": matches[2], "card_name": cards[cardIndex].name, "card_description": cards[cardIndex].card_description };
                         cards[cardIndex].ports.push(port);
                         ports.push(port);
                     }
                     else if (port && (matches = /\t*Part of profile\(s\):\s(.*)/.exec(line))) {
                         let profileStr = matches[1];
-                        port.profiles = profileStr.split(', ');
+                        port.profiles = profileStr.split(", ");
                         port = null;
                     }
                     break;
             }
         }
+    }
+    if (ports) {
+        ports.forEach(p => {
+            p.direction = p.profiles.filter(pr => pr.indexOf("+input:") == -1).some(pr => (pr.indexOf("output:") >= 0)) ? "Output" : "Input";
+        });
     }
 }
 
@@ -326,7 +331,7 @@ function getProfilesForPort(portName, card) {
         let port = card.ports.find(port => (portName === port.name));
         if (port) {
             if (port.profiles) {
-                return card.profiles.filter(profile => (profile.name.indexOf('+input:') == -1 && port.profiles.includes(profile.name)))
+                return card.profiles.filter(profile => (profile.name.indexOf("+input:") == -1 && port.profiles.includes(profile.name)))
             }
         }
     }

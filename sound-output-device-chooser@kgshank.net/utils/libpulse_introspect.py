@@ -33,11 +33,6 @@
 import ctypes
 from ctypes.util import find_library
 
-
-
-    
-
-
 c_int128 = ctypes.c_ubyte*16
 c_uint128 = c_int128
 void = None
@@ -498,7 +493,8 @@ pa_proplist_to_string.argtypes = [POINTER_T(struct_pa_proplist)]
 pa_proplist_gets = _libraries['libpulse.so'].pa_proplist_gets
 pa_proplist_gets.restype = POINTER_T(ctypes.c_char)
 pa_proplist_gets.argtypes = [POINTER_T(struct_pa_proplist), POINTER_T(ctypes.c_char)]
-
+PA_DIRECTION_OUTPUT = 0x0001
+PA_DIRECTION_INPUT = 0x0002
 
 
 __all__ = \
@@ -545,4 +541,4 @@ __all__ = \
     'struct_pa_mainloop_api', 'struct_pa_operation',
     'struct_pa_proplist', 'struct_pa_sample_spec',
     'struct_pa_spawn_api', 'struct_pa_time_event', 'struct_pollfd',
-    'struct_timeval', 'uint32_t','pa_proplist_to_string','pa_proplist_gets']
+    'struct_timeval', 'uint32_t','pa_proplist_to_string','pa_proplist_gets','PA_DIRECTION_OUTPUT', 'PA_DIRECTION_INPUT']
