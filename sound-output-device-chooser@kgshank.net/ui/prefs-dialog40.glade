@@ -47,7 +47,6 @@
   </object>
   <object class="GtkBox" id="main-container">
     <property name="visible">1</property>
-    <property name="can-focus">0</property>
     <property name="margin-start">6</property>
     <property name="margin-end">6</property>
     <property name="margin-top">6</property>
@@ -62,7 +61,6 @@
         <property name="homogeneous">1</property>
         <child>
           <object class="GtkBox">
-            <property name="can-focus">0</property>
             <property name="margin-start">12</property>
             <property name="margin-end">6</property>
             <property name="margin-top">12</property>
@@ -87,7 +85,6 @@
                             <child>
                               <object class="GtkLabel">
                                 <property name="hexpand">1</property>
-                                <property name="can-focus">0</property>
                                 <property name="halign">start</property>
                                 <property name="margin-start">5</property>
                                 <property name="label" translatable="yes">Hide selector if there&apos;s only one device</property>
@@ -108,13 +105,11 @@
                         <property name="width-request">100</property>
                         <property name="child">
                           <object class="GtkBox">
-                            <property name="can-focus">0</property>
                             <property name="margin-top">6</property>
                             <property name="margin-bottom">6</property>
                             <child>
                               <object class="GtkLabel">
                                 <property name="hexpand">1</property>
-                                <property name="can-focus">0</property>
                                 <property name="halign">start</property>
                                 <property name="margin-start">5</property>
                                 <property name="label" translatable="yes">Display audio profiles for selection</property>
@@ -135,13 +130,11 @@
                         <property name="width-request">100</property>
                         <property name="child">
                           <object class="GtkBox">
-                            <property name="can-focus">0</property>
                             <property name="margin-top">6</property>
                             <property name="margin-bottom">6</property>
                             <child>
                               <object class="GtkLabel">
                                 <property name="hexpand">1</property>
-                                <property name="can-focus">0</property>
                                 <property name="halign">start</property>
                                 <property name="margin-start">5</property>
                                 <property name="margin-end">20</property>
@@ -162,7 +155,6 @@
                 </child>
                 <child type="label">
                   <object class="GtkLabel">
-                    <property name="can-focus">0</property>
                     <property name="label" translatable="yes">General Settings</property>
                     <attributes>
                       <attribute name="weight" value="bold"></attribute>
@@ -173,24 +165,20 @@
             </child>
             <child>
               <object class="GtkFrame">
-                <property name="can-focus">0</property>
                 <child>
 
                   <object class="GtkListBox">
-                    <property name="can-focus">0</property>
                     <child>
                       <object class="GtkListBoxRow">
                         <property name="width-request">100</property>
                         <property name="child">
                           <object class="GtkBox">
-                            <property name="can-focus">0</property>
                             <property name="valign">center</property>
                             <property name="margin-top">6</property>
                             <property name="margin-bottom">6</property>
                             <child>
                               <object class="GtkLabel">
                                 <property name="hexpand">1</property>
-                                <property name="can-focus">0</property>
                                 <property name="halign">start</property>
                                 <property name="margin-start">5</property>
                                 <property name="label" translatable="yes">Show output devices</property>
@@ -211,7 +199,6 @@
                 </child>
                 <child type="label">
                   <object class="GtkLabel">
-                    <property name="can-focus">0</property>
                     <property name="label" translatable="yes">Output Devices</property>
                     <attributes>
                       <attribute name="weight" value="bold"></attribute>
@@ -222,11 +209,9 @@
             </child>
             <child>
               <object class="GtkFrame">
-                <property name="can-focus">0</property>
                 <child>
 
                   <object class="GtkListBox">
-                    <property name="can-focus">0</property>
                     <property name="selection-mode">none</property>
                     <child>
                       <object class="GtkListBoxRow">
@@ -234,14 +219,12 @@
                         <property name="hexpand">1</property>
                         <property name="child">
                           <object class="GtkBox">
-                            <property name="can-focus">0</property>
                             <property name="valign">center</property>
                             <property name="margin-top">6</property>
                             <property name="margin-bottom">6</property>
                             <child>
                               <object class="GtkLabel">
                                 <property name="hexpand">1</property>
-                                <property name="can-focus">0</property>
                                 <property name="halign">start</property>
                                 <property name="margin-start">5</property>
                                 <property name="label" translatable="yes">Show input devices</property>
@@ -263,13 +246,11 @@
                         <property name="valign">center</property>
                         <property name="child">
                           <object class="GtkBox">
-                            <property name="can-focus">0</property>
                             <property name="margin-top">6</property>
                             <property name="margin-bottom">6</property>
                             <child>
                               <object class="GtkLabel">
                                 <property name="hexpand">1</property>
-                                <property name="can-focus">0</property>
                                 <property name="halign">start</property>
                                 <property name="margin-start">5</property>
                                 <property name="label" translatable="yes">Show volume control for default device</property>
@@ -290,7 +271,6 @@
                 </child>
                 <child type="label">
                   <object class="GtkLabel">
-                    <property name="can-focus">0</property>
                     <property name="label" translatable="yes">Input Devices</property>
                     <attributes>
                       <attribute name="weight" value="bold"></attribute>
@@ -301,11 +281,9 @@
             </child>
             <child>
               <object class="GtkFrame">
-                <property name="can-focus">0</property>
                 <child>
 
                   <object class="GtkListBox">
-                    <property name="can-focus">0</property>
                     <property name="selection-mode">none</property>
                     <child>
                       <object class="GtkListBoxRow">
@@ -313,13 +291,11 @@
                         <property name="child">
                           <object class="GtkBox">
                             <property name="name">6</property>
-                            <property name="can-focus">0</property>
                             <property name="margin-top">6</property>
                             <property name="margin-bottom">6</property>
                             <child>
                               <object class="GtkLabel">
                                 <property name="hexpand">1</property>
-                                <property name="can-focus">0</property>
                                 <property name="halign">start</property>
                                 <property name="margin-start">5</property>
                                 <property name="label" translatable="yes">Icon Theme</property>
@@ -328,7 +304,6 @@
                             <child>
                               <object class="GtkComboBox" id="icon-theme">
                                 <property name="width-request">100</property>
-                                <property name="can-focus">0</property>
                                 <property name="margin-end">5</property>
                                 <property name="model">icon-theme-store</property>
                                 <property name="id-column">0</property>
@@ -349,13 +324,11 @@
                         <property name="width-request">100</property>
                         <property name="child">
                           <object class="GtkBox">
-                            <property name="can-focus">0</property>
                             <property name="margin-top">6</property>
                             <property name="margin-bottom">6</property>
                             <child>
                               <object class="GtkLabel">
                                 <property name="hexpand">1</property>
-                                <property name="can-focus">0</property>
                                 <property name="halign">start</property>
                                 <property name="margin-start">5</property>
                                 <property name="label" translatable="yes">Display icons only in selection list</property>
@@ -375,7 +348,6 @@
                 </child>
                 <child type="label">
                   <object class="GtkLabel">
-                    <property name="can-focus">0</property>
                     <property name="label" translatable="yes">Icons</property>
                     <attributes>
                       <attribute name="weight" value="bold"></attribute>
@@ -386,11 +358,9 @@
             </child>
             <child>
               <object class="GtkFrame">
-                <property name="can-focus">0</property>
                 <child>
 
                   <object class="GtkListBox">
-                    <property name="can-focus">0</property>
                     <property name="selection-mode">none</property>
                     <child>
                       <object class="GtkListBoxRow">
@@ -398,13 +368,11 @@
                         <property name="child">
                           <object class="GtkBox">
                             <property name="name">6</property>
-                            <property name="can-focus">0</property>
                             <property name="margin-top">6</property>
                             <property name="margin-bottom">6</property>
                             <child>
                               <object class="GtkLabel">
                                 <property name="hexpand">1</property>
-                                <property name="can-focus">0</property>
                                 <property name="halign">start</property>
                                 <property name="margin-start">5</property>
                                 <property name="label" translatable="yes">Enable Log messages</property>
@@ -422,13 +390,11 @@
                         <property name="width-request">100</property>
                         <property name="child">
                           <object class="GtkBox">
-                            <property name="can-focus">0</property>
                             <property name="margin-top">6</property>
                             <property name="margin-bottom">6</property>
                             <child>
                               <object class="GtkLabel">
                                 <property name="hexpand">1</property>
-                                <property name="can-focus">0</property>
                                 <property name="halign">start</property>
                                 <property name="margin-start">5</property>
                                 <property name="label" translatable="yes">Enable new profile identification</property>
@@ -448,7 +414,6 @@
                 </child>
                 <child type="label">
                   <object class="GtkLabel">
-                    <property name="can-focus">0</property>
                     <property name="label" translatable="yes">Miscellaneous</property>
                     <attributes>
                       <attribute name="weight" value="bold"></attribute>
@@ -461,7 +426,6 @@
         </child>
         <child>
           <object class="GtkBox">
-            <property name="can-focus">0</property>
             <property name="margin-start">6</property>
             <property name="margin-end">12</property>
             <property name="margin-top">12</property>
@@ -469,12 +433,10 @@
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkFrame">
-                <property name="can-focus">0</property>
                 <property name="vexpand">1</property>
 
                 <property name="child">
                   <object class="GtkBox">
-                    <property name="can-focus">0</property>
                     <property name="margin-start">4</property>
                     <property name="margin-end">4</property>
                     <property name="margin-bottom">4</property>
@@ -560,7 +522,6 @@
                 </property>
                 <child type="label">
                   <object class="GtkLabel">
-                    <property name="can-focus">0</property>
                     <property name="label" translatable="yes">Port Settings</property>
                     <attributes>
                       <attribute name="weight" value="bold"></attribute>
