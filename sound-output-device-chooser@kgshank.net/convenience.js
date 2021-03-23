@@ -95,16 +95,19 @@ function getProfiles(control, uidevice) {
 
         if (cards && cards[stream.card_index]) {
             _log("Getting profile form stream id " + uidevice.port_name);
-            return getProfilesForPort(uidevice.port_name, cards[stream.card_index]);
+            let profiles;
+            if ((profiles = getProfilesForPort(uidevice.port_name, cards[stream.card_index]))) {
+                return profiles;
+            }           
         }
     }
     else {
         /* Device is not active device, lets try match with port name */
         refreshCards();
-        for (let id in cards) {
+        for(let card of Object.values(cards)) {
             let profiles;
-            _log("Getting profile from cards " + uidevice.port_name + " for card id " + id);
-            if ((profiles = getProfilesForPort(uidevice.port_name, cards[id]))) {
+            _log("Getting profile from cards " + uidevice.port_name + " for card id " + card.id);
+            if ((profiles = getProfilesForPort(uidevice.port_name, card))) {
                 return profiles;
             }
         }
@@ -335,7 +338,7 @@ function getProfilesForPort(portName, card) {
             }
         }
     }
-    return [];
+    return null;
 }
 
 function setLog(value) {
