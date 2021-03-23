@@ -109,14 +109,24 @@ const SDCSettingsWidget = new GObject.Class({
         this.parent(params);
         this.orientation = Gtk.Orientation.VERTICAL;
         this.spacing = 0;
+        let uiFileSuffix = "";
 
+        if (Gtk.get_major_version() >= "4") {
+            uiFileSuffix = "40";
+            this.__addFn = this.append;
+            this.__showFn = this.show;
+        }
+        else {
+            this.__addFn = x => pack_start(x, true, true, 0);
+            this.__showFn = this.show_all;
+        }
         // creates the settings
         this._settings = Lib.getSettings(SETTINGS_SCHEMA);
 
         Lib.setLog(this._settings.get_boolean(ENABLE_LOG));
 
         // creates the ui builder and add the main resource file
-        let uiFilePath = Me.path + "/ui/prefs-dialog.glade";
+        let uiFilePath = Me.path + "/ui/prefs-dialog" +uiFileSuffix +".glade";
         let builder = new Gtk.Builder();
         builder.set_translation_domain("sound-output-device-chooser");
 
@@ -126,14 +136,14 @@ const SDCSettingsWidget = new GObject.Class({
                 label: _("Could not load the preferences UI file"),
                 vexpand: true
             });
-            this.pack_start(label, true, true, 0);
+            this.__addFn(label);            
         } else {
             _d("JS LOG:_UI file receive and load: " + uiFilePath);
 
             let mainContainer = builder.get_object("main-container");
 
-            this.pack_start(mainContainer, true, true, 0);
-
+            this.__addFn(mainContainer);
+            
             this._signalManager = new SignalManager();
 
             let showProfileSwitch = builder.get_object("show-profile");
@@ -277,7 +287,7 @@ const SDCSettingsWidget = new GObject.Class({
 
 function buildPrefsWidget() {
     let _settingsWidget = new SDCSettingsWidget();
-    _settingsWidget.show_all();
+    _settingsWidget.__showFn();
 
     return _settingsWidget;
 }
