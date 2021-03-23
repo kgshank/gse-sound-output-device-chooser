@@ -117,7 +117,7 @@ const SDCSettingsWidget = new GObject.Class({
             this.__showFn = this.show;
         }
         else {
-            this.__addFn = x => pack_start(x, true, true, 0);
+            this.__addFn = x => this.pack_start(x, true, true, 0);
             this.__showFn = this.show_all;
         }
         // creates the settings
