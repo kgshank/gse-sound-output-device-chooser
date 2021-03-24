@@ -19,4 +19,5 @@ A clear and concise description of what the bug is.
 * OS
 
 **Error / Journal messages**
-* Journal messages related to the error / extension.
+* Enable Log messages in extension preferences and share the output of  `journalctl -r | grep SDC`
+
