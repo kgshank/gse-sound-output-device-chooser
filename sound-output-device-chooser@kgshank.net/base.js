@@ -23,6 +23,7 @@ const { Atk, St, GObject, GLib } = imports.gi;
 
 const Gvc = imports.gi.Gvc;
 const ExtensionUtils = imports.misc.extensionUtils;
+const Config = imports.misc.config;
 const Me = ExtensionUtils.getCurrentExtension();
 const Lib = Me.imports.convenience;
 const _d = Lib._log;
@@ -30,22 +31,25 @@ const Prefs = Me.imports.prefs;
 const SignalManager = Lib.SignalManager;
 
 function _isDeviceInValid(uidevice) {
-    return (!uidevice || (uidevice.description && uidevice.description.match(/Dummy\s+(Output|Input)/gi)));
+    return (!uidevice || (uidevice.description != null && uidevice.description.match(/Dummy\s+(Output|Input)/gi)));
 }
 
 function getMixerControl() {
     return VolumeMenu.getMixerControl();
 }
 
-var ProfileMenuItem = GObject.registerClass(
-    {
-        GTypeName: 'ProfileMenuItem'
-    }, class ProfileMenuItem
+var ProfileMenuItem = class ProfileMenuItem
     extends PopupMenu.PopupMenuItem {
-    _init(id, title, profileName, callback) {
-        // super("Profile: " + profileName);
-        super._init(title);
+    constructor(id, title, profileName, callback) {
+        super(title);
+        this._init(id, title, profileName, callback);
+    }
 
+    _init(id, title, profileName, callback) {
+        if (super._init) {
+            super._init(title);
+        }
+        _d("ProfileMenuItem: _init:" + title);
         this.id = id;
         this.profileName = profileName;
         this._ornamentLabel.set_style("min-width: 3em;margin-left: 3em;");
@@ -82,90 +86,101 @@ var ProfileMenuItem = GObject.registerClass(
     setVisibility(visibility) {
         this.actor.visible = visibility;
     }
-});
+}
 
-var SoundDeviceMenuItem = GObject.registerClass(
-    {
-        GTypeName: 'SoundDeviceMenuItem'
-    },
-    class SoundDeviceMenuItem extends PopupMenu.PopupImageMenuItem {
-        _init(id, title, icon_name, profiles, callback, profileCallback) {
+var SoundDeviceMenuItem = class SoundDeviceMenuItem extends PopupMenu.PopupImageMenuItem {
+    constructor(id, title, icon_name, profiles, callback, profileCallback) {
+        super(title, icon_name);
+        this._init(id, title, icon_name, profiles, callback, profileCallback);
+    }
+
+    _init(id, title, icon_name, profiles, callback, profileCallback) {
+        if (super._init) {
             super._init(title, icon_name);
-            this.id = id;
-            this.title = title;
-            this.icon_name = icon_name;
-            this.profiles = (profiles) ? profiles : [];
-
-            this.profilesitems = new Map();
-            for (let profile of this.profiles) {
-                if (!this.profilesitems.has(profile.name)) {
-                    this.profilesitems.set(profile.name, new ProfileMenuItem(id, "Profile: " + profile.human_name, profile.name, profileCallback));
-                }
-            }
-
-            this.connect('activate', () => {
-                _d("Device Change request for " + id);
-                callback(this.id);
-            });
-            this.available = true;
-            this.activeProfile = "";
-            this.activeDevice = false;
-            this.visible = false;
         }
+        _d("SoundDeviceMenuItem: _init:" + title);
+        this.id = id;
+        this.title = title;
+        this.icon_name = icon_name;
+        this.profiles = (profiles) ? profiles : [];
 
-        isAvailable() {
-            return this.available;
-        }
-
-        setAvailable(_ac) {
-            this.available = _ac;
-        }
-
-        setActiveProfile(_p) {
-            if (_p && this.activeProfile != _p) {
-                if (this.profilesitems.has(this.activeProfile)) {
-                    this.profilesitems.get(this.activeProfile).setProfileActive(false);
-                }
-                this.activeProfile = _p;
-                if (this.profilesitems.has(_p)) {
-                    this.profilesitems.get(_p).setProfileActive(true);
-                }
+        this.profilesitems = new Map();
+        for (let profile of this.profiles) {
+            if (!this.profilesitems.has(profile.name)) {
+                this.profilesitems.set(profile.name, new ProfileMenuItem(id, "Profile: " + profile.human_name, profile.name, profileCallback));
             }
         }
 
-        setVisibility(_v) {
-            this.actor.visible = _v;
-            if (!_v) {
-                this.profilesitems.forEach((p) => p.setVisibility(false));
+        this.connect('activate', () => {
+            _d("Device Change request for " + id);
+            callback(this.id);
+        });
+        this.available = true;
+        this.activeProfile = "";
+        this.activeDevice = false;
+        this.visible = false;
+    }
+
+    isAvailable() {
+        return this.available;
+    }
+
+    setAvailable(_ac) {
+        this.available = _ac;
+    }
+
+    setActiveProfile(_p) {
+        if (_p && this.activeProfile != _p) {
+            if (this.profilesitems.has(this.activeProfile)) {
+                this.profilesitems.get(this.activeProfile).setProfileActive(false);
             }
-            this.visible = _v;
-        };
-
-        isVisible() {
-            return this.visible;
-        }
-
-        setActiveDevice(_a) {
-            this.activeDevice = _a;
-            if (!_a) {
-                this.setOrnament(PopupMenu.Ornament.NONE);
-            }
-            else {
-                this.setOrnament(PopupMenu.Ornament.CHECK);
-                this._ornamentLabel.text = '\u266B';
+            this.activeProfile = _p;
+            if (this.profilesitems.has(_p)) {
+                this.profilesitems.get(_p).setProfileActive(true);
             }
         }
+    }
 
-        setProfileVisibility(_v) {
-            this.profilesitems.forEach(p =>
-                p.setVisibility(_v && this.canShowProfile()));
+    setVisibility(_v) {
+        this.actor.visible = _v;
+        if (!_v) {
+            this.profilesitems.forEach((p) => p.setVisibility(false));
         }
+        this.visible = _v;
+    };
 
-        canShowProfile() {
-            return (this.isVisible() && this.profilesitems.size > 1);
+    isVisible() {
+        return this.visible;
+    }
+
+    setActiveDevice(_a) {
+        this.activeDevice = _a;
+        if (!_a) {
+            this.setOrnament(PopupMenu.Ornament.NONE);
         }
-    });
+        else {
+            this.setOrnament(PopupMenu.Ornament.CHECK);
+            this._ornamentLabel.text = '\u266B';
+        }
+    }
 
+    setProfileVisibility(_v) {
+        this.profilesitems.forEach(p =>
+            p.setVisibility(_v && this.canShowProfile()));
+    }
+
+    canShowProfile() {
+        return (this.isVisible() && this.profilesitems.size >= 1);
+    }
+}
+
+if (parseInt(Config.PACKAGE_VERSION) >= 3.34) {
+    delete ProfileMenuItem.prototype.constructor;
+    ProfileMenuItem = GObject.registerClass({ GTypeName: 'ProfileMenuItem' }, ProfileMenuItem);
+
+    delete SoundDeviceMenuItem.prototype.constructor;
+    SoundDeviceMenuItem = GObject.registerClass({ GTypeName: 'SoundDeviceMenuItem' }, SoundDeviceMenuItem);
+}
 
 var SoundDeviceChooserBase = class SoundDeviceChooserBase {
 
@@ -176,7 +191,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         this._devices = new Map();
         let _control = this._getMixerControl();
         this._settings = Lib.getSettings(Prefs.SETTINGS_SCHEMA);
-        _d("Constructor" + deviceType);
+        _d("Constructor:" + deviceType);
 
         this._setLog();
         this._signalManager = new SignalManager();
@@ -423,7 +438,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
     }
 
     _setActiveProfile() {
-        if(!this.menuItem._getOpenState()){
+        if (!this.menuItem._getOpenState()) {
             return;
         }
         let control = this._getMixerControl();
