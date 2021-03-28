@@ -1,5 +1,9 @@
 ### Change log
 -----------------------
+#### 35,36 & 37
+* V40 compatibility updates
+* Remove C pointer references
+
 #### 34 & 33
 * Fixes for issues 
   * [131](../../issues/131)
