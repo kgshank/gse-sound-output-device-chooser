@@ -170,7 +170,7 @@ var SoundDeviceMenuItem = class SoundDeviceMenuItem extends PopupMenu.PopupImage
     }
 
     canShowProfile() {
-        return (this.isVisible() && this.profilesitems.size >= 1);
+        return (this.isVisible() && this.profilesitems.size > 1);
     }
 }
 
