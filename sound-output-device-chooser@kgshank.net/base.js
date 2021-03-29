@@ -174,11 +174,9 @@ var SoundDeviceMenuItem = class SoundDeviceMenuItem extends PopupMenu.PopupImage
     }
 }
 
-if (parseInt(Config.PACKAGE_VERSION) >= 3.34) {
-    delete ProfileMenuItem.prototype.constructor;
+if (parseFloat(Config.PACKAGE_VERSION) >= 3.34) {
     ProfileMenuItem = GObject.registerClass({ GTypeName: 'ProfileMenuItem' }, ProfileMenuItem);
 
-    delete SoundDeviceMenuItem.prototype.constructor;
     SoundDeviceMenuItem = GObject.registerClass({ GTypeName: 'SoundDeviceMenuItem' }, SoundDeviceMenuItem);
 }
 
