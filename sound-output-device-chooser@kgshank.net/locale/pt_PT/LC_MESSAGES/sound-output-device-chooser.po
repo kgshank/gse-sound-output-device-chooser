@@ -7,101 +7,140 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-24 23:47+0200\n"
+"POT-Creation-Date: 2021-05-07 13:13+0200\n"
 "PO-Revision-Date: 2020-05-18 11:25-0300\n"
+"Last-Translator: Claudio Sanches <contato@claudiosanches.com>\n"
 "Language-Team: \n"
+"Language: pt_PT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.3\n"
-"Last-Translator: Claudio Sanches <contato@claudiosanches.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Language: pt_PT\n"
 
-#: prefs-dialog.gtkbuilder:15
-msgid "Monochrome"
-msgstr "Monocromático"
-
-#: prefs-dialog.gtkbuilder:19
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:19
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:18
 msgid "Colored"
 msgstr "Colorido"
 
-#: prefs-dialog.gtkbuilder:23
-msgid "None"
-msgstr "Nenhum"
+#: sound-output-device-chooser@kgshank.net/prefs.js:136
+msgid "Could not load the preferences UI file"
+msgstr ""
 
-#: prefs-dialog.gtkbuilder:100
-msgid "Hide selector if there's only one device"
-msgstr "Ocultar seletor se houver apenas um dispositivo"
-
-#: prefs-dialog.gtkbuilder:142
-msgid "Display audio profiles for selection"
-msgstr "Exibir perfis de áudio para seleção"
-
-#: prefs-dialog.gtkbuilder:175
-msgid "General Settings"
-msgstr "Configurações gerais"
-
-#: prefs-dialog.gtkbuilder:220
-msgid "Show output devices"
-msgstr "Mostrar dispositivos de saída"
-
-#: prefs-dialog.gtkbuilder:253
-msgid "Output Devices"
-msgstr "Dispositivos de saída"
-
-#: prefs-dialog.gtkbuilder:300
-msgid "Show input devices"
-msgstr "Mostrar dispositivos de entrada"
-
-#: prefs-dialog.gtkbuilder:343
-msgid "Show volume control for default device"
-msgstr "Mostrar controle de volume para o dispositivo padrão"
-
-#: prefs-dialog.gtkbuilder:376
-msgid "Input Devices"
-msgstr "Dispositivos de entrada"
-
-#: prefs-dialog.gtkbuilder:422
-msgid "Icon Theme"
-msgstr "Tema do ícone"
-
-#: prefs-dialog.gtkbuilder:472
-msgid "Display icons only in selection list"
-msgstr "Exibir ícones apenas na lista de seleção"
-
-#: prefs-dialog.gtkbuilder:504
-msgid "Icons"
-msgstr "Ícones"
-
-#: prefs-dialog.gtkbuilder:549
-msgid "Enable Log messages"
-msgstr "Ativar mensagens de log"
-
-#: prefs-dialog.gtkbuilder:588
-msgid "Enable new profile identification "
-msgstr "Ativar nova identificação de perfil "
-
-#: prefs-dialog.gtkbuilder:620
-msgid "Miscellaneous"
-msgstr "Diversos"
-
-#: prefs-dialog.gtkbuilder:688
-msgid "Name"
-msgstr "Nome"
-
-#: prefs-dialog.gtkbuilder:702
-msgid "Show"
-msgstr "Exibir"
-
-#: prefs-dialog.gtkbuilder:716
-msgid "Hide"
-msgstr "Ocultar"
-
-#: prefs-dialog.gtkbuilder:730
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:754
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:506
 msgid "Default"
 msgstr "Padrão"
 
-#: prefs-dialog.gtkbuilder:756
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:711
+msgid "Device Type"
+msgstr ""
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:139
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:115
+msgid "Display audio profiles for selection"
+msgstr "Exibir perfis de áudio para seleção"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:487
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:334
+msgid "Display icons only in selection list"
+msgstr "Exibir ícones apenas na lista de seleção"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:559
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:378
+msgid "Enable Log messages"
+msgstr "Ativar mensagens de log"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:400
+#, fuzzy
+msgid "Enable new profile identification"
+msgstr "Ativar nova identificação de perfil "
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:598
+msgid "Enable new profile identification "
+msgstr "Ativar nova identificação de perfil "
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:179
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:141
+msgid "Extend Volume Menu to fit device names"
+msgstr ""
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:209
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:158
+msgid "General Settings"
+msgstr "Configurações gerais"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:740
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:492
+msgid "Hide"
+msgstr "Ocultar"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:99
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:90
+msgid "Hide selector if there's only one device"
+msgstr "Ocultar seletor se houver apenas um dispositivo"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:439
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:301
+msgid "Icon Theme"
+msgstr "Tema do ícone"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:516
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:351
+msgid "Icons"
+msgstr "Ícones"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:396
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:274
+msgid "Input Devices"
+msgstr "Dispositivos de entrada"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:628
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:417
+msgid "Miscellaneous"
+msgstr "Diversos"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:15
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:14
+msgid "Monochrome"
+msgstr "Monocromático"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:697
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:463
+msgid "Name"
+msgstr "Nome"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:23
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:22
+msgid "None"
+msgstr "Nenhum"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:281
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:202
+msgid "Output Devices"
+msgstr "Dispositivos de saída"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:780
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:525
 msgid "Port Settings"
 msgstr "Configurações de porta"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:726
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:478
+msgid "Show"
+msgstr "Exibir"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:325
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:230
+msgid "Show input devices"
+msgstr "Mostrar dispositivos de entrada"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:251
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:184
+msgid "Show output devices"
+msgstr "Mostrar dispositivos de saída"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:366
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:256
+msgid "Show volume control for default device"
+msgstr "Mostrar controle de volume para o dispositivo padrão"
