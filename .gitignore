@@ -1,4 +1,5 @@
 *.json
+*.mo
 *.pyc
 __pycache__/
 *.*~
