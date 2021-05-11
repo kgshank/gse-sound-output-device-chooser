@@ -100,7 +100,7 @@ var InputSliderInstance = class InputSliderInstance {
 
 var SDCInstance = class SDCInstance {
     constructor() {
-        this._settings = Lib.getSettings(Prefs.SETTINGS_SCHEMA);
+        this._settings = ExtensionUtils.getSettings();
         this._aggregateMenu = Main.panel.statusArea.aggregateMenu;
         this._volumeMenu = this._aggregateMenu._volume._volumeMenu;
         this._aggregateLayout = this._aggregateMenu.menu.box.get_layout_manager();

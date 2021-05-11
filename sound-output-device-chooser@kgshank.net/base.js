@@ -10,7 +10,7 @@
  * details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * this program. If not, see http://www.gnu.org/licenses/.
  * *****************************************************************************
  * Original Author: Gopi Sankar Karmegam
  ******************************************************************************/
@@ -19,45 +19,39 @@
 const Main = imports.ui.main;
 const PopupMenu = imports.ui.popupMenu;
 const VolumeMenu = imports.ui.status.volume;
+const MessageTray = imports.ui.messageTray;
 const { Atk, St, GObject, GLib } = imports.gi;
 
 const Gvc = imports.gi.Gvc;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Config = imports.misc.config;
 const Me = ExtensionUtils.getCurrentExtension();
+
+ExtensionUtils.initTranslations();
+const Gettext = imports.gettext;
+const _ = Gettext.gettext;
+
 const Lib = Me.imports.convenience;
 const _d = Lib._log;
 const Prefs = Me.imports.prefs;
+const DISPLAY_OPTIONS = Prefs.DISPLAY_OPTIONS;
 const SignalManager = Lib.SignalManager;
-
-function _isDeviceInValid(uidevice) {
-    return (!uidevice || (uidevice.description != null && uidevice.description.match(/Dummy\s+(Output|Input)/gi)));
-}
-
-function getMixerControl() {
-    return VolumeMenu.getMixerControl();
-}
 
 var ProfileMenuItem = class ProfileMenuItem
     extends PopupMenu.PopupMenuItem {
-    constructor(id, title, profileName, callback) {
+    constructor(title, profileName) {
         super(title);
-        this._init(id, title, profileName, callback);
+        this._init(title, profileName);
     }
 
-    _init(id, title, profileName, callback) {
+    _init(title, profileName) {
         if (super._init) {
             super._init(title);
         }
         _d("ProfileMenuItem: _init:" + title);
-        this.id = id;
         this.profileName = profileName;
         this._ornamentLabel.set_style("min-width: 3em;margin-left: 3em;");
         this.setProfileActive(false);
-        this.connect('activate', () => {
-            _d("Activating Profile:" + id + profileName);
-            callback(this.id, this.profileName);
-        });
     }
 
     setProfileActive(active) {
@@ -89,12 +83,12 @@ var ProfileMenuItem = class ProfileMenuItem
 }
 
 var SoundDeviceMenuItem = class SoundDeviceMenuItem extends PopupMenu.PopupImageMenuItem {
-    constructor(id, title, icon_name, profiles, callback, profileCallback) {
+    constructor(id, title, icon_name, profiles) {
         super(title, icon_name);
-        this._init(id, title, icon_name, profiles, callback, profileCallback);
+        this._init(id, title, icon_name, profiles);
     }
 
-    _init(id, title, icon_name, profiles, callback, profileCallback) {
+    _init(id, title, icon_name, profiles) {
         if (super._init) {
             super._init(title, icon_name);
         }
@@ -106,19 +100,27 @@ var SoundDeviceMenuItem = class SoundDeviceMenuItem extends PopupMenu.PopupImage
 
         this.profilesitems = new Map();
         for (let profile of this.profiles) {
-            if (!this.profilesitems.has(profile.name)) {
-                this.profilesitems.set(profile.name, new ProfileMenuItem(id, "Profile: " + profile.human_name, profile.name, profileCallback));
+            let profileName = profile.name;
+            if (!this.profilesitems.has(profileName)) {
+                let pItem = new ProfileMenuItem("Profile: " + profile.human_name, profileName);
+                this.profilesitems.set(profileName, pItem);
+                pItem.connect('activate', () => {
+                    _d("Activating Profile:" + id + profileName);
+                    this.emit("profile-activated", this.id, profileName);
+                });
             }
         }
 
         this.connect('activate', () => {
             _d("Device Change request for " + id);
-            callback(this.id);
+            _d("Emitting Signal...");
+            this.emit("device-activated", this.id);
         });
         this.available = true;
         this.activeProfile = "";
         this.activeDevice = false;
         this.visible = false;
+        this._displayOption = DISPLAY_OPTIONS.INITIAL;
     }
 
     isAvailable() {
@@ -172,12 +174,31 @@ var SoundDeviceMenuItem = class SoundDeviceMenuItem extends PopupMenu.PopupImage
     canShowProfile() {
         return (this.isVisible() && this.profilesitems.size > 1);
     }
+
+    setDisplayOption(displayOption) {
+        _d("Setting Display Option to : " + displayOption);
+        this._displayOption = displayOption;
+    }
+
+    getDisplayOption() {
+        return this._displayOption;
+    }
 }
 
 if (parseFloat(Config.PACKAGE_VERSION) >= 3.34) {
     ProfileMenuItem = GObject.registerClass({ GTypeName: 'ProfileMenuItem' }, ProfileMenuItem);
 
-    SoundDeviceMenuItem = GObject.registerClass({ GTypeName: 'SoundDeviceMenuItem' }, SoundDeviceMenuItem);
+    SoundDeviceMenuItem = GObject.registerClass({
+        GTypeName: "SoundDeviceMenuItem",
+        Signals: {
+            "device-activated": {
+                param_types: [GObject.TYPE_INT]
+            },
+            "profile-activated": {
+                param_types: [GObject.TYPE_INT, GObject.TYPE_STRING]
+            }
+        }
+    }, SoundDeviceMenuItem);
 }
 
 var SoundDeviceChooserBase = class SoundDeviceChooserBase {
@@ -188,7 +209,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         this.deviceType = deviceType;
         this._devices = new Map();
         let _control = this._getMixerControl();
-        this._settings = Lib.getSettings(Prefs.SETTINGS_SCHEMA);
+        this._settings = ExtensionUtils.getSettings();
         _d("Constructor:" + deviceType);
 
         this._setLog();
@@ -203,66 +224,63 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         }
     }
 
-    _getMixerControl() { return getMixerControl(); }
+    _getMixerControl() { return VolumeMenu.getMixerControl(); }
 
     _setLog() { Lib.setLog(this._settings.get_boolean(Prefs.ENABLE_LOG)); }
 
     _onControlStateChanged(control) {
         if (control.get_state() == Gvc.MixerControlState.READY) {
-            if (!this._initialised) {
-                this._initialised = true;
 
-                this._signalManager.addSignal(control, this.deviceType + "-added", this._deviceAdded.bind(this));
-                this._signalManager.addSignal(control, this.deviceType + "-removed", this._deviceRemoved.bind(this));
-                this._signalManager.addSignal(control, "active-" + this.deviceType + "-update", this._deviceActivated.bind(this));
+            this._signalManager.addSignal(control, this.deviceType + "-added", this._deviceAdded.bind(this));
+            this._signalManager.addSignal(control, this.deviceType + "-removed", this._deviceRemoved.bind(this));
+            this._signalManager.addSignal(control, "active-" + this.deviceType + "-update", this._deviceActivated.bind(this));
 
-                this._signalManager.addSignal(this._settings, "changed::" + Prefs.HIDE_ON_SINGLE_DEVICE, this._setChooserVisibility.bind(this));
-                this._signalManager.addSignal(this._settings, "changed::" + Prefs.SHOW_PROFILES, this._setProfileVisibility.bind(this));
-                this._signalManager.addSignal(this._settings, "changed::" + Prefs.ICON_THEME, this._setIcons.bind(this));
-                this._signalManager.addSignal(this._settings, "changed::" + Prefs.HIDE_MENU_ICONS, this._setIcons.bind(this));
-                this._signalManager.addSignal(this._settings, "changed::" + Prefs.PORT_SETTINGS, this._resetDevices.bind(this));
+            this._signalManager.addSignal(this._settings, "changed::" + Prefs.HIDE_ON_SINGLE_DEVICE, this._setChooserVisibility.bind(this));
+            this._signalManager.addSignal(this._settings, "changed::" + Prefs.SHOW_PROFILES, this._setProfileVisibility.bind(this));
+            this._signalManager.addSignal(this._settings, "changed::" + Prefs.ICON_THEME, this._setIcons.bind(this));
+            this._signalManager.addSignal(this._settings, "changed::" + Prefs.HIDE_MENU_ICONS, this._setIcons.bind(this));
+            this._signalManager.addSignal(this._settings, "changed::" + Prefs.PORT_SETTINGS, this._resetDevices.bind(this));
 
-                this._show_device_signal = Prefs["SHOW_" + this.deviceType.toUpperCase() + "_DEVICES"];
+            this._show_device_signal = Prefs["SHOW_" + this.deviceType.toUpperCase() + "_DEVICES"];
 
-                this._signalManager.addSignal(this._settings, "changed::" + this._show_device_signal, this._setVisibility.bind(this));
+            this._signalManager.addSignal(this._settings, "changed::" + this._show_device_signal, this._setVisibility.bind(this));
 
-                this._portsSettings = Prefs.getPortsFromSettings(this._settings);
+            this._portsSettings = Prefs.getPortsFromSettings(this._settings);
 
-                /**
-                 * There is no direct way to get all the UI devices from
-                 * mixercontrol. When enabled after shell loads, the signals
-                 * will not be emitted, a simple hack to look for ids, until any
-                 * uidevice is not found. The UI devices are always serialed
-                 * from from 1 to n
-                 */
+            /**
+             * There is no direct way to get all the UI devices from
+             * mixercontrol. When enabled after shell loads, the signals
+             * will not be emitted, a simple hack to look for ids, until any
+             * uidevice is not found. The UI devices are always serialed
+             * from from 1 to n
+             */
 
-                let id = 0;
+            let id = 0;
 
-                let dummyDevice = new Gvc.MixerUIDevice();
-                let maxId = dummyDevice.get_id();
+            let dummyDevice = new Gvc.MixerUIDevice();
+            let maxId = dummyDevice.get_id();
 
-                _d("Max Id:" + maxId);
+            _d("Max Id:" + maxId);
 
-                while (++id < maxId) {
-                    this._deviceAdded(control, id);
-                }
-                let defaultStream = this.getDefaultStream(control);
-                if (defaultStream) {
-                    let defaultDevice = control.lookup_device_from_stream(defaultStream);
-                    if (defaultDevice) {
-                        this._deviceActivated(control, defaultDevice.get_id());
-                    }
-                }
-
-                let profileVisibility = this._settings.get_boolean(Prefs.SHOW_PROFILES);
-                this._setProfileTimer(profileVisibility);
-
-                if (this._controlStateChangeSignal) {
-                    this._controlStateChangeSignal.disconnect();
-                    delete this._controlStateChangeSignal;
-                }
-                this._setVisibility();
+            while (++id < maxId) {
+                this._deviceAdded(control, id);
             }
+            let defaultStream = this.getDefaultStream(control);
+            if (defaultStream) {
+                let defaultDevice = control.lookup_device_from_stream(defaultStream);
+                if (defaultDevice) {
+                    this._deviceActivated(control, defaultDevice.get_id());
+                }
+            }
+
+            let profileVisibility = this._settings.get_boolean(Prefs.SHOW_PROFILES);
+            this._setProfileTimer(profileVisibility);
+
+            if (this._controlStateChangeSignal) {
+                this._controlStateChangeSignal.disconnect();
+                delete this._controlStateChangeSignal;
+            }
+            this._setVisibility();
         }
     }
 
@@ -291,7 +309,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         _d("Added - " + id);
 
         if (!obj) {
-            if (_isDeviceInValid(uidevice)) {
+            if (this._isDeviceInValid(uidevice)) {
                 return null;
             }
 
@@ -304,19 +322,20 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
                 icon = this.getDefaultIcon();
             icon = this._getIcon(icon);
 
-            obj = new SoundDeviceMenuItem(id, title, icon, Lib.getProfiles(control, uidevice), this._changeDeviceBase.bind(this), this._profileChangeCallback.bind(this));
+            obj = new SoundDeviceMenuItem(id, title, icon, Lib.getProfiles(control, uidevice));
+            obj.connect("device-activated", (item, id) => this._changeDeviceBase(id));
+            obj.connect("profile-activated", (item, id, name) => this._profileChangeCallback(id, name));
 
             this.menuItem.menu.addMenuItem(obj);
             obj.profilesitems.forEach(i => this.menuItem.menu.addMenuItem(i));
 
             this._devices.set(id, obj);
         }
-        else if (obj.isAvailable()) {
-            return //uidevice;
-        }
-        else {
+        else if (!obj.isAvailable())
             obj.setAvailable(true);
-        }
+        else
+            return;
+
 
         _d("Device Name:" + obj.title);
 
@@ -327,13 +346,14 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
             obj.setActiveProfile(uidevice.get_active_profile());
         }
 
-        if (!dontcheck && !this._canShowDevice(control, uidevice, uidevice.port_available)) {
+        if (!dontcheck && !this._canShowDevice(control, uidevice, obj, uidevice.port_available)) {
+            _d("This device is hidden in settings, lets hide...")
             this._deviceRemoved(control, id, true);
         }
-
-        this._setChooserVisibility();
-        this._setVisibility();
-        return //uidevice;
+        else {
+            this._setChooserVisibility();
+            this._setVisibility();
+        }
     }
 
     _profileChangeCallback(id, profileName) {
@@ -355,11 +375,12 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
 
     _deviceRemoved(control, id, dontcheck) {
         let obj = this._devices.get(id);
-        //let uidevice = this.lookupDeviceById(control,id);
+
         if (obj && obj.isAvailable()) {
             _d("Removed: " + id + ":" + obj.title);
             /*
-            if (!dontcheck && this._canShowDevice(control, uidevice, false)) {
+            let uidevice = this.lookupDeviceById(control,id);
+            if (!dontcheck && this._canShowDevice(control, uidevice, obj, false)) {
                 _d('Device removed, but not hiding as its set to be shown always');
                 return;
             }*/
@@ -384,7 +405,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
                if (obj === this._activeDevice) {
                    let device = Object.keys(this._devices).map((id) => this._devices[id]).find(({active}) => active === true);
                    if(device){
-                       this._changeDeviceBase(this._getMixerControl(), device.id);
+                       this._changeDeviceBase(device.id, this._getMixerControl());
                    }                    
                }
                this.deviceRemovedTimout = null;
@@ -406,19 +427,64 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         }
         if (obj && id != this._activeDeviceId) {
             _d("Activated: " + id + ":" + obj.title);
-            if (this._activeDeviceId) {
-                this._devices.get(this._activeDeviceId).setActiveDevice(false);
-            }
-            this._activeDeviceId = id;
-            obj.setActiveDevice(true);
+            if (this._settings.get_boolean(Prefs.CANNOT_ACTIVATE_HIDDEN_DEVICE)
+                && obj.getDisplayOption() === DISPLAY_OPTIONS.HIDE_ALWAYS) {
+                _d("Preference does not allow this hidden device to be activated, fallback to the previous aka original device");
+                let device = null;
 
-            this.menuItem.label.text = obj.title;
+                if (this._activeDeviceId) {
+                    device = this._devices.get(this._activeDeviceId);
+                }
+                else {
+                    device = Array.from(this._devices.values()).find(x => x.isAvailable());
+                }
 
-            if (!this._settings.get_boolean(Prefs.HIDE_MENU_ICONS)) {
-                this.menuItem.icon.icon_name = obj.icon_name;
-            } else {
-                this.menuItem.icon.gicon = null;
+                if (device) {
+                    let source = new MessageTray.Source("Sound Input & Output Device Chooser", device.icon_name);
+                    Main.messageTray.add(source);
+                    let notification = new MessageTray.Notification(source, _("Activated device is hidden in Port Settings"), 
+                    _("Deactivated Device: ") + obj.title + "\n" + _("Activated Device: ") + device.title + "\n" 
+                    + _("Disable in extension preferences to avoid this behaviour"));
+                    notification.setTransient(true);
+                    source.showNotification(notification);                     
+                    this._changeDeviceBase(device.id, control);
+                }
+                else {
+                    this._activateDeviceMenuItem(control, id, obj);
+                }
+
             }
+            else {
+                this._activateDeviceMenuItem(control, id, obj);
+            }
+        }
+    }
+
+    _activateDeviceMenuItem(control, id, obj) {
+        let prevActiveDevce = this._activeDeviceId;
+        this._activeDeviceId = id;
+        if (prevActiveDevce) {
+            let prevObj = this._devices.get(prevActiveDevce);
+            if (prevObj) {
+                prevObj.setActiveDevice(false);
+                if (prevObj.getDisplayOption() === DISPLAY_OPTIONS.HIDE_ALWAYS) {
+                    _d("Hiding previously activated device as it is set to hidden always");
+                    this._deviceRemoved(control, prevActiveDevce, true);
+                }
+            }
+        }
+        obj.setActiveDevice(true);
+        if (!obj.isAvailable()) {
+            _d("Activated device hidden, try to add");
+            this._deviceAdded(control, id);
+        }
+
+        this.menuItem.label.text = obj.title;
+
+        if (!this._settings.get_boolean(Prefs.HIDE_MENU_ICONS)) {
+            this.menuItem.icon.icon_name = obj.icon_name;
+        } else {
+            this.menuItem.icon.gicon = null;
         }
     }
 
@@ -440,7 +506,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
             return;
         }
         let control = this._getMixerControl();
-        //_d("Setting Active Profile");
+
         this._devices.forEach(device => {
             if (device.isAvailable()) {
                 this._setDeviceActiveProfile(control, device);
@@ -465,10 +531,14 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         }
     }
 
+    _getAvailableDevices() {
+        return Array.from(this._devices.values()).filter(x => x.isAvailable());
+    }
+
     _getDeviceVisibility() {
         let hideChooser = this._settings.get_boolean(Prefs.HIDE_ON_SINGLE_DEVICE);
         if (hideChooser) {
-            return (Array.from(this._devices.values()).filter(x => x.isAvailable()).length > 1);
+            return (this._getAvailableDevices().length > 1);
         }
         else {
             return true;
@@ -477,7 +547,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
 
     _setChooserVisibility() {
         let visibility = this._getDeviceVisibility();
-        Array.from(this._devices.values()).filter(x => x.isAvailable()).forEach(x => x.setVisibility(visibility))
+        this._getAvailableDevices().forEach(x => x.setVisibility(visibility))
 
         this.menuItem._triangleBin.visible = visibility;
         this._setProfileVisibility();
@@ -485,7 +555,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
 
     _setProfileVisibility() {
         let visibility = this._settings.get_boolean(Prefs.SHOW_PROFILES);
-        Array.from(this._devices.values()).filter(x => x.isAvailable()).forEach(device => device.setProfileVisibility(visibility));
+        this._getAvailableDevices().forEach(device => device.setProfileVisibility(visibility));
         this._setProfileTimer(visibility);
     }
 
@@ -525,64 +595,86 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         }
     }
 
-    _canShowDevice(control, uidevice, defaultValue) {
-        if (!uidevice || !this._portsSettings || uidevice.port_name == null || uidevice.description == null) {
-            return defaultValue;
-        }
-        let stream = control.get_stream_from_device(uidevice);
-        let cardName = null;
-        if (stream) {
-            let cardId = stream.get_card_index();
-            if (cardId != null) {
-                _d("Card Index" + cardId);
-                let _card = Lib.getCard(cardId);
-                if (_card) {
-                    cardName = _card.name;
+    _getDeviceDisplayOption(control, uidevice, obj) {
+        let displayOption = DISPLAY_OPTIONS.DEFAULT;
+        if (uidevice && uidevice.port_name != null && uidevice.description != null) {
+            let stream = control.get_stream_from_device(uidevice);
+            let cardName = null;
+            if (stream) {
+                let cardId = stream.get_card_index();
+                if (cardId != null) {
+                    _d("Card Index" + cardId);
+                    let _card = Lib.getCard(cardId);
+                    if (_card) {
+                        cardName = _card.name;
+                    }
+                    else {
+                        //card id found, but not available in list
+                        return DISPLAY_OPTIONS.DEFAULT;
+                    }
+                    _d("Card Name" + cardName);
                 }
-                else {
-                    //card id found, but not available in list
-                    return false;
-                }
-                _d("Card Name" + cardName);
+            }
+
+            _d("P" + uidevice.port_name + "==" + uidevice.description + "==" + cardName);
+
+            let matchedPort = this._portsSettings.find(port => (port
+                && port.name == uidevice.port_name
+                && port.human_name == uidevice.description
+                && (!cardName || cardName == port.card_name)));
+
+            if (matchedPort) {
+                displayOption = matchedPort.display_option;
             }
         }
 
-        for (let port of this._portsSettings) {
-            //_d("P" + port.name + "==" + uidevice.port_name + "==" + port.human_name + "==" + uidevice.description + "==" + cardName + "==" + port.card_name)
-            if (port && port.name == uidevice.port_name && port.human_name == uidevice.description && (!cardName || cardName == port.card_name)) {
-                switch (port.display_option) {
-                    case 1:
-                        return true;
-                    case 2:
-                        return false;
-                    default:
-                        return defaultValue;
-                }
-            }
+        obj && obj.setDisplayOption(displayOption);
+
+        return displayOption;
+    }
+
+    _canShowDevice(control, uidevice, obj, defaultValue) {
+        if (!uidevice || !this._portsSettings || uidevice.port_name == null
+            || uidevice.description == null || (this._activeDeviceId && this._activeDeviceId == uidevice.get_id())) {
+            return defaultValue;
         }
-        return defaultValue;
+
+        let displayOption = obj.getDisplayOption();
+        if (displayOption === DISPLAY_OPTIONS.INITIAL) {
+            displayOption = this._getDeviceDisplayOption(control, uidevice, obj);
+        }
+
+        if (displayOption === DISPLAY_OPTIONS.SHOW_ALWAYS) {
+            _d("Display Device due Preference:" + displayOption);
+            return true;
+        }
+        else if (displayOption === DISPLAY_OPTIONS.HIDE_ALWAYS) {
+            _d("Hide Device due Preference:" + displayOption);
+            return false;
+        }
+        else {
+            _d("Default Device due Preference:" + displayOption);
+            return defaultValue;
+        }
     }
 
     _resetDevices() {
-        //this._portsSettings = JSON.parse(this._settings.get_string(Prefs.PORT_SETTINGS));
         this._portsSettings = Prefs.getPortsFromSettings(this._settings);
         let control = this._getMixerControl();
-        for (let id of this._devices.keys()) {
+        this._devices.forEach((device, id) => {
+            device.setDisplayOption(DISPLAY_OPTIONS.INITIAL);
             let uidevice = this.lookupDeviceById(control, id);
-            if (_isDeviceInValid(uidevice)) {
+            if (this._isDeviceInValid(uidevice))
                 _d("Device is invalid");
-            }
-            else {
-                switch (this._canShowDevice(control, uidevice, uidevice.port_available)) {
-                    case true:
-                        this._deviceAdded(control, id, true);
-                        break;
-                    case false:
-                        this._deviceRemoved(control, id, true);
-                        break;
-                }
-            }
-        }
+            else if (this._canShowDevice(control, uidevice, device, uidevice.port_available))
+                this._deviceAdded(control, id, true);
+            else
+                this._deviceRemoved(control, id, true);
+        });
+    }
+
+    _isDeviceInValid(uidevice) {
+        return (!uidevice || (uidevice.description != null && uidevice.description.match(/Dummy\s+(Output|Input)/gi)));
     }
 
     _setVisibility() {
@@ -606,4 +698,5 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         }
         this.menuItem.destroy();
     }
+
 };

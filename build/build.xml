@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE xml>
-<project default="create_zip" name="Create Zip file">
-    <property name="dir.buildfile" value="."/>
-    <property name="dir.workspace" value="${dir.buildfile}/.."/>
-    <property name="dir.target.dir" value="${dir.workspace}/dist/"/>
-	<property name="project.name" value="sound-output-device-chooser@kgshank.net" />
-	<!-- <basename property="project.name" file="${basedir}/.."/> -->
+<project default="create_zip" name="Package Extension">
+	<property name="extension.uid" value="sound-output-device-chooser@kgshank.net" />
+	<property name="dir.workspace" location=".."/>
+	<property name="dir.target.dir" location="${dir.workspace}/dist/"/>
+	<property name="project-dir" location="${dir.workspace}/${extension.uid}"/>
 	<target name="create_dist">
 		<mkdir dir="${dir.target.dir}" />
 	</target>
-    <target name="create_zip" depends="create_dist">
-    	<echo message="Creating file ${project.name}.zip"/>
-    	<zip destfile="${dir.target.dir}/${project.name}.zip" >
-    		<fileset dir="${dir.workspace}/${project.name}" excludes=".project,.settings/,dist/,build/,utils/*.pyc,utils/__pycache__/"/>
-    	</zip>        
-    </target>
+	<target name="compile-schema">
+		<exec executable="glib-compile-schemas">
+		    <arg path="${project-dir}/schemas"/>		    
+		  </exec>		
+	</target>
+	<target name="create_zip" depends="create_dist,compile-schema">
+		<echo message="Creating file ${extension.uid}.zip"/>
+		<zip destfile="${dir.target.dir}/${extension.uid}.zip" >
+			<fileset dir="${project-dir}" excludes="**/*.pyc,**/__pycache__"/>
+		</zip>
+	</target>
 </project>

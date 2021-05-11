@@ -34,41 +34,6 @@ else {
     logWrap = global.log
 }
 
-/**
- * getSettings:
- * 
- * @schema: (optional): the GSettings schema id Builds and return a GSettings
- *          schema for
- * @schema, using schema files in extensions dir/schemas. If
- * @schema is not provided, it is taken from metadata["settings-schema"].
- */
-function getSettings(schema) {
-    // let extension = ExtensionUtils.getCurrentExtension();
-
-    schema = schema || Me.metadata["settings-schema"];
-
-    const GioSSS = Gio.SettingsSchemaSource;
-
-    // check if this extension was built with "make zip-file", and thus
-    // has the schema files in a sub-folder
-    // otherwise assume that extension has been installed in the
-    // same prefix as gnome-shell (and therefore schemas are available
-    // in the standard folders)
-    let schemaDir = Me.dir.get_child("schemas");
-    let schemaSource;
-    if (schemaDir.query_exists(null))
-        schemaSource = GioSSS.new_from_directory(schemaDir.get_path(), GioSSS.get_default(), false);
-    else
-        schemaSource = GioSSS.get_default();
-
-    let schemaObj = schemaSource.lookup(schema, true);
-    if (!schemaObj)
-        throw new Error("Schema " + schema + " could not be found for extension "
-            + Me.metadata.uuid + ". Please check your installation.");
-
-    let _settings = new Gio.Settings({ settings_schema: schemaObj });
-    return _settings;
-}
 
 let cards;
 
@@ -92,7 +57,6 @@ function getProfiles(control, uidevice) {
         if (!cards || Object.keys(cards).length == 0 || !cards[stream.card_index]) {
             refreshCards();
         }
-
         if (cards && cards[stream.card_index]) {
             _log("Getting profile form stream id " + uidevice.port_name);
             let profiles;
@@ -112,7 +76,6 @@ function getProfiles(control, uidevice) {
             }
         }
     }
-
     return [];
 }
 
@@ -138,10 +101,19 @@ function isCmdFound(cmd) {
 function refreshCards() {
     cards = {};
     ports = [];
-    // if(_settings == null) {getSettings(Prefs.SETTINGS_SCHEMA);}
-    let _settings = getSettings(Prefs.SETTINGS_SCHEMA);
+    let _settings = ExtensionUtils.getSettings();
     let error = false;
-    let newProfLogic = _settings.get_boolean(Prefs.NEW_PROFILE_ID);
+    let newProfLogic = _settings.get_boolean(Prefs.NEW_PROFILE_ID_DEPRECATED);
+    
+    /** This block should be removed in the next release along the setting schema correct */
+    if(!newProfLogic){
+        _settings.set_boolean(Prefs.NEW_PROFILE_ID, false);
+        _settings.reset(Prefs.NEW_PROFILE_ID_DEPRECATED);
+    }
+    else{
+        newProfLogic = _settings.get_boolean(Prefs.NEW_PROFILE_ID);
+    }
+    
     if (newProfLogic) {
         _log("New logic");
         let pyLocation = Me.dir.get_child("utils/pa_helper.py").get_path();

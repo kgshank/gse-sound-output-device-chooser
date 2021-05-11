@@ -16,7 +16,6 @@
  ******************************************************************************/
 /* jshint moz:true */
 
-const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
@@ -27,11 +26,10 @@ const Lib = Me.imports.convenience;
 const _d = Lib._log;
 const SignalManager = Lib.SignalManager;
 
+ExtensionUtils.initTranslations();
 const Gettext = imports.gettext;
-Gettext.bindtextdomain("sound-output-device-chooser", Me.path + "/locale");
 const _ = Gettext.gettext;
 
-var SETTINGS_SCHEMA = "org.gnome.shell.extensions.sound-output-device-chooser";
 var HIDE_ON_SINGLE_DEVICE = "hide-on-single-device";
 var HIDE_MENU_ICONS = "hide-menu-icons";
 var SHOW_PROFILES = "show-profiles";
@@ -40,19 +38,24 @@ var SHOW_INPUT_SLIDER = "show-input-slider";
 var SHOW_INPUT_DEVICES = "show-input-devices";
 var SHOW_OUTPUT_DEVICES = "show-output-devices";
 var ENABLE_LOG = "enable-log";
-var NEW_PROFILE_ID = "new-profile-indentification";
+var NEW_PROFILE_ID_DEPRECATED = "new-profile-indentification";
+var NEW_PROFILE_ID = "new-profile-identification";
 var EXPAND_VOL_MENU = "expand-volume-menu";
+var CANNOT_ACTIVATE_HIDDEN_DEVICE = "cannot-activate-hidden-device";
 
 var ICON_THEME = "icon-theme";
 var ICON_THEME_COLORED = "colored";
 var ICON_THEME_MONOCHROME = "monochrome";
 var ICON_THEME_NONE = "none";
 
+var DISPLAY_OPTIONS = { SHOW_ALWAYS: 1, HIDE_ALWAYS: 2, DEFAULT: 3, INITIAL: -1 };
+
 const PORT_SETTINGS_VERSION = 2;
 
 function init() { }
 
 function getPortsFromSettings(_settings) {
+    //_d(_settings.get_string(PORT_SETTINGS));
     let obj = JSON.parse(_settings.get_string(PORT_SETTINGS));
     let currentSettingsVersion = PORT_SETTINGS_VERSION;
     if (Array.isArray(obj)) {
@@ -121,12 +124,12 @@ const SDCSettingsWidget = new GObject.Class({
             this.__showFn = this.show_all;
         }
         // creates the settings
-        this._settings = Lib.getSettings(SETTINGS_SCHEMA);
+        this._settings = ExtensionUtils.getSettings();
 
         Lib.setLog(this._settings.get_boolean(ENABLE_LOG));
 
         // creates the ui builder and add the main resource file
-        let uiFilePath = Me.path + "/ui/prefs-dialog" +uiFileSuffix +".glade";
+        let uiFilePath = Me.path + "/ui/prefs-dialog" + uiFileSuffix + ".glade";
         let builder = new Gtk.Builder();
         builder.set_translation_domain("sound-output-device-chooser");
 
@@ -136,26 +139,27 @@ const SDCSettingsWidget = new GObject.Class({
                 label: _("Could not load the preferences UI file"),
                 vexpand: true
             });
-            this.__addFn(label);            
+            this.__addFn(label);
         } else {
             _d("JS LOG:_UI file receive and load: " + uiFilePath);
 
             let mainContainer = builder.get_object("main-container");
 
             this.__addFn(mainContainer);
-            
+
             this._signalManager = new SignalManager();
 
-            let showProfileSwitch = builder.get_object("show-profile");
+            let showProfileSwitch = builder.get_object(SHOW_PROFILES);
             let volMenuSwitch = builder.get_object(EXPAND_VOL_MENU);
-            let singleDeviceSwitch = builder.get_object("single-device");
-            let showInputSliderSwitch = builder.get_object("show-input-slider");
-            let showInputDevicesSwitch = builder.get_object("show-input-devices");
-            let showOutputDevicesSwitch = builder.get_object("show-output-devices");
-            let hideMenuIconsSwitch = builder.get_object("hide-menu-icons");
-            let iconThemeCombo = builder.get_object("icon-theme");
-            let logSwitch = builder.get_object("enable-log");
-            let newProfileIdSwitch = builder.get_object("new-profile-identification");
+            let singleDeviceSwitch = builder.get_object(HIDE_ON_SINGLE_DEVICE);
+            let showInputSliderSwitch = builder.get_object(SHOW_INPUT_SLIDER);
+            let showInputDevicesSwitch = builder.get_object(SHOW_INPUT_DEVICES);
+            let showOutputDevicesSwitch = builder.get_object(SHOW_OUTPUT_DEVICES);
+            let hideMenuIconsSwitch = builder.get_object(HIDE_MENU_ICONS);
+            let iconThemeCombo = builder.get_object(ICON_THEME);
+            let logSwitch = builder.get_object(ENABLE_LOG);
+            let newProfileIdSwitch = builder.get_object(NEW_PROFILE_ID);
+            let cantActHiddSwitch = builder.get_object(CANNOT_ACTIVATE_HIDDEN_DEVICE);
 
             this._settings.bind(HIDE_ON_SINGLE_DEVICE, singleDeviceSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(SHOW_PROFILES, showProfileSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
@@ -166,6 +170,7 @@ const SDCSettingsWidget = new GObject.Class({
             this._settings.bind(HIDE_MENU_ICONS, hideMenuIconsSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(ENABLE_LOG, logSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(NEW_PROFILE_ID, newProfileIdSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
+            this._settings.bind(CANNOT_ACTIVATE_HIDDEN_DEVICE, cantActHiddSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(ICON_THEME, iconThemeCombo, "active-id", Gio.SettingsBindFlags.DEFAULT);
 
             //Show always is not working always, hidden in the UI directly
@@ -176,7 +181,7 @@ const SDCSettingsWidget = new GObject.Class({
             this._signalManager.addSignal(showAlwaysToggleRender, "toggled", this._showAlwaysToggleRenderCallback.bind(this));
             this._signalManager.addSignal(hideAlwaysToggleRender, "toggled", this._hideAlwaysToggleRenderCallback.bind(this));
             this._signalManager.addSignal(showActiveToggleRender, "toggled", this._showActiveToggleRenderCallback.bind(this));
-
+            
             this._portsStore = builder.get_object("ports-store");
 
             this._populatePorts();
@@ -192,15 +197,18 @@ const SDCSettingsWidget = new GObject.Class({
     },
 
     _showAlwaysToggleRenderCallback: function(widget, path) {
-        this._toggleCallback(widget, path, 1, [2, 3]);
+        //this._toggleCallback(widget, path, 1, [2, 3]);
+        this._toggleCallback(widget, path, DISPLAY_OPTIONS.SHOW_ALWAYS, [2, 3]);
     },
 
     _hideAlwaysToggleRenderCallback: function(widget, path) {
-        this._toggleCallback(widget, path, 2, [1, 3]);
+        //this._toggleCallback(widget, path, 2, [1, 3]);
+        this._toggleCallback(widget, path, DISPLAY_OPTIONS.HIDE_ALWAYS, [1, 3]);
     },
 
     _showActiveToggleRenderCallback: function(widget, path) {
-        this._toggleCallback(widget, path, 3, [1, 2]);
+        //this._toggleCallback(widget, path, 3, [1, 2]);
+        this._toggleCallback(widget, path, DISPLAY_OPTIONS.DEFAULT, [1, 2]);
     },
 
     _toggleCallback: function(widget, path, activeCol, inactiveCols) {
@@ -215,15 +223,17 @@ const SDCSettingsWidget = new GObject.Class({
         /*Dont support non-pci cards for show always*/
         let card_name = this._portsStore.get_value(iter, 6);
         if (!/\.pci-/.exec(card_name) && activeCol == 1) {
-            this._toggleCallback(widget, path, 3, [1, 2]);
-            return;
+            //this._toggleCallback(widget, path, 3, [1, 2]);
+            this._toggleCallback(widget, path, DISPLAY_OPTIONS.DEFAULT, [1, 2]);
         }
-        this._portsStore.set_value(iter, activeCol, active);
-        this._portsStore.set_value(iter, 5, activeCol);
-        for (let col of inactiveCols) {
-            this._portsStore.set_value(iter, col, !active);
+        else {
+            this._portsStore.set_value(iter, activeCol, active);
+            this._portsStore.set_value(iter, 5, activeCol);
+            for (let col of inactiveCols) {
+                this._portsStore.set_value(iter, col, !active);
+            }
+            this._commitSettings();
         }
-        this._commitSettings();
     },
 
     _commitSettings: function() {
@@ -232,7 +242,8 @@ const SDCSettingsWidget = new GObject.Class({
         while (iter && success) {
             if (!this._portsStore.get_value(iter, 3)) {
                 let display_option = this._portsStore.get_value(iter, 5);
-                if (display_option != 3) {//Dont store default value
+                //if (display_option != 3) {//Dont store default value
+                if (display_option != DISPLAY_OPTIONS.DEFAULT) {//Dont store default value
                     ports.push({
                         human_name: this._portsStore.get_value(iter, 0),
                         name: this._portsStore.get_value(iter, 4),

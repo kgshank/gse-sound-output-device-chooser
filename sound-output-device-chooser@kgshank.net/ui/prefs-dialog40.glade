@@ -91,7 +91,7 @@
                               </object>
                             </child>
                             <child>
-                              <object class="GtkSwitch" id="single-device">
+                              <object class="GtkSwitch" id="hide-on-single-device">
                                 <property name="halign">end</property>
                                 <property name="margin-end">5</property>
                               </object>
@@ -116,7 +116,7 @@
                               </object>
                             </child>
                             <child>
-                              <object class="GtkSwitch" id="show-profile">
+                              <object class="GtkSwitch" id="show-profiles">
                                 <property name="halign">end</property>
                                 <property name="margin-end">5</property>
                               </object>
@@ -149,6 +149,50 @@
                             </child>
                           </object>
                         </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkListBoxRow">
+                        <property name="width-request">100</property>
+                        <property name="child">
+                          <object class="GtkBox">
+                            <property name="margin-top">6</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="hexpand">1</property>
+                                <property name="halign">start</property>
+                                <property name="margin-start">5</property>
+                                <property name="margin-end">20</property>
+                                <property name="label" translatable="yes">Don't allow device hidden in Port Settings to be activated</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkSwitch" id="cannot-activate-hidden-device">
+                                <property name="halign">end</property>
+                                <property name="margin-end">5</property>
+                              </object>
+                            </child>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkListBoxRow">
+                        <property name="width-request">100</property>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="margin-bottom">6</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="hexpand">1</property>
+                                <property name="halign">start</property>
+                                <property name="margin-start">5</property>
+                                <property name="margin-end">20</property>
+                                <property name="label" translatable="yes">(Select / deselect the required device in the Gnome Sound Settings)</property>
+                              </object>                              
+                            </child>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>
@@ -472,8 +516,23 @@
                               </object>
                             </child>
                             <child>
+                              <object class="GtkTreeViewColumn" id="DeviceTypeColumn">
+                                <property name="sizing">autosize</property>
+                                <property name="min-width">100</property>
+                                <property name="title" translatable="yes">Device Type</property>
+                                <property name="expand">True</property>
+                                <property name="sort-order">descending</property>
+                                <child>
+                                  <object class="GtkCellRendererText" id="DeviceTypeRenderer"/>
+                                  <attributes>
+                                    <attribute name="text">8</attribute>
+                                  </attributes>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
                               <object class="GtkTreeViewColumn" id="ShowAlwaysColumn">
-                                <property name="visible">1</property>
+                                <property name="visible">False</property>
                                 <property name="sizing">autosize</property>
                                 <property name="title" translatable="yes">Show</property>
                                 <child>

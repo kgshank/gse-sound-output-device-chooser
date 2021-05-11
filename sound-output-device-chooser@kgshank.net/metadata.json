@@ -3,14 +3,16 @@
   "description": "Shows a list of sound output and input devices (similar to gnome sound settings) in the status menu below the volume slider. Various active ports like HDMI , Speakers etc. of the same device are also displayed for selection. V20+ needs python as dependency. If you want to continue with the old method without Python, use options to switch off New Port identification. But it works with only English",
   "name": "Sound Input & Output Device Chooser",
   "original-author": "GopI",
+  "settings-schema": "org.gnome.shell.extensions.sound-output-device-chooser",
+  "gettext-domain" : "sound-output-device-chooser",
   "shell-version": [
-    "3.34",
     "3.32",
+    "3.34",
     "3.36",
     "3.38",
     "40"
   ],
   "url": "https://github.com/kgshank/gse-sound-output-device-chooser",
   "uuid": "sound-output-device-chooser@kgshank.net",
-  "version": "38"
+  "version": "39"
 }
