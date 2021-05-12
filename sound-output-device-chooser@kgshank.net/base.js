@@ -16,24 +16,25 @@
  ******************************************************************************/
 /* jshint moz:true */
 
-const Main = imports.ui.main;
+const { GObject, GLib, Gvc } = imports.gi;
+
 const PopupMenu = imports.ui.popupMenu;
 const VolumeMenu = imports.ui.status.volume;
+const Main = imports.ui.main;
 const MessageTray = imports.ui.messageTray;
-const { Atk, St, GObject, GLib } = imports.gi;
 
-const Gvc = imports.gi.Gvc;
-const ExtensionUtils = imports.misc.extensionUtils;
 const Config = imports.misc.config;
+const ExtensionUtils = imports.misc.extensionUtils;
+const Gettext = imports.gettext;
+
 const Me = ExtensionUtils.getCurrentExtension();
+const Lib = Me.imports.convenience;
+const Prefs = Me.imports.prefs;
 
 ExtensionUtils.initTranslations();
-const Gettext = imports.gettext;
 const _ = Gettext.gettext;
-
-const Lib = Me.imports.convenience;
 const _d = Lib._log;
-const Prefs = Me.imports.prefs;
+
 const DISPLAY_OPTIONS = Prefs.DISPLAY_OPTIONS;
 const SignalManager = Lib.SignalManager;
 
@@ -440,13 +441,11 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
                 }
 
                 if (device) {
-                    let source = new MessageTray.Source("Sound Input & Output Device Chooser", device.icon_name);
-                    Main.messageTray.add(source);
-                    let notification = new MessageTray.Notification(source, _("Activated device is hidden in Port Settings"), 
-                    _("Deactivated Device: ") + obj.title + "\n" + _("Activated Device: ") + device.title + "\n" 
-                    + _("Disable in extension preferences to avoid this behaviour"));
-                    notification.setTransient(true);
-                    source.showNotification(notification);                     
+                    _notify(Me.metadata["name"] + ("Extension changed active sound device."),
+                        _("Activated device is hidden in Port Settings") + "\n" +
+                        _("Deactivated Device: ") + obj.title + "\n" + _("Activated Device: ") + device.title + "\n"
+                        + _("Disable in extension preferences to avoid this behaviour."),
+                        device.icon_name);
                     this._changeDeviceBase(device.id, control);
                 }
                 else {
@@ -549,8 +548,18 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         let visibility = this._getDeviceVisibility();
         this._getAvailableDevices().forEach(x => x.setVisibility(visibility))
 
-        this.menuItem._triangleBin.visible = visibility;
+        //this.menuItem._triangleBin.visible = visibility;
+        //this.menuItem.actor.visible = visibility;
         this._setProfileVisibility();
+    }
+
+    _setVisibility() {
+        if (!this._settings.get_boolean(this._show_device_signal))
+            this.menuItem.actor.visible = false;
+        else
+            // if setting says to show device, check for any device, otherwise
+            // hide the "actor"
+            this.menuItem.actor.visible = this._getDeviceVisibility();//(Array.from(this._devices.values()).some(x => x.isAvailable()));
     }
 
     _setProfileVisibility() {
@@ -677,15 +686,6 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         return (!uidevice || (uidevice.description != null && uidevice.description.match(/Dummy\s+(Output|Input)/gi)));
     }
 
-    _setVisibility() {
-        if (!this._settings.get_boolean(this._show_device_signal))
-            this.menuItem.actor.visible = false;
-        else
-            // if setting says to show device, check for any device, otherwise
-            // hide the "actor"
-            this.menuItem.actor.visible = (Array.from(this._devices.values()).some(x => x.isAvailable()));
-    }
-
     destroy() {
         this._signalManager.disconnectAll();
         if (this.deviceRemovedTimout) {
@@ -700,3 +700,11 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
     }
 
 };
+
+function _notify(msg, details, icon_name) {
+    let source = new MessageTray.Source(Me.metadata["name"], icon_name);
+    Main.messageTray.add(source);
+    let notification = new MessageTray.Notification(source, msg, details);
+    //notification.setTransient(true);
+    source.showNotification(notification);    
+}

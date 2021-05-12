@@ -17,8 +17,7 @@
 /* jshint moz:true */
 
 const ByteArray = imports.byteArray;
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
+const { Gio, GLib } = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
 
 const Me = ExtensionUtils.getCurrentExtension();
@@ -62,13 +61,13 @@ function getProfiles(control, uidevice) {
             let profiles;
             if ((profiles = getProfilesForPort(uidevice.port_name, cards[stream.card_index]))) {
                 return profiles;
-            }           
+            }
         }
     }
     else {
         /* Device is not active device, lets try match with port name */
         refreshCards();
-        for(let card of Object.values(cards)) {
+        for (let card of Object.values(cards)) {
             let profiles;
             _log("Getting profile from cards " + uidevice.port_name + " for card id " + card.id);
             if ((profiles = getProfilesForPort(uidevice.port_name, card))) {
@@ -104,16 +103,16 @@ function refreshCards() {
     let _settings = ExtensionUtils.getSettings();
     let error = false;
     let newProfLogic = _settings.get_boolean(Prefs.NEW_PROFILE_ID_DEPRECATED);
-    
+
     /** This block should be removed in the next release along the setting schema correct */
-    if(!newProfLogic){
+    if (!newProfLogic) {
         _settings.set_boolean(Prefs.NEW_PROFILE_ID, false);
         _settings.reset(Prefs.NEW_PROFILE_ID_DEPRECATED);
     }
-    else{
+    else {
         newProfLogic = _settings.get_boolean(Prefs.NEW_PROFILE_ID);
     }
-    
+
     if (newProfLogic) {
         _log("New logic");
         let pyLocation = Me.dir.get_child("utils/pa_helper.py").get_path();
@@ -217,21 +216,21 @@ function parseOutput(out) {
                 case "PROFILES":
                     if ((matches = /.*?((?:output|input)[^+]*?):\s(.*?)\s\(sinks:.*?(?:available:\s*(.*?))*\)/.exec(line))) {
                         let availability = matches[3] ? matches[3] : "yes" //If no availability in out, assume profile is available
-                        
-                        cards[cardIndex].profiles.push({ 
-                                "name": matches[1], 
-                                "human_name": matches[2], 
-                                "available" : (availability === "yes") ? 1 : 0  
-                        }); 
+
+                        cards[cardIndex].profiles.push({
+                            "name": matches[1],
+                            "human_name": matches[2],
+                            "available": (availability === "yes") ? 1 : 0
+                        });
                     }
                     break;
                 case "PORTS":
                     if ((matches = /\t*(.*?):\s(.*)\s\(.*?priority:/.exec(line))) {
-                        port = { 
-                                "name": matches[1],
-                                "human_name": matches[2],
-                                "card_name": cards[cardIndex].name,
-                                "card_description": cards[cardIndex].card_description
+                        port = {
+                            "name": matches[1],
+                            "human_name": matches[2],
+                            "card_name": cards[cardIndex].name,
+                            "card_description": cards[cardIndex].card_description
                         };
                         cards[cardIndex].ports.push(port);
                         ports.push(port);
@@ -320,10 +319,10 @@ function getProfilesForPort(portName, card) {
         if (port) {
             if (port.profiles) {
                 return card.profiles.filter(profile => (
-                            profile.name.indexOf("+input:") == -1 
-                            && profile.available === 1 
-                            && port.profiles.includes(profile.name)
-                        ));
+                    profile.name.indexOf("+input:") == -1
+                    && profile.available === 1
+                    && port.profiles.includes(profile.name)
+                ));
             }
         }
     }
