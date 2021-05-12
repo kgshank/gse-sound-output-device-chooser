@@ -78,7 +78,7 @@ var InputSliderInstance = class InputSliderInstance {
     _overrideFunction() {
         this._input._shouldBeVisibleOriginal = this._input._shouldBeVisible;
         this._input._shouldBeVisibleCustom = function() {
-             return this._stream != null;            
+            return this._stream != null;
         };
     }
     _setSliderVisiblity() {
@@ -104,9 +104,10 @@ var SDCInstance = class SDCInstance {
         this._aggregateMenu = Main.panel.statusArea.aggregateMenu;
         this._volumeMenu = this._aggregateMenu._volume._volumeMenu;
         this._aggregateLayout = this._aggregateMenu.menu.box.get_layout_manager();
-    }
+        }
 
     enable() {
+        ExtensionUtils.initTranslations();
         let theme = imports.gi.Gtk.IconTheme.get_default();
         if (theme != null) {
             let iconPath = Me.dir.get_child('icons');
@@ -178,5 +179,6 @@ var SDCInstance = class SDCInstance {
 };
 
 function init() {
+    ExtensionUtils.initTranslations(Me.metadata["gettext-domain"]);
     return new SDCInstance();
 }

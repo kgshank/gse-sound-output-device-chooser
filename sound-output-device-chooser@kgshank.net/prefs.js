@@ -24,7 +24,6 @@ const Lib = Me.imports.convenience;
 const _d = Lib._log;
 const SignalManager = Lib.SignalManager;
 
-ExtensionUtils.initTranslations();
 const Gettext = imports.gettext;
 const _ = Gettext.gettext;
 
@@ -50,7 +49,9 @@ var DISPLAY_OPTIONS = { SHOW_ALWAYS: 1, HIDE_ALWAYS: 2, DEFAULT: 3, INITIAL: -1 
 
 const PORT_SETTINGS_VERSION = 2;
 
-function init() { }
+function init() { 
+    ExtensionUtils.initTranslations();
+}
 
 function getPortsFromSettings(_settings) {
     //_d(_settings.get_string(PORT_SETTINGS));

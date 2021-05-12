@@ -31,8 +31,10 @@ const Me = ExtensionUtils.getCurrentExtension();
 const Lib = Me.imports.convenience;
 const Prefs = Me.imports.prefs;
 
-ExtensionUtils.initTranslations();
-const _ = Gettext.gettext;
+ExtensionUtils.initTranslations(Me.metadata["gettext-domain"]);
+const Domain = Gettext.domain(Me.metadata["gettext-domain"]);
+const _ = Domain.gettext;
+//const _ = Gettext.gettext;
 const _d = Lib._log;
 
 const DISPLAY_OPTIONS = Prefs.DISPLAY_OPTIONS;
@@ -103,7 +105,7 @@ var SoundDeviceMenuItem = class SoundDeviceMenuItem extends PopupMenu.PopupImage
         for (let profile of this.profiles) {
             let profileName = profile.name;
             if (!this.profilesitems.has(profileName)) {
-                let pItem = new ProfileMenuItem("Profile: " + profile.human_name, profileName);
+                let pItem = new ProfileMenuItem(_("Profile: ") + profile.human_name, profileName);
                 this.profilesitems.set(profileName, pItem);
                 pItem.connect('activate', () => {
                     _d("Activating Profile:" + id + profileName);
@@ -173,7 +175,7 @@ var SoundDeviceMenuItem = class SoundDeviceMenuItem extends PopupMenu.PopupImage
     }
 
     canShowProfile() {
-        return (this.isVisible() && this.profilesitems.size > 1);
+        return (this.isVisible() && this.profilesitems.size >= 1);
     }
 
     setDisplayOption(displayOption) {
@@ -206,7 +208,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
 
     constructor(deviceType) {
         _d("SDC: init");
-        this.menuItem = new PopupMenu.PopupSubMenuMenuItem('Extension initialising...', true);
+        this.menuItem = new PopupMenu.PopupSubMenuMenuItem(_("Extension initialising..."), true);
         this.deviceType = deviceType;
         this._devices = new Map();
         let _control = this._getMixerControl();
@@ -441,9 +443,9 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
                 }
 
                 if (device) {
-                    _notify(Me.metadata["name"] + ("Extension changed active sound device."),
-                        _("Activated device is hidden in Port Settings") + "\n" +
-                        _("Deactivated Device: ") + obj.title + "\n" + _("Activated Device: ") + device.title + "\n"
+                    _notify(Me.metadata["name"] + " " + _("Extension changed active sound device."),
+                        _("Activated device is hidden in Port Settings.") + " \n" +
+                        _("Deactivated Device: ") + obj.title + " \n" + _("Activated Device: ") + device.title + " \n"
                         + _("Disable in extension preferences to avoid this behaviour."),
                         device.icon_name);
                     this._changeDeviceBase(device.id, control);
