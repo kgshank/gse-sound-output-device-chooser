@@ -215,13 +215,24 @@ function parseOutput(out) {
                     }
                     break;
                 case "PROFILES":
-                    if ((matches = /.*?((?:output|input)[^+]*?):\s(.*?)\s\(sinks:/.exec(line))) {
-                        cards[cardIndex].profiles.push({ "name": matches[1], "human_name": matches[2] });
+                    if ((matches = /.*?((?:output|input)[^+]*?):\s(.*?)\s\(sinks:.*?(?:available:\s*(.*?))*\)/.exec(line))) {
+                        let availability = matches[3] ? matches[3] : "yes" //If no availability in out, assume profile is available
+                        
+                        cards[cardIndex].profiles.push({ 
+                                "name": matches[1], 
+                                "human_name": matches[2], 
+                                "available" : (availability === "yes") ? 1 : 0  
+                        }); 
                     }
                     break;
                 case "PORTS":
                     if ((matches = /\t*(.*?):\s(.*)\s\(.*?priority:/.exec(line))) {
-                        port = { "name": matches[1], "human_name": matches[2], "card_name": cards[cardIndex].name, "card_description": cards[cardIndex].card_description };
+                        port = { 
+                                "name": matches[1],
+                                "human_name": matches[2],
+                                "card_name": cards[cardIndex].name,
+                                "card_description": cards[cardIndex].card_description
+                        };
                         cards[cardIndex].ports.push(port);
                         ports.push(port);
                     }
@@ -236,7 +247,9 @@ function parseOutput(out) {
     }
     if (ports) {
         ports.forEach(p => {
-            p.direction = p.profiles.filter(pr => pr.indexOf("+input:") == -1).some(pr => (pr.indexOf("output:") >= 0)) ? "Output" : "Input";
+            p.direction = p.profiles
+                .filter(pr => pr.indexOf("+input:") == -1)
+                .some(pr => (pr.indexOf("output:") >= 0)) ? "Output" : "Input";
         });
     }
 }
@@ -306,7 +319,11 @@ function getProfilesForPort(portName, card) {
         let port = card.ports.find(port => (portName === port.name));
         if (port) {
             if (port.profiles) {
-                return card.profiles.filter(profile => (profile.name.indexOf("+input:") == -1 && port.profiles.includes(profile.name)))
+                return card.profiles.filter(profile => (
+                            profile.name.indexOf("+input:") == -1 
+                            && profile.available === 1 
+                            && port.profiles.includes(profile.name)
+                        ));
             }
         }
     }
