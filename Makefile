@@ -48,4 +48,5 @@ $(LOCALE_DIR)/%/LC_MESSAGES/sound-output-device-chooser.mo: $(LOCALE_DIR)/%/LC_M
 .PHONY: install
 install:
 	@echo "Installing extension files in $(INSTALL_DIR)/sound-output-device-chooser@kgshank.net"
+	mkdir -p $(INSTALL_DIR)
 	cp -r sound-output-device-chooser@kgshank.net  $(INSTALL_DIR)
