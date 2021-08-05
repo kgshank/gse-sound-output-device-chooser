@@ -23,7 +23,7 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Prefs = Me.imports.prefs;
 
-var DEBUG = false;
+var DEBUG = true;
 
 var logWrap;
 if (log != undefined) {
