@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sound-output-device-chooser\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-05 20:18+0300\n"
+"POT-Creation-Date: 2021-08-05 23:33+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,11 +22,11 @@ msgstr ""
 msgid "(Select / deselect the required device in the Gnome Sound Settings)"
 msgstr ""
 
-#: sound-output-device-chooser@kgshank.net/base.js:449
+#: sound-output-device-chooser@kgshank.net/base.js:452
 msgid "Activated Device: "
 msgstr ""
 
-#: sound-output-device-chooser@kgshank.net/base.js:448
+#: sound-output-device-chooser@kgshank.net/base.js:451
 msgid "Activated device is hidden in Port Settings."
 msgstr ""
 
@@ -39,7 +39,7 @@ msgstr ""
 msgid "Could not load the preferences UI file"
 msgstr ""
 
-#: sound-output-device-chooser@kgshank.net/base.js:449
+#: sound-output-device-chooser@kgshank.net/base.js:452
 msgid "Deactivated Device: "
 msgstr ""
 
@@ -53,7 +53,7 @@ msgstr ""
 msgid "Device Type"
 msgstr ""
 
-#: sound-output-device-chooser@kgshank.net/base.js:450
+#: sound-output-device-chooser@kgshank.net/base.js:453
 msgid "Disable in extension preferences to avoid this behaviour."
 msgstr ""
 
@@ -78,11 +78,8 @@ msgid "Enable Log messages"
 msgstr ""
 
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:470
-msgid "Enable new profile identification"
-msgstr ""
-
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:704
-msgid "Enable new profile identification "
+msgid "Enable new profile identification"
 msgstr ""
 
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:167
@@ -90,11 +87,11 @@ msgstr ""
 msgid "Extend Volume Menu to fit device names"
 msgstr ""
 
-#: sound-output-device-chooser@kgshank.net/base.js:447
+#: sound-output-device-chooser@kgshank.net/base.js:450
 msgid "Extension changed active sound device."
 msgstr ""
 
-#: sound-output-device-chooser@kgshank.net/base.js:211
+#: sound-output-device-chooser@kgshank.net/base.js:217
 msgid "Extension initialising..."
 msgstr ""
 
