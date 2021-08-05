@@ -243,6 +243,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
             this._signalManager.addSignal(this._settings, "changed::" + Prefs.ICON_THEME, this._setIcons.bind(this));
             this._signalManager.addSignal(this._settings, "changed::" + Prefs.HIDE_MENU_ICONS, this._setIcons.bind(this));
             this._signalManager.addSignal(this._settings, "changed::" + Prefs.PORT_SETTINGS, this._resetDevices.bind(this));
+            this._signalManager.addSignal(this._settings, "changed::" + Prefs.OMIT_DEVICE_ORIGIN, this._resetDevices.bind(this));
 
             this._show_device_signal = Prefs["SHOW_" + this.deviceType.toUpperCase() + "_DEVICES"];
 
@@ -317,7 +318,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
             }
 
             let title = uidevice.description;
-            if (uidevice.origin != "")
+            if (!this._settings.get_boolean(Prefs.OMIT_DEVICE_ORIGIN) && uidevice.origin != "")
                 title += " - " + uidevice.origin;
 
             let icon = uidevice.get_icon_name();

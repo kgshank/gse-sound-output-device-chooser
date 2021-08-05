@@ -124,6 +124,32 @@
                           </object>
                         </property>
                       </object>
+                    </child>    
+                    <child>
+                      <object class="GtkListBoxRow">
+                        <property name="width-request">100</property>
+                        <property name="child">
+                          <object class="GtkBox">
+                            <property name="margin-top">6</property>
+                            <property name="margin-bottom">6</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="hexpand">1</property>
+                                <property name="halign">start</property>
+                                <property name="margin-start">5</property>
+                                <property name="margin-end">20</property>
+                                <property name="label" translatable="yes">Omit device origins at Volume Menu</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkSwitch" id="omit-device-origins">
+                                <property name="halign">end</property>
+                                <property name="margin-end">5</property>
+                              </object>
+                            </child>
+                          </object>
+                        </property>
+                      </object>
                     </child>
                     <child>
                       <object class="GtkListBoxRow">
