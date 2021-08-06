@@ -519,8 +519,8 @@
                         <property name="vexpand">1</property>
                         <property name="min-content-width">500</property>
                         <property name="child">
-                          <object class="GtkBox">
-                            <child>
+                          <object class="GtkBox"> <!--TODO: Delete when Gnome 40 get the scrolled window bug(?) get fixed-->
+                            <child>               <!--TODO: Delete when Gnome 40 get the scrolled window bug(?) get fixed-->
                               <object class="GtkTreeView" id="port-treeview">
                                 <property name="vexpand">1</property>
                                 <property name="model">ports-store</property>
@@ -602,8 +602,8 @@
                                   </object>
                                 </child>
                               </object>
-                            </child>
-                          </object>
+                            </child>              <!--TODO: Delete when Gnome 40 get the scrolled window bug(?) get fixed-->
+                          </object>               <!--TODO: Delete when Gnome 40 get the scrolled window bug(?) get fixed-->
                         </property>
                       </object>
                     </child>
