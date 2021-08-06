@@ -154,6 +154,12 @@ var SoundDeviceMenuItem = class SoundDeviceMenuItem extends PopupMenu.PopupImage
         this.visible = _v;
     };
 
+    setTitle(_t) {
+        _d("SoundDeviceMenuItem: " + "setTitle: " + this.title + "->" + _t);
+        this.title = _t;
+        this.label.text = _t;
+    }
+
     isVisible() {
         return this.visible;
     }
@@ -243,6 +249,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
             this._signalManager.addSignal(this._settings, "changed::" + Prefs.ICON_THEME, this._setIcons.bind(this));
             this._signalManager.addSignal(this._settings, "changed::" + Prefs.HIDE_MENU_ICONS, this._setIcons.bind(this));
             this._signalManager.addSignal(this._settings, "changed::" + Prefs.PORT_SETTINGS, this._resetDevices.bind(this));
+            this._signalManager.addSignal(this._settings, "changed::" + Prefs.OMIT_DEVICE_ORIGIN, this._refreshDeviceTitles.bind(this));
 
             this._show_device_signal = Prefs["SHOW_" + this.deviceType.toUpperCase() + "_DEVICES"];
 
@@ -304,7 +311,6 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         }
     }
 
-
     _deviceAdded(control, id, dontcheck) {
         let obj = this._devices.get(id);
         let uidevice = this.lookupDeviceById(control, id);
@@ -316,9 +322,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
                 return null;
             }
 
-            let title = uidevice.description;
-            if (uidevice.origin != "")
-                title += " - " + uidevice.origin;
+            let title = this._getDeviceTitle(uidevice);
 
             let icon = uidevice.get_icon_name();
             if (icon == null || icon.trim() == "")
@@ -686,6 +690,27 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
 
     _isDeviceInValid(uidevice) {
         return (!uidevice || (uidevice.description != null && uidevice.description.match(/Dummy\s+(Output|Input)/gi)));
+    }
+
+    _refreshDeviceTitles(){
+        let control = this._getMixerControl();
+        this._devices.forEach((device, id) => {
+            let uidevice = this.lookupDeviceById(control, id);
+            let title = this._getDeviceTitle(uidevice);
+
+            device.setTitle(title);
+        });
+
+        let activeDevice = this._devices.get(this._activeDeviceId);
+        this.menuItem.label.text = activeDevice.title;
+    }
+
+    _getDeviceTitle(uidevice) {
+        let title = uidevice.description;
+        if (!this._settings.get_boolean(Prefs.OMIT_DEVICE_ORIGIN) && uidevice.origin != "")
+            title += " - " + uidevice.origin;
+
+        return title;
     }
 
     destroy() {

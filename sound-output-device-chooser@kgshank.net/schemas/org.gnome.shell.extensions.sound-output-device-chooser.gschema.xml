@@ -85,5 +85,11 @@
         <summary>Preference to avoid activation of hidden devices in Port Settings</summary>
         <description></description>
     </key>
+
+    <key name="omit-device-origins" type="b">
+        <default>false</default>
+        <summary>Preference to omit device origin at Volume Menu</summary>
+        <description></description>
+    </key>
   </schema>
 </schemalist>
