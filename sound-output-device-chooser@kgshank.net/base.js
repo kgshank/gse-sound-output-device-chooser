@@ -194,8 +194,14 @@ var SoundDeviceMenuItem = class SoundDeviceMenuItem extends PopupMenu.PopupImage
     }
 }
 
+var BaseSignalEmitter = class BaseSignalEmitter extends GObject.Object {
+   constructor() {
+      super({});
+   }
+};
+
 if (parseFloat(Config.PACKAGE_VERSION) >= 3.34) {
-    ProfileMenuItem = GObject.registerClass({ GTypeName: 'ProfileMenuItem' }, ProfileMenuItem);
+    ProfileMenuItem = GObject.registerClass({ GTypeName: "ProfileMenuItem" }, ProfileMenuItem);
 
     SoundDeviceMenuItem = GObject.registerClass({
         GTypeName: "SoundDeviceMenuItem",
@@ -208,13 +214,21 @@ if (parseFloat(Config.PACKAGE_VERSION) >= 3.34) {
             }
         }
     }, SoundDeviceMenuItem);
+
+    BaseSignalEmitter = GObject.registerClass({
+        GTypeName: "BaseSignalEmitter",
+        Signals: {
+            "update-visibility" : {}
+        }
+    }, BaseSignalEmitter);
 }
 
-var SoundDeviceChooserBase = class SoundDeviceChooserBase {
-
-    constructor(deviceType) {
+var SoundDeviceChooserBase = class SoundDeviceChooserBase{
+    constructor(deviceType, menuItem) {
         _d("SDC: init");
-        this.menuItem = new PopupMenu.PopupSubMenuMenuItem(_("Extension initialising..."), true);
+        this.emitter = new BaseSignalEmitter();
+        this.menuItem = menuItem;
+        
         this.deviceType = deviceType;
         this._devices = new Map();
         let _control = this._getMixerControl();
@@ -225,6 +239,8 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         this._signalManager = new SignalManager();
         this._signalManager.addSignal(this._settings, "changed::" + Prefs.ENABLE_LOG, this._setLog.bind(this));
 
+        this._show_device_signal = Prefs["SHOW_" + this.deviceType.toUpperCase() + "_DEVICES"];
+
         if (_control.get_state() == Gvc.MixerControlState.READY) {
             this._onControlStateChanged(_control);
         }
@@ -233,9 +249,24 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         }
     }
 
+    shouldBeVisible() {
+        if (!this._settings.get_boolean(this._show_device_signal)) {
+            return false;
+        } else {
+            // if setting says to show device, check for any device, otherwise
+            // hide the "actor"
+            return this._getDeviceVisibility();
+        }
+    }
+
     _getMixerControl() { return VolumeMenu.getMixerControl(); }
 
     _setLog() { Lib.setLog(this._settings.get_boolean(Prefs.ENABLE_LOG)); }
+
+    _emitUpdateVisibility()
+    {
+        this.emitter.emit('update-visibility');
+    }
 
     _onControlStateChanged(control) {
         if (control.get_state() == Gvc.MixerControlState.READY) {
@@ -251,9 +282,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
             this._signalManager.addSignal(this._settings, "changed::" + Prefs.PORT_SETTINGS, this._resetDevices.bind(this));
             this._signalManager.addSignal(this._settings, "changed::" + Prefs.OMIT_DEVICE_ORIGIN, this._refreshDeviceTitles.bind(this));
 
-            this._show_device_signal = Prefs["SHOW_" + this.deviceType.toUpperCase() + "_DEVICES"];
-
-            this._signalManager.addSignal(this._settings, "changed::" + this._show_device_signal, this._setVisibility.bind(this));
+            this._signalManager.addSignal(this._settings, "changed::" + this._show_device_signal, this._emitUpdateVisibility.bind(this));
 
             this._portsSettings = Prefs.getPortsFromSettings(this._settings);
 
@@ -290,7 +319,8 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
                 this._controlStateChangeSignal.disconnect();
                 delete this._controlStateChangeSignal;
             }
-            this._setVisibility();
+   
+            this._emitUpdateVisibility();
         }
     }
 
@@ -359,7 +389,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         }
         else {
             this._setChooserVisibility();
-            this._setVisibility();
+            this._emitUpdateVisibility();
         }
     }
 
@@ -420,7 +450,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
            }.bind(this));
            */
             this._setChooserVisibility();
-            this._setVisibility();
+            this._emitUpdateVisibility();
         }
     }
 
@@ -484,13 +514,14 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
             this._deviceAdded(control, id);
         }
 
-        this.menuItem.label.text = obj.title;
-
-        if (!this._settings.get_boolean(Prefs.HIDE_MENU_ICONS)) {
-            this.menuItem.icon.icon_name = obj.icon_name;
-        } else {
-            this.menuItem.icon.gicon = null;
+        if (!this.menuItem.sliderIntegraded) {
+            if (!this._settings.get_boolean(Prefs.HIDE_MENU_ICONS)) {
+                this.menuItem.icon.icon_name = obj.icon_name;
+            } else {
+                this.menuItem.icon.icon_name = null;    
+            }
         }
+        this.menuItem.label.text = obj.title;
     }
 
     _changeDeviceBase(id, control) {
@@ -559,15 +590,6 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         this._setProfileVisibility();
     }
 
-    _setVisibility() {
-        if (!this._settings.get_boolean(this._show_device_signal))
-            this.menuItem.actor.visible = false;
-        else
-            // if setting says to show device, check for any device, otherwise
-            // hide the "actor"
-            this.menuItem.actor.visible = this._getDeviceVisibility();//(Array.from(this._devices.values()).some(x => x.isAvailable()));
-    }
-
     _setProfileVisibility() {
         let visibility = this._settings.get_boolean(Prefs.SHOW_PROFILES);
         this._getAvailableDevices().forEach(device => device.setProfileVisibility(visibility));
@@ -601,12 +623,14 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
             }
         });
 
-        // These indicate the active device, which is displayed directly in the
-        // Gnome menu, not in the list.
-        if (!this._settings.get_boolean(Prefs.HIDE_MENU_ICONS)) {
-            this.menuItem.icon.icon_name = this._getIcon(this._devices.get(this._activeDeviceId).icon_name);
-        } else {
-            this.menuItem.icon.icon_name = null;
+        if (!this.menuItem.sliderIntegraded) {
+            // These indicate the active device, which is displayed directly in the
+            // Gnome menu, not in the list.
+            if (!this._settings.get_boolean(Prefs.HIDE_MENU_ICONS)) {
+                this.menuItem.icon.icon_name = this._getIcon(this._devices.get(this._activeDeviceId).icon_name);
+            } else {
+                this.menuItem.icon.icon_name = null;
+            }
         }
     }
 
@@ -723,7 +747,6 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
             GLib.source_remove(this.activeProfileTimeout);
             this.activeProfileTimeout = null;
         }
-        this.menuItem.destroy();
     }
 
 };
