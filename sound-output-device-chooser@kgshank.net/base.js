@@ -514,7 +514,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
             this._deviceAdded(control, id);
         }
 
-        if (!this.menuItem.sliderIntegraded) {
+        if (!this.menuItem.sliderIntegrated) {
             if (!this._settings.get_boolean(Prefs.HIDE_MENU_ICONS)) {
                 this.menuItem.icon.icon_name = obj.icon_name;
             } else {
@@ -623,7 +623,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
             }
         });
 
-        if (!this.menuItem.sliderIntegraded) {
+        if (!this.menuItem.sliderIntegrated) {
             // These indicate the active device, which is displayed directly in the
             // Gnome menu, not in the list.
             if (!this._settings.get_boolean(Prefs.HIDE_MENU_ICONS)) {

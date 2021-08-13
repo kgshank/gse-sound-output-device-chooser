@@ -20,7 +20,7 @@ var StreamSlider = class {
         this._control = control;
 
         this.item = new PopupMenu.PopupSubMenuMenuItem("", true);
-        this.item.sliderIntegraded = true;
+        this.item.sliderIntegrated = true;
 
         this._inDrag = false;
         this._notifyVolumeChangeId = 0;
@@ -28,7 +28,7 @@ var StreamSlider = class {
         this._slider = new Slider.Slider(0);
 
         this._soundSettings = new Gio.Settings({ schema_id: 'org.gnome.desktop.sound' });
-        this._soundSettings.connect('changed::%s'.format(ALLOW_AMPLIFIED_VOLUME_KEY), this._amplifySettingsChanged.bind(this));
+        this._amplifySettingsSignalId = this._soundSettings.connect('changed::%s'.format(ALLOW_AMPLIFIED_VOLUME_KEY), this._amplifySettingsChanged.bind(this));
         this._amplifySettingsChanged();
 
         this._sliderChangedId = this._slider.connect('notify::value',
@@ -55,6 +55,17 @@ var StreamSlider = class {
         this.item.icons = [];
 
         this._forceInvisible = false;
+    }
+
+    destroy()
+    {
+        if (this._stream)
+            this._disconnectStream(this._stream);
+
+        this._soundSettings.disconnect(this._amplifySettingsSignalId);
+
+        this._slider.destroy();
+        this.item.destroy();
     }
 
     get stream() {
@@ -266,8 +277,8 @@ var InputStreamSlider = class extends StreamSlider {
     constructor(control) {
         super(control);
         this._slider.accessible_name = _("Microphone");
-        this._control.connect('stream-added', this._maybeShowInput.bind(this));
-        this._control.connect('stream-removed', this._maybeShowInput.bind(this));
+        this._streamAddSignalID = this._control.connect('stream-added', this._maybeShowInput.bind(this));
+        this._streamRemovedSignalID = this._control.connect('stream-removed', this._maybeShowInput.bind(this));
         this.item.icon.icon_name = 'audio-input-microphone-symbolic';
         this._icons = [
             'microphone-sensitivity-muted-symbolic',
@@ -277,6 +288,14 @@ var InputStreamSlider = class extends StreamSlider {
         ];
 
         this._showInputSlider = false;
+    }
+
+    destroy()
+    {
+        this._control.disconnect(this._streamAddSignalID);
+        this._control.disconnect(this._streamRemovedSignalID);
+
+        super.destroy();
     }
 
     _connectStream(stream) {
@@ -328,9 +347,9 @@ var VolumeMenu = class extends PopupMenu.PopupMenuSection {
         this.hasHeadphones = false;
 
         this._control = control;
-        this._control.connect('state-changed', this._onControlStateChanged.bind(this));
-        this._control.connect('default-sink-changed', this._readOutput.bind(this));
-        this._control.connect('default-source-changed', this._readInput.bind(this));
+        this._stateChangeSignal = this._control.connect('state-changed', this._onControlStateChanged.bind(this));
+        this._defaultSinkChangeSignal = this._control.connect('default-sink-changed', this._readOutput.bind(this));
+        this._defaultSourceChangeSignal = this._control.connect('default-source-changed', this._readInput.bind(this));
 
         this._output = new OutputStreamSlider(this._control);
         this._output.connect('stream-updated', () => {
@@ -350,6 +369,17 @@ var VolumeMenu = class extends PopupMenu.PopupMenuSection {
         this.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
         this._onControlStateChanged();
+    }
+
+    destroy()
+    {
+        this._control.disconnect(this._stateChangeSignal);
+        this._control.disconnect(this._defaultSinkChangeSignal);
+        this._control.disconnect(this._defaultSourceChangeSignal);
+
+        this._output.destroy();
+        this._input.destroy();
+        super.destroy();
     }
 
     scroll(type, event) {

@@ -28,8 +28,6 @@ const Main = imports.ui.main;
 const PopupMenu = imports.ui.popupMenu;
 const VolumePatch = Me.imports.volume_patch;
 
-const usePatchMenu = true;
-
 var SoundOutputDeviceChooser = class SoundOutputDeviceChooser
     extends Base.SoundDeviceChooserBase {
     constructor(menuItem) {
@@ -78,11 +76,15 @@ var VolumeMenuInstance = class VolumeMenuInstance {
         this._output = this._volumeMenu._output;
 
         // Add the patch
-        this._volume._volumeMenu_patch = new VolumePatch.VolumeMenu(this._volume._control);
-        this._volumeMenu_patch = this._volume._volumeMenu_patch;
-        this._input_patch = this._volumeMenu_patch._input;
-        this._output_patch = this._volumeMenu_patch._output;
-        this._volume.menu.addMenuItem(this._volume._volumeMenu_patch);
+        this._addPatch = this._settings.get_boolean(Prefs.INTEGRATE_WITH_SLIDER);
+        if(this._addPatch) {
+            _d("Adding patch..");
+            this._volume._volumeMenu_patch = new VolumePatch.VolumeMenu(this._volume._control);
+            this._volumeMenu_patch = this._volume._volumeMenu_patch;
+            this._input_patch = this._volumeMenu_patch._input;
+            this._output_patch = this._volumeMenu_patch._output;
+            this._volume.menu.addMenuItem(this._volume._volumeMenu_patch);
+        }
 
         this._overrideFunctions();
         this._setSliderVisibility();
@@ -137,28 +139,38 @@ var VolumeMenuInstance = class VolumeMenuInstance {
         this._input._showInputSlider = show_input_slider;
         this._input._maybeShowInput();
 
-        this._input_patch._showInputSlider = show_input_slider;
-        this._input_patch._maybeShowInput();
+        if(this._addPatch) {
+            this._input_patch._showInputSlider = show_input_slider;
+            this._input_patch._maybeShowInput();
+        }
     }
     replaceOutputMenuWithPatch(value) {
         this._output._forceInvisible = value;
         this._output._updateVisibility();
 
-        this._output_patch._forceInvisible = !value;
-        this._output_patch._updateVisibility();
+        if(this._addPatch) {
+            this._output_patch._forceInvisible = !value;
+            this._output_patch._updateVisibility();
+        }
     }
     replaceInputMenuWithPatch(value) {
         this._input._forceInvisible = value;
         this._input._maybeShowInput();
 
-        this._input_patch._forceInvisible = !value;
-        this._input_patch._maybeShowInput();
+        if(this._addPatch) {
+            this._input_patch._forceInvisible = !value;
+            this._input_patch._maybeShowInput();
+        }
     }
     movePatchOnTop() {
-        this._volume.menu.moveMenuItem(this._volume._volumeMenu_patch, 0);
+        if(this._addPatch) {
+            this._volume.menu.moveMenuItem(this._volume._volumeMenu_patch, 0);
+        }
     }
     movePatchBelow() {
-        this._volume.menu.moveMenuItem(this._volume._volumeMenu_patch, 1);
+        if(this._addPatch) {
+            this._volume.menu.moveMenuItem(this._volume._volumeMenu_patch, 1);
+        }
     }
     destroy() {
         this._signalManager.disconnectAll();
@@ -170,8 +182,10 @@ var VolumeMenuInstance = class VolumeMenuInstance {
 
         this._input._maybeShowInput();
 
-        this._volume._volumeMenu_patch.destroy();
-        delete this._volume['_volumeMenu_patch'];
+        if(this._addPatch) {
+            this._volume._volumeMenu_patch.destroy();
+            delete this._volume['_volumeMenu_patch'];
+        }
 
         delete this._volumeMenu['_getInputVisibleOriginal'];
         delete this._volumeMenu['_getInputVisibleCustom'];
@@ -206,37 +220,36 @@ var SDCInstance = class SDCInstance {
             }
         }
 
-        // These are the external submenu menus, not the ones integrated with sliders
-        if(this._externalSubmenuMenu_output == null)
-        {
-            this._externalSubmenuMenu_output = new PopupMenu.PopupSubMenuMenuItem(_("Extension initialising..."), true);
-            this._externalSubmenuMenu_output.sliderIntegraded = false;
-            this._externalSubmenuMenu_output.visible = !usePatchMenu;
-            this._addExternalMenuItem(this._volumeMenu, this._volumeMenu._output.item, this._externalSubmenuMenu_output);
-        }
-        if(this._externalSubmenuMenu_input == null)
-        {
-            this._externalSubmenuMenu_input = new PopupMenu.PopupSubMenuMenuItem(_("Extension initialising..."), true);
-            this._externalSubmenuMenu_input.sliderIntegraded = false;
-            this._externalSubmenuMenu_input.visible = !usePatchMenu;
-            this._addExternalMenuItem(this._volumeMenu, this._volumeMenu._input.item, this._externalSubmenuMenu_input);
-        }
+        this._usePatchSubmenuMenu = this._settings.get_boolean(Prefs.INTEGRATE_WITH_SLIDER);
 
         if (this._volumeMenuInstance == null) {
             this._volumeMenuInstance = new VolumeMenuInstance(this._volume, this._settings);
             this._volumeMenu_patch = this._volumeMenuInstance._volumeMenu_patch;
         }
 
+        // These are the external submenu menus, not the ones integrated with sliders
+        if(this._externalSubmenuMenu_output == null && !this._usePatchSubmenuMenu) {
+            this._externalSubmenuMenu_output = new PopupMenu.PopupSubMenuMenuItem(_("Extension initialising..."), true);
+            this._externalSubmenuMenu_output.sliderIntegrated = false;
+            this._addExternalMenuItem(this._volumeMenu, this._volumeMenu._output.item, this._externalSubmenuMenu_output);
+        }
+        if(this._externalSubmenuMenu_input == null && !this._usePatchSubmenuMenu) {
+            this._externalSubmenuMenu_input = new PopupMenu.PopupSubMenuMenuItem(_("Extension initialising..."), true);
+            this._externalSubmenuMenu_input.sliderIntegrated = false;
+            this._addExternalMenuItem(this._volumeMenu, this._volumeMenu._input.item, this._externalSubmenuMenu_input);
+        }
+
         if (this._outputInstance == null) {
-            this._outputInstance = new SoundOutputDeviceChooser(usePatchMenu ? this._volumeMenu_patch._output.item : this._externalSubmenuMenu_output);
+            this._outputInstance = new SoundOutputDeviceChooser(this._usePatchSubmenuMenu ? this._volumeMenu_patch._output.item : this._externalSubmenuMenu_output);
             this._outputUpdateSignalID = this._outputInstance.emitter.connect('update-visibility', this._updateVisibitity.bind(this));
         }
         if (this._inputInstance == null) {
-            this._inputInstance = new SoundInputDeviceChooser(usePatchMenu ? this._volumeMenu_patch._input.item : this._externalSubmenuMenu_input);
+            this._inputInstance = new SoundInputDeviceChooser(this._usePatchSubmenuMenu ? this._volumeMenu_patch._input.item : this._externalSubmenuMenu_input);
             this._inputUpdateSignalID = this._inputInstance.emitter.connect('update-visibility', this._updateVisibitity.bind(this));
         }
 
         this._expSignalId = this._settings.connect("changed::" + Prefs.EXPAND_VOL_MENU, this._expandVolMenu.bind(this));
+        this._integrateSliderSignalId = this._settings.connect("changed::" + Prefs.INTEGRATE_WITH_SLIDER, this._switchSubmenuMenu.bind(this));
 
         this._expandVolMenu();
         this._updateVisibitity();
@@ -254,20 +267,26 @@ var SDCInstance = class SDCInstance {
     _expandVolMenu() {
         if (this._settings.get_boolean(Prefs.EXPAND_VOL_MENU)) {
             this._aggregateLayout.addSizeChild(this._volumeMenu.actor);
-            this._aggregateLayout.addSizeChild(this._volumeMenu_patch.actor);
+            if(this._usePatchSubmenuMenu) {
+                this._aggregateLayout.addSizeChild(this._volumeMenu_patch.actor);
+            }
         } else {
             this._revertVolMenuChanges();
         }
     }
 
     _revertVolMenuChanges() {
-        this._aggregateLayout._sizeChildren = this._aggregateLayout._sizeChildren.filter(item => item !== this._volumeMenu.actor && item !== this._volumeMenu_patch.actor);
+        if(this._usePatchSubmenuMenu) {
+            this._aggregateLayout._sizeChildren = this._aggregateLayout._sizeChildren.filter(item => item !== this._volumeMenu.actor && item !== this._volumeMenu_patch.actor);
+        } else {
+            this._aggregateLayout._sizeChildren = this._aggregateLayout._sizeChildren.filter(item => item !== this._volumeMenu.actor);
+        }
         this._aggregateLayout.layout_changed();
     }
 
     _updateVisibitity()
     {
-        if(!usePatchMenu) {
+        if(!this._usePatchSubmenuMenu) {
             this._volumeMenuInstance.replaceOutputMenuWithPatch(false);
             this._volumeMenuInstance.replaceInputMenuWithPatch(false);
 
@@ -278,46 +297,58 @@ var SDCInstance = class SDCInstance {
         } else {
             let output_selection_visible = this._outputInstance.shouldBeVisible();
             this._volumeMenuInstance.replaceOutputMenuWithPatch(output_selection_visible);
-            this._externalSubmenuMenu_output.visible = false;
 
             let input_selection_visible = this._inputInstance.shouldBeVisible();
             this._volumeMenuInstance.replaceInputMenuWithPatch(input_selection_visible);
-            this._externalSubmenuMenu_input.visible = false;
 
             // We want 1st the speaker and then the microphone
             // Without this trick when input_selection_visible = false mic is over the speaker
-            if(!output_selection_visible && input_selection_visible)
-            {
+            if(!output_selection_visible && input_selection_visible) {
                 this._volumeMenuInstance.movePatchBelow();
-            } else if(output_selection_visible && !input_selection_visible){
+            } else if(output_selection_visible && !input_selection_visible) {
                 this._volumeMenuInstance.movePatchOnTop();
             }
         }
     }
 
+    // The easiest way around switching between external and integrated with slider submenu menu
+    // TODO a better method
+    _switchSubmenuMenu() {
+        if (this._usePatchSubmenuMenu != this._settings.get_boolean(Prefs.INTEGRATE_WITH_SLIDER))
+        {
+            _d("INTEGRATE_WITH_SLIDER changes.. disabling and enabling")
+            this.disable();
+            this.enable();
+        }
+    }
+
     disable() {
         this._revertVolMenuChanges();
+        if (this._integrateSliderSignalId) {
+            this._settings.disconnect(this._integrateSliderSignalId);
+            this._integrateSliderSignalId = null;
+        }
         if (this._expSignalId) {
             this._settings.disconnect(this._expSignalId);
             this._expSignalId = null;
         }
 
         if (this._outputInstance) {
-            this._outputInstance.disconnect(this._outputUpdateSignalID);
+            this._outputInstance.emitter.disconnect(this._outputUpdateSignalID);
             this._outputInstance.destroy();
             this._outputInstance = null;
         }
         if (this._inputInstance) {
-            this._inputInstance.disconnect(this._inputUpdateSignalID);
+            this._inputInstance.emitter.disconnect(this._inputUpdateSignalID);
             this._inputInstance.destroy();
             this._inputInstance = null;
         }
 
-        if (this._externalSubmenuMenu_output == null) {
+        if (this._externalSubmenuMenu_output) {
             this._externalSubmenuMenu_output.destroy();
             this._externalSubmenuMenu_output = null;
         }
-        if (this._externalSubmenuMenu_input == null) {
+        if (this._externalSubmenuMenu_input) {
             this._externalSubmenuMenu_input.destroy();
             this._externalSubmenuMenu_input = null;
         }

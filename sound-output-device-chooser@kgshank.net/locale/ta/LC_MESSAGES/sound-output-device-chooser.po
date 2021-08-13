@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sound-output-device-chooser\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-05 23:33+0300\n"
+"POT-Creation-Date: 2021-08-13 18:09+0300\n"
 "PO-Revision-Date: 2021-05-12 16:14+0200\n"
 "Last-Translator: \n"
 "Language-Team: Gopi Sankar Karmegam <kgshank@users.noreply.github.com>\n"
@@ -19,16 +19,16 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:217
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:297
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:243
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:337
 msgid "(Select / deselect the required device in the Gnome Sound Settings)"
 msgstr "(க்னோம் ஒலி அமைப்புகளில் தேவையான சாதனத்தைத் தேர்ந்தெடுக்கவும் / தேர்வுநீக்கவும்)"
 
-#: sound-output-device-chooser@kgshank.net/base.js:452
+#: sound-output-device-chooser@kgshank.net/base.js:482
 msgid "Activated Device: "
 msgstr "செயல்படுத்தப்பட்ட சாதனம்: "
 
-#: sound-output-device-chooser@kgshank.net/base.js:451
+#: sound-output-device-chooser@kgshank.net/base.js:481
 msgid "Activated device is hidden in Port Settings."
 msgstr "செயல்படுத்தப்பட்ட சாதனம் சாதன அமைப்புகளில் மறைக்கப்பட்டுள்ளது."
 
@@ -37,98 +37,108 @@ msgstr "செயல்படுத்தப்பட்ட சாதனம் �
 msgid "Colored"
 msgstr "நிறம்"
 
-#: sound-output-device-chooser@kgshank.net/prefs.js:139
+#: sound-output-device-chooser@kgshank.net/prefs.js:140
 msgid "Could not load the preferences UI file"
 msgstr "விருப்பத்தேர்வுகள் பயனர் இடைமுகக் கோப்பை ஏற்ற முடியவில்லை"
 
-#: sound-output-device-chooser@kgshank.net/base.js:452
+#: sound-output-device-chooser@kgshank.net/base.js:482
 msgid "Deactivated Device: "
 msgstr "செயலிழக்கப்பட்ட சாதனம்: "
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:591
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:860
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:619
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:900
 msgid "Default"
 msgstr "இயல்புநிலை"
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:548
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:817
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:576
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:857
 msgid "Device Type"
 msgstr "சாதன வகை"
 
-#: sound-output-device-chooser@kgshank.net/base.js:453
+#: sound-output-device-chooser@kgshank.net/base.js:483
 msgid "Disable in extension preferences to avoid this behaviour."
 msgstr "இந்த நடத்தையைத் தவிர்க்க நீட்டிப்பு விருப்பங்களில் முடக்கு."
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:115
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:139
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:141
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:179
 msgid "Display audio profiles for selection"
 msgstr "தேர்வுக்கு ஒலி விவரகுருப்புகளை காண்பி"
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:404
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:593
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:430
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:633
 msgid "Display icons only in selection list"
 msgstr "தேர்வு பட்டியலில் மட்டுமே சின்னங்களை காண்பி"
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:192
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:258
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:218
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:298
 msgid "Don't allow device hidden in Port Settings to be activated"
 msgstr "சாதன அமைப்புகளில் மறைக்கப்பட்டுள்ள சாதனத்தை செயல்படுத்த அனுமதிக்காதே"
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:448
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:665
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:474
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:705
 msgid "Enable Log messages"
 msgstr "பதிவு செய்திகளை அனுமதி"
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:470
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:704
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:496
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:744
 msgid "Enable new profile identification"
 msgstr "புதிய விவரகுறிப்பு முறையை செயல்படுத்து"
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:167
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:219
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:193
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:259
 msgid "Extend Volume Menu to fit device names"
 msgstr "சாதனம் பெயர்கள் பொருந்தும் வகையில் தொகுதி பட்டி நீட்டிக்க"
 
-#: sound-output-device-chooser@kgshank.net/base.js:450
+#: sound-output-device-chooser@kgshank.net/base.js:480
 msgid "Extension changed active sound device."
 msgstr "நீட்டிப்பு செயலில் ஒலி சாதனத்தை மாற்றியது."
 
-#: sound-output-device-chooser@kgshank.net/base.js:217
+#: sound-output-device-chooser@kgshank.net/extension.js:232
+#: sound-output-device-chooser@kgshank.net/extension.js:237
 msgid "Extension initialising..."
 msgstr "நீட்டிப்பு துவங்குகிறது ..."
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:228
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:315
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:254
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:355
 msgid "General Settings"
 msgstr "பொது அமைப்புகள்"
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:577
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:846
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:605
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:886
 msgid "Hide"
 msgstr "மறை"
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:90
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:99
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:116
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:139
 msgid "Hide selector if there's only one device"
 msgstr "ஒரே ஒரு சாதனம் இருந்தால் தேர்வாளரை மறைக்கவும்"
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:371
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:545
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:397
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:585
 msgid "Icon Theme"
 msgstr "சின்னம் நிறம் தேர்வு"
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:421
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:622
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:447
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:662
 msgid "Icons"
 msgstr "சின்னங்கள்"
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:344
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:502
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:370
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:542
 msgid "Input Devices"
 msgstr "உள்வரும் சாதனங்கள்"
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:487
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:734
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:90
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:99
+msgid "Integrate selector with slider"
+msgstr ""
+
+#: sound-output-device-chooser@kgshank.net/volume_patch.js:279
+msgid "Microphone"
+msgstr ""
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:513
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:774
 msgid "Miscellaneous"
 msgstr "இதர"
 
@@ -137,8 +147,8 @@ msgstr "இதர"
 msgid "Monochrome"
 msgstr "ஒரே வண்ணமுடைய"
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:533
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:803
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:561
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:843
 msgid "Name"
 msgstr "பெயர்"
 
@@ -147,18 +157,18 @@ msgstr "பெயர்"
 msgid "None"
 msgstr "எதுவுமில்லை"
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:141
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:179
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:167
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:219
 msgid "Omit device origins at Volume Menu"
 msgstr ""
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:272
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:387
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:298
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:427
 msgid "Output Devices"
 msgstr "வெளிப்பாடு சாதனங்கள்"
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:610
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:886
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:640
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:926
 msgid "Port Settings"
 msgstr "சாதன அமைப்புகள்"
 
@@ -166,25 +176,33 @@ msgstr "சாதன அமைப்புகள்"
 msgid "Profile: "
 msgstr "விவரக்குறிப்பு: "
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:563
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:832
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:591
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:872
 msgid "Show"
 msgstr "காண்பி"
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:300
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:431
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:326
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:471
 msgid "Show input devices"
 msgstr "உள்வரும் சாதனங்களை காண்பி"
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:254
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:357
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:280
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:397
 msgid "Show output devices"
 msgstr "வெளிப்பாடு சாதனங்களை காண்பி"
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:326
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:472
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:352
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:512
 msgid "Show volume control for default device"
 msgstr "இயல்புநிலை சாதனத்திற்கான தொகுதி கட்டுப்பாட்டைக் காண்பி"
+
+#: sound-output-device-chooser@kgshank.net/volume_patch.js:220
+msgid "Volume"
+msgstr ""
+
+#: sound-output-device-chooser@kgshank.net/volume_patch.js:158
+msgid "Volume changed"
+msgstr ""
 
 #~ msgid "Enable new profile identification "
 #~ msgstr "புதிய விவரகுறிப்பு முறையை செயல்படுத்து "

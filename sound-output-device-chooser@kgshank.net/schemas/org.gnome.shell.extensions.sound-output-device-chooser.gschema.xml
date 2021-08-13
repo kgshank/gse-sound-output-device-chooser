@@ -91,5 +91,11 @@
         <summary>Preference to omit device origin at Volume Menu</summary>
         <description></description>
     </key>
+
+    <key name="integrate-with-slider" type="b">
+        <default>false</default>
+        <summary>Preference to integrate selector with slider</summary>
+        <description></description>
+    </key>
   </schema>
 </schemalist>
