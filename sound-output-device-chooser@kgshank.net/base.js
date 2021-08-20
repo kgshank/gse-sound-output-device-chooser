@@ -231,6 +231,8 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         else {
             this._controlStateChangeSignal = this._signalManager.addSignal(_control, "state-changed", this._onControlStateChanged.bind(this));
         }
+
+        this._signalManager.addSignal(this.menuItem.menu, "open-state-changed", this._onSubmenuOpenStateChanged.bind(this));
     }
 
     _getMixerControl() { return VolumeMenu.getMixerControl(); }
@@ -283,9 +285,6 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
                 }
             }
 
-            let profileVisibility = this._settings.get_boolean(Prefs.SHOW_PROFILES);
-            this._setProfileTimer(profileVisibility);
-
             if (this._controlStateChangeSignal) {
                 this._controlStateChangeSignal.disconnect();
                 delete this._controlStateChangeSignal;
@@ -294,20 +293,12 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         }
     }
 
-    _setProfileTimer(v) {
-        //We dont have any way to understand that the profile has changed in the settings
-        //Just an useless workaround 
-        if (v) {
-            if (!this.activeProfileTimeout) {
-                this.activeProfileTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 2000,
-                    this._setActiveProfile.bind(this));
-            }
-        }
-        else {
-            if (this.activeProfileTimeout) {
-                GLib.source_remove(this.activeProfileTimeout);
-                this.activeProfileTimeout = null;
-            }
+    _onSubmenuOpenStateChanged(_menu, opened) {
+        _d(this.deviceType + "-Submenu is now open?: " + opened);
+        if (opened) {   // Actions when submenu is opening
+            this._setActiveProfile();
+        } 
+        else {          // Actions when submenu is closing
         }
     }
 
@@ -376,7 +367,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
                 this._changeDeviceBase(id, control);
             }
             control.change_profile_on_selected_device(uidevice, profileName);
-            this._setDeviceActiveProfile(control, this._devices.get(id));
+            //this._setDeviceActiveProfile(control, this._devices.get(id)); //"Races" change_profile_...(...) and reports the old state
         }
     }
 
@@ -507,17 +498,12 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
     }
 
     _setActiveProfile() {
-        if (!this.menuItem._getOpenState()) {
-            return;
-        }
         let control = this._getMixerControl();
-
         this._devices.forEach(device => {
             if (device.isAvailable()) {
                 this._setDeviceActiveProfile(control, device);
             }
         });
-        return true;
     }
 
     _setDeviceActiveProfile(control, device) {
@@ -571,7 +557,6 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
     _setProfileVisibility() {
         let visibility = this._settings.get_boolean(Prefs.SHOW_PROFILES);
         this._getAvailableDevices().forEach(device => device.setProfileVisibility(visibility));
-        this._setProfileTimer(visibility);
     }
 
     _getIcon(name) {
