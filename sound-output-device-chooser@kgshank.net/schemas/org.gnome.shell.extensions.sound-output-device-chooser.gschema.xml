@@ -45,7 +45,7 @@
     </key>
 
     <key name="ports-settings" type="s">
-      <default>"{\"version\":2,\"ports\":[]}"</default>
+      <default>"{\"version\":3,\"ports\":[]}"</default>
       <summary>Preference to hide/show different ports always</summary>
       <description></description>
     </key>
