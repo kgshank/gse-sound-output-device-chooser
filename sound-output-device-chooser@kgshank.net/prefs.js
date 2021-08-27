@@ -109,7 +109,6 @@ function migratePortSettings(currVersion, currSettings, _settings) {
                     let _lPort = _lPorts[i];
                     if (port.human_name == _lPort.human_name && port.name == _lPort.name && port.card_name == _lPort.card_name) {
                         port.card_description = _lPort.card_description;
-                        port.display_name = getPortDisplayName(_lPort);
                         _lPorts.splice(i, 1);
                         ports.push(port);
                         break;
