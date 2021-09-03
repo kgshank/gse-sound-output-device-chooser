@@ -108,6 +108,7 @@ class PAHelper():
             obj['n_profiles'] = port.n_profiles
             obj['profiles'] = []
             obj['card_name'] = card_obj['name']
+            obj['card_description'] = card_obj['card_description']
             for j in range(0, port.n_profiles):
                 if(port.profiles2[j]):
                     profile = port.profiles2[j].contents 
