@@ -40,6 +40,8 @@
       <column type="gint"/>
       <!-- column-name CardName -->
       <column type="gchararray"/>
+      <!-- column-name CardDescription -->
+      <column type="gchararray"/>
       <!-- column-name DisplayName -->
       <column type="gchararray"/>
       <!-- column-name DeviceType -->
@@ -845,7 +847,7 @@
                                 <child>
                                   <object class="GtkCellRendererText" id="PortNameRenderer"/>
                                   <attributes>
-                                    <attribute name="text">7</attribute>
+                                    <attribute name="text">8</attribute>
                                   </attributes>
                                 </child>
                               </object>
@@ -860,7 +862,7 @@
                                 <child>
                                   <object class="GtkCellRendererText" id="DeviceTypeRenderer"/>
                                   <attributes>
-                                    <attribute name="text">8</attribute>
+                                    <attribute name="text">9</attribute>
                                   </attributes>
                                 </child>
                               </object>

@@ -23,7 +23,7 @@ cp -r gse-sound-output-device-chooser/sound-output-device-chooser@kgshank.net .
 rm -rf "gse-sound-output-device-chooser"
 ```
 
-Enable the extensions from [GNOME Tweaks](https://wiki.gnome.org/Apps/Tweaks).
+Enable the extensions from [GNOME Extensions App](https://gitlab.gnome.org/GNOME/gnome-shell/-/tree/main/subprojects/extensions-app).
 
 ### Gnome shell versions compatible
 * 40

@@ -627,7 +627,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
             if (stream) {
                 let cardId = stream.get_card_index();
                 if (cardId != null) {
-                    _d("Card Index" + cardId);
+                    _d("Card Index:" + cardId);
                     let _card = Lib.getCard(cardId);
                     if (_card) {
                         cardName = _card.name;
@@ -636,16 +636,17 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase{
                         //card id found, but not available in list
                         return DISPLAY_OPTIONS.DEFAULT;
                     }
-                    _d("Card Name" + cardName);
+                    _d("Card Name:" + cardName);
                 }
             }
 
-            _d("P" + uidevice.port_name + "==" + uidevice.description + "==" + cardName);
+            _d("P:" + uidevice.port_name + "==" + uidevice.description + "==" + cardName + "==" + uidevice.origin);
 
             let matchedPort = this._portsSettings.find(port => (port
                 && port.name == uidevice.port_name
                 && port.human_name == uidevice.description
-                && (!cardName || cardName == port.card_name)));
+                && (!cardName || port.card_name == cardName)
+                && (cardName  || port.card_description == uidevice.origin)));
 
             if (matchedPort) {
                 displayOption = matchedPort.display_option;
