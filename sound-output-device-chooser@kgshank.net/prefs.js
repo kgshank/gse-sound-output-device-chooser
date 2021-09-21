@@ -39,6 +39,7 @@ var NEW_PROFILE_ID_DEPRECATED = "new-profile-indentification";
 var NEW_PROFILE_ID = "new-profile-identification";
 var EXPAND_VOL_MENU = "expand-volume-menu";
 var CANNOT_ACTIVATE_HIDDEN_DEVICE = "cannot-activate-hidden-device";
+var OMIT_DEVICE_ORIGIN = "omit-device-origins";
 
 var ICON_THEME = "icon-theme";
 var ICON_THEME_COLORED = "colored";
@@ -47,7 +48,7 @@ var ICON_THEME_NONE = "none";
 
 var DISPLAY_OPTIONS = { SHOW_ALWAYS: 1, HIDE_ALWAYS: 2, DEFAULT: 3, INITIAL: -1 };
 
-const PORT_SETTINGS_VERSION = 2;
+const PORT_SETTINGS_VERSION = 3;
 
 function init() { 
     ExtensionUtils.initTranslations();
@@ -60,6 +61,10 @@ function getPortsFromSettings(_settings) {
     if (Array.isArray(obj)) {
         currentSettingsVersion = 1;
     }
+    else {
+        currentSettingsVersion = obj.version;
+    }
+
     if (currentSettingsVersion < PORT_SETTINGS_VERSION) {
         obj = migratePortSettings(currentSettingsVersion, obj, _settings);
     }
@@ -75,22 +80,35 @@ function setPortsSettings(ports, _settings) {
 }
 
 function getPortDisplayName(port) {
-    const card = Lib.getCardByName(port.card_name);
-    const description = card && card.card_description
-    return `${port.human_name} - ${description}`;
+    return `${port.human_name} - ${port.card_description}`;
 }
 
 function migratePortSettings(currVersion, currSettings, _settings) {
     let ports = [];
+    let _lPorts = Lib.getPorts(true).slice();
     switch (currVersion) {
-        case 1:
-            let _lPorts = Lib.getPorts(true).slice();
+        case 1:   
             for (let port of currSettings) {
                 for (var i = 0; i < _lPorts.length; i++) {
                     let _lPort = _lPorts[i];
                     if (port.human_name == _lPort.human_name && port.name == _lPort.name) {
                         port.card_name = _lPort.card_name;
+                        port.card_description = _lPort.card_description;
                         port.display_name = getPortDisplayName(_lPort);
+                        _lPorts.splice(i, 1);
+                        ports.push(port);
+                        break;
+                    }
+                }
+            }
+            break;
+
+        case 2:
+            for (let port of currSettings.ports) {
+                for (var i = 0; i < _lPorts.length; i++) {
+                    let _lPort = _lPorts[i];
+                    if (port.human_name == _lPort.human_name && port.name == _lPort.name && port.card_name == _lPort.card_name) {
+                        port.card_description = _lPort.card_description;
                         _lPorts.splice(i, 1);
                         ports.push(port);
                         break;
@@ -159,6 +177,7 @@ const SDCSettingsWidget = new GObject.Class({
             let logSwitch = builder.get_object(ENABLE_LOG);
             let newProfileIdSwitch = builder.get_object(NEW_PROFILE_ID);
             let cantActHiddSwitch = builder.get_object(CANNOT_ACTIVATE_HIDDEN_DEVICE);
+            let omitDeviceOrigin = builder.get_object(OMIT_DEVICE_ORIGIN);
 
             this._settings.bind(HIDE_ON_SINGLE_DEVICE, singleDeviceSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(SHOW_PROFILES, showProfileSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
@@ -170,6 +189,7 @@ const SDCSettingsWidget = new GObject.Class({
             this._settings.bind(ENABLE_LOG, logSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(NEW_PROFILE_ID, newProfileIdSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(CANNOT_ACTIVATE_HIDDEN_DEVICE, cantActHiddSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
+            this._settings.bind(OMIT_DEVICE_ORIGIN, omitDeviceOrigin, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(ICON_THEME, iconThemeCombo, "active-id", Gio.SettingsBindFlags.DEFAULT);
 
             //Show always is not working always, hidden in the UI directly
@@ -191,7 +211,8 @@ const SDCSettingsWidget = new GObject.Class({
     _populatePorts: function() {
         let ports = Lib.getPorts(true);
         ports.sort((a, b) => (b.direction.localeCompare(a.direction)) || getPortDisplayName(a).localeCompare(getPortDisplayName(b))).forEach(port => {
-            this._portsStore.set(this._portsStore.append(), [0, 1, 2, 3, 4, 5, 6, 7, 8], [port.human_name, false, false, true, port.name, 3, port.card_name, getPortDisplayName(port), port.direction]);
+            this._portsStore.set(this._portsStore.append(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+             [port.human_name, false, false, true, port.name, 3, port.card_name, port.card_description, getPortDisplayName(port), port.direction]);
         });
     },
 
@@ -248,7 +269,8 @@ const SDCSettingsWidget = new GObject.Class({
                         name: this._portsStore.get_value(iter, 4),
                         display_option: display_option,
                         card_name: this._portsStore.get_value(iter, 6),
-                        display_name: this._portsStore.get_value(iter, 7)
+                        card_description: this._portsStore.get_value(iter, 7),
+                        display_name: this._portsStore.get_value(iter, 8)
                     });
                 }
             }
@@ -286,8 +308,8 @@ const SDCSettingsWidget = new GObject.Class({
 
             if (!found) {
                 iter = this._portsStore.append();
-                this._portsStore.set(iter, [0, 1, 2, 3, 4, 5, 6, 7, 8],
-                    [port.human_name, false, false, false, port.name, port.display_option, port.card_name, port.display_name, ""]);
+                this._portsStore.set(iter, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                    [port.human_name, false, false, false, port.name, port.display_option, port.card_name, port.card_description, port.display_name, ""]);
                 this._portsStore.set_value(iter, port.display_option, true);
             }
         }

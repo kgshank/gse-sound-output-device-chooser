@@ -64,45 +64,79 @@ var SoundInputDeviceChooser = class SoundInputDeviceChooser
     }
 };
 
-
-var InputSliderInstance = class InputSliderInstance {
+var VolumeMenuInstance = class VolumeMenuInstance {
     constructor(volumeMenu, settings) {
-        this._input = volumeMenu._input;
         this._settings = settings;
+
+        this._volumeMenu = volumeMenu;
+        this._input = this._volumeMenu._input;
+
+        this._overrideFunctions();
+        this._setSliderVisiblity();
+
         this._signalManager = new SignalManager();
         this._signalManager.addSignal(this._settings, "changed::"
             + Prefs.SHOW_INPUT_SLIDER, this._setSliderVisiblity.bind(this));
-        this._overrideFunction();
-        this._setSliderVisiblity();
     }
-    _overrideFunction() {
+    _overrideFunctions() {
+        // Fix the indicator when using SHOW_INPUT_SLIDER. 
+        // If not applied when SHOW_INPUT_SLIDER=True indication of mic being used will be on (even when not used)
+        this._volumeMenu._getInputVisibleOriginal = this._volumeMenu.getInputVisible;
+        this._volumeMenu._getInputVisibleCustom = function() {
+            return this._input._stream != null && this._input._showInput;
+        };
+        this._volumeMenu.getInputVisible = this._volumeMenu._getInputVisibleCustom;
+        
+        this._input._updateVisibilityOriginal = this._input._updateVisibility;
+        this._input._updateVisibilityCustom = function() {
+            let old_state_visible = this.item.visible;
+            let visible = this._shouldBeVisible();
+
+            if(old_state_visible != visible){
+                this.item.visible = visible;
+            } else {
+                this.item.notify('visible');
+            }
+        };
+        this._input._updateVisibility = this._input._updateVisibilityCustom;
+
+        // Makes slider visible when SHOW_INPUT_SLIDER=True
+        this._input._showInputSlider = this._settings.get_boolean(Prefs.SHOW_INPUT_SLIDER);
         this._input._shouldBeVisibleOriginal = this._input._shouldBeVisible;
         this._input._shouldBeVisibleCustom = function() {
-            return this._stream != null;
+            return this._showInputSlider && (this._stream != null) || this._shouldBeVisibleOriginal();
         };
+        this._input._shouldBeVisible = this._input._shouldBeVisibleCustom;
     }
     _setSliderVisiblity() {
-        if (this._settings.get_boolean(Prefs.SHOW_INPUT_SLIDER)) {
-            this._input._shouldBeVisible = this._input._shouldBeVisibleCustom;
-        } else {
-            this._input._shouldBeVisible = this._input._shouldBeVisibleOriginal;
-        }
+        this._input._showInputSlider = this._settings.get_boolean(Prefs.SHOW_INPUT_SLIDER);
         this._input._maybeShowInput();
     }
     destroy() {
         this._signalManager.disconnectAll();
+
+        this._volumeMenu.getInputVisible = this._volumeMenu._getInputVisibleOriginal;
+        this._input._updateVisibility = this._input._updateVisibilityOriginal;
         this._input._shouldBeVisible = this._input._shouldBeVisibleOriginal;
+
         this._input._maybeShowInput();
+
+        delete this._volumeMenu['_getInputVisibleOriginal'];
+        delete this._volumeMenu['_getInputVisibleCustom'];
+        delete this._input['_updateVisibilityOriginal'];
+        delete this._input['_updateVisibilityCustom'];
         delete this._input['_shouldBeVisibleOriginal'];
         delete this._input['_shouldBeVisibleCustom'];
+        delete this._input['_showInputSlider'];               // variable
     }
-};
+}
 
 var SDCInstance = class SDCInstance {
     constructor() {
         this._settings = ExtensionUtils.getSettings();
         this._aggregateMenu = Main.panel.statusArea.aggregateMenu;
-        this._volumeMenu = this._aggregateMenu._volume._volumeMenu;
+        this._volume = this._aggregateMenu._volume;
+        this._volumeMenu = this._volume._volumeMenu;
         this._aggregateLayout = this._aggregateMenu.menu.box.get_layout_manager();
         }
 
@@ -123,8 +157,8 @@ var SDCInstance = class SDCInstance {
             this._inputInstance = new SoundInputDeviceChooser();
         }
 
-        if (this._inputSliderInstance == null) {
-            this._inputSliderInstance = new InputSliderInstance(this._volumeMenu, this._settings);
+        if (this._volumeMenuInstance == null) {
+            this._volumeMenuInstance = new VolumeMenuInstance(this._volumeMenu, this._settings);
         }
 
         this._addMenuItem(this._volumeMenu, this._volumeMenu._output.item, this._outputInstance.menuItem);
@@ -167,9 +201,9 @@ var SDCInstance = class SDCInstance {
             this._inputInstance.destroy();
             this._inputInstance = null;
         }
-        if (this._inputSliderInstance) {
-            this._inputSliderInstance.destroy();
-            this._inputSliderInstance = null;
+        if (this._volumeMenuInstance) {
+            this._volumeMenuInstance.destroy();
+            this._volumeMenuInstance = null;
         }
         if (this._expSignalId) {
             this._settings.disconnect(this._expSignalId);

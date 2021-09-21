@@ -40,6 +40,8 @@
       <column type="gint"/>
       <!-- column-name CardName -->
       <column type="gchararray"/>
+      <!-- column-name CardDescription -->
+      <column type="gchararray"/>
       <!-- column-name DisplayName -->
       <column type="gchararray"/>
       <!-- column-name DeviceType -->
@@ -146,6 +148,46 @@
                             </child>
                             <child>
                               <object class="GtkSwitch" id="show-profiles">
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="halign">end</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkListBoxRow">
+                        <property name="width-request">100</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="margin-top">6</property>
+                            <property name="margin-bottom">6</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="halign">start</property>
+                                <property name="label" translatable="yes">Omit device origins at Volume Menu</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSwitch" id="omit-device-origins">
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
                                 <property name="halign">end</property>
@@ -661,7 +703,7 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
-                                <property name="label" translatable="yes">Enable new profile identification </property>
+                                <property name="label" translatable="yes">Enable new profile identification</property>
                               </object>
                               <packing>
                                 <property name="expand">True</property>
@@ -765,7 +807,7 @@
                                 <child>
                                   <object class="GtkCellRendererText" id="PortNameRenderer"/>
                                   <attributes>
-                                    <attribute name="text">7</attribute>
+                                    <attribute name="text">8</attribute>
                                   </attributes>
                                 </child>
                               </object>
@@ -780,7 +822,7 @@
                                 <child>
                                   <object class="GtkCellRendererText" id="DeviceTypeRenderer"/>
                                   <attributes>
-                                    <attribute name="text">8</attribute>
+                                    <attribute name="text">9</attribute>
                                   </attributes>
                                 </child>
                               </object>

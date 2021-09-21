@@ -7,9 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-12 16:13+0200\n"
-"PO-Revision-Date: 2021-07-07 17:51+0200\n"
-"Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
+
+"POT-Creation-Date: 2021-08-05 23:33+0300\n"
+"PO-Revision-Date: 2020-09-02 18:22+0200\n"
+"Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
+
 "Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
@@ -17,6 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.2.1\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
 
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:191
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:257
@@ -36,7 +39,7 @@ msgstr "Het actieve apparaat is verborgen in de poortinstellingen."
 msgid "Colored"
 msgstr "Gekleurd"
 
-#: sound-output-device-chooser@kgshank.net/prefs.js:138
+#: sound-output-device-chooser@kgshank.net/prefs.js:139
 msgid "Could not load the preferences UI file"
 msgstr "Het UI-bestand van de voorkeuren kan niet worden geladen"
 
@@ -51,6 +54,7 @@ msgstr "Standaard"
 
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:522
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:777
+
 msgid "Device Type"
 msgstr "Soort apparaat"
 
@@ -58,13 +62,17 @@ msgstr "Soort apparaat"
 msgid "Disable in extension preferences to avoid this behaviour."
 msgstr "Schakel dit uit in de voorkeuren om dit gedrag te voorkomen."
 
+#: sound-output-device-chooser@kgshank.net/base.js:453
+msgid "Disable in extension preferences to avoid this behaviour."
+msgstr ""
+
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:115
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:139
 msgid "Display audio profiles for selection"
 msgstr "Audioprofielen tonen in keuzemenu"
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:378
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:553
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:404
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:593
 msgid "Display icons only in selection list"
 msgstr "Alleen pictogrammen tonen op keuzelijst"
 
@@ -86,8 +94,8 @@ msgstr "Nieuwe profielidentificatie inschakelen"
 msgid "Enable new profile identification "
 msgstr "Nieuwe profielidentificatie inschakelen "
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:141
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:179
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:167
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:219
 msgid "Extend Volume Menu to fit device names"
 msgstr "Geluidsmenu verbreden om volledige apparaatnamen te tonen"
 
@@ -99,13 +107,21 @@ msgstr "De uitbreiding heeft het actieve geluidsapparaat gewijzigd."
 msgid "Extension initialising..."
 msgstr "Bezig met starten…"
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:202
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:275
+#: sound-output-device-chooser@kgshank.net/base.js:450
+msgid "Extension changed active sound device."
+msgstr ""
+
+#: sound-output-device-chooser@kgshank.net/base.js:217
+msgid "Extension initialising..."
+msgstr ""
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:228
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:315
 msgid "General Settings"
 msgstr "Algemene voorkeuren"
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:551
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:806
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:577
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:846
 msgid "Hide"
 msgstr "Verbergen"
 
@@ -131,6 +147,7 @@ msgstr "Invoerapparaten"
 
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:461
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:694
+
 msgid "Miscellaneous"
 msgstr "Overig"
 
@@ -139,8 +156,8 @@ msgstr "Overig"
 msgid "Monochrome"
 msgstr "Monochroom"
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:507
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:763
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:533
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:803
 msgid "Name"
 msgstr "Naam"
 
@@ -154,8 +171,13 @@ msgstr "Geen"
 msgid "Output Devices"
 msgstr "Uitvoerapparaten"
 
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:584
-#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:846
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:141
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:179
+msgid "Omit device origins at Volume Menu"
+msgstr ""
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:610
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:886
 msgid "Port Settings"
 msgstr "Poortinstellingen"
 
@@ -182,3 +204,6 @@ msgstr "Uitvoerapparaten tonen"
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:432
 msgid "Show volume control for default device"
 msgstr "Volumebediening van standaardapparaat tonen"
+
+#~ msgid "Enable new profile identification "
+#~ msgstr "Nieuwe profielidentificatie inschakelen "
