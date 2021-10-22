@@ -3,15 +3,15 @@
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Original Author: Gopi Sankar Karmegam
  ******************************************************************************/
 /* jshint moz:true */
@@ -50,7 +50,7 @@ var DISPLAY_OPTIONS = { SHOW_ALWAYS: 1, HIDE_ALWAYS: 2, DEFAULT: 3, INITIAL: -1 
 
 const PORT_SETTINGS_VERSION = 3;
 
-function init() { 
+function init() {
     ExtensionUtils.initTranslations();
 }
 
@@ -87,7 +87,7 @@ function migratePortSettings(currVersion, currSettings, _settings) {
     let ports = [];
     let _lPorts = Lib.getPorts(true).slice();
     switch (currVersion) {
-        case 1:   
+        case 1:
             for (let port of currSettings) {
                 for (var i = 0; i < _lPorts.length; i++) {
                     let _lPort = _lPorts[i];
@@ -132,7 +132,7 @@ const SDCSettingsWidget = new GObject.Class({
         let uiFileSuffix = "";
 
         if (Gtk.get_major_version() >= "4") {
-            uiFileSuffix = "40";
+            uiFileSuffix = "41";
             this.__addFn = this.append;
             this.__showFn = this.show;
         }
@@ -200,7 +200,7 @@ const SDCSettingsWidget = new GObject.Class({
             this._signalManager.addSignal(showAlwaysToggleRender, "toggled", this._showAlwaysToggleRenderCallback.bind(this));
             this._signalManager.addSignal(hideAlwaysToggleRender, "toggled", this._hideAlwaysToggleRenderCallback.bind(this));
             this._signalManager.addSignal(showActiveToggleRender, "toggled", this._showActiveToggleRenderCallback.bind(this));
-            
+
             this._portsStore = builder.get_object("ports-store");
 
             this._populatePorts();
