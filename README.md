@@ -26,6 +26,7 @@ rm -rf "gse-sound-output-device-chooser"
 Enable the extensions from [GNOME Extensions App](https://gitlab.gnome.org/GNOME/gnome-shell/-/tree/main/subprojects/extensions-app).
 
 ### Gnome shell versions compatible
+* 41
 * 40
 * 3.38
 * 3.36
