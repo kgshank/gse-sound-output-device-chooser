@@ -16,7 +16,7 @@
 	<target name="create_zip" depends="create_dist,compile-schema">
 		<echo message="Creating file ${extension.uid}.zip"/>
 		<zip destfile="${dir.target.dir}/${extension.uid}.zip" >
-			<fileset dir="${project-dir}" excludes="**/*.pyc,**/__pycache__"/>
+			<fileset dir="${project-dir}" excludes="**/*.pyc,**/__pycache__,**/*.po*"/>
 		</zip>
 	</target>
 </project>
