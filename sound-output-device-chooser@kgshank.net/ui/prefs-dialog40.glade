@@ -89,6 +89,32 @@
                                 <property name="hexpand">1</property>
                                 <property name="halign">start</property>
                                 <property name="margin-start">5</property>
+                                <property name="label" translatable="yes">Integrate selector with slider</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkSwitch" id="integrate-with-slider">
+                                <property name="halign">end</property>
+                                <property name="margin-end">5</property>
+                              </object>
+                            </child>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkListBoxRow">
+                        <property name="width-request">100</property>
+                        <property name="child">
+                          <object class="GtkBox">
+                            <property name="can-focus">0</property>
+                            <property name="margin-top">6</property>
+                            <property name="margin-bottom">6</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="hexpand">1</property>
+                                <property name="halign">start</property>
+                                <property name="margin-start">5</property>
                                 <property name="label" translatable="yes">Hide selector if there&apos;s only one device</property>
                               </object>
                             </child>

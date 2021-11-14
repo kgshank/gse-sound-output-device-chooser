@@ -18,6 +18,8 @@
 
 const { GObject, GLib, Gvc } = imports.gi;
 
+const Signals = imports.signals;
+
 const PopupMenu = imports.ui.popupMenu;
 const VolumeMenu = imports.ui.status.volume;
 const Main = imports.ui.main;
@@ -475,7 +477,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
             this._deviceAdded(control, id);
         }
 
-        this.menuItem.label.text = obj.title;
+        this.menuItem.label.text = obj.title;		
 
         if (!this._settings.get_boolean(Prefs.HIDE_MENU_ICONS)) {
             this.menuItem.icon.icon_name = obj.icon_name;
@@ -552,6 +554,8 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
             // if setting says to show device, check for any device, otherwise
             // hide the "actor"
             this.menuItem.actor.visible = this._getDeviceVisibility();//(Array.from(this._devices.values()).some(x => x.isAvailable()));
+            
+        this.emit('update-visibility', this.menuItem.actor.visible);
     }
 
     _setProfileVisibility() {
@@ -713,6 +717,8 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
     }
 
 };
+
+Signals.addSignalMethods(SoundDeviceChooserBase.prototype);
 
 function _notify(msg, details, icon_name) {
     let source = new MessageTray.Source(Me.metadata["name"], icon_name);
