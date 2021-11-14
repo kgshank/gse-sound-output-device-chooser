@@ -299,7 +299,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         _d(this.deviceType + "-Submenu is now open?: " + opened);
         if (opened) {   // Actions when submenu is opening
             this._setActiveProfile();
-        } 
+        }
         else {          // Actions when submenu is closing
         }
     }
@@ -477,7 +477,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
             this._deviceAdded(control, id);
         }
 
-        this.menuItem.label.text = obj.title;		
+        this.menuItem.label.text = obj.title;
 
         if (!this._settings.get_boolean(Prefs.HIDE_MENU_ICONS)) {
             this.menuItem.icon.icon_name = obj.icon_name;
@@ -554,7 +554,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
             // if setting says to show device, check for any device, otherwise
             // hide the "actor"
             this.menuItem.actor.visible = this._getDeviceVisibility();//(Array.from(this._devices.values()).some(x => x.isAvailable()));
-            
+
         this.emit('update-visibility', this.menuItem.actor.visible);
     }
 
@@ -626,7 +626,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
                 && port.name == uidevice.port_name
                 && port.human_name == uidevice.description
                 && (!cardName || port.card_name == cardName)
-                && (cardName  || port.card_description == uidevice.origin)));
+                && (cardName || port.card_description == uidevice.origin)));
 
             if (matchedPort) {
                 displayOption = matchedPort.display_option;
@@ -682,7 +682,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         return (!uidevice || (uidevice.description != null && uidevice.description.match(/Dummy\s+(Output|Input)/gi)));
     }
 
-    _refreshDeviceTitles(){
+    _refreshDeviceTitles() {
         let control = this._getMixerControl();
         this._devices.forEach((device, id) => {
             let uidevice = this.lookupDeviceById(control, id);
@@ -725,5 +725,5 @@ function _notify(msg, details, icon_name) {
     Main.messageTray.add(source);
     let notification = new MessageTray.Notification(source, msg, details);
     //notification.setTransient(true);
-    source.showNotification(notification);    
+    source.showNotification(notification);
 }

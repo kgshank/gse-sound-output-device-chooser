@@ -51,7 +51,7 @@ var DISPLAY_OPTIONS = { SHOW_ALWAYS: 1, HIDE_ALWAYS: 2, DEFAULT: 3, INITIAL: -1 
 
 const PORT_SETTINGS_VERSION = 3;
 
-function init() { 
+function init() {
     ExtensionUtils.initTranslations();
 }
 
@@ -88,7 +88,7 @@ function migratePortSettings(currVersion, currSettings, _settings) {
     let ports = [];
     let _lPorts = Lib.getPorts(true).slice();
     switch (currVersion) {
-        case 1:   
+        case 1:
             for (let port of currSettings) {
                 for (var i = 0; i < _lPorts.length; i++) {
                     let _lPort = _lPorts[i];
@@ -203,7 +203,7 @@ const SDCSettingsWidget = new GObject.Class({
             this._signalManager.addSignal(showAlwaysToggleRender, "toggled", this._showAlwaysToggleRenderCallback.bind(this));
             this._signalManager.addSignal(hideAlwaysToggleRender, "toggled", this._hideAlwaysToggleRenderCallback.bind(this));
             this._signalManager.addSignal(showActiveToggleRender, "toggled", this._showActiveToggleRenderCallback.bind(this));
-            
+
             this._portsStore = builder.get_object("ports-store");
 
             this._populatePorts();
@@ -215,7 +215,7 @@ const SDCSettingsWidget = new GObject.Class({
         let ports = Lib.getPorts(true);
         ports.sort((a, b) => (b.direction.localeCompare(a.direction)) || getPortDisplayName(a).localeCompare(getPortDisplayName(b))).forEach(port => {
             this._portsStore.set(this._portsStore.append(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-             [port.human_name, false, false, true, port.name, 3, port.card_name, port.card_description, getPortDisplayName(port), port.direction]);
+                [port.human_name, false, false, true, port.name, 3, port.card_name, port.card_description, getPortDisplayName(port), port.direction]);
         });
     },
 
