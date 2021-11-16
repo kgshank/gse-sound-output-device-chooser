@@ -162,7 +162,7 @@ var SDCInstance = class SDCInstance {
             this._volumeMenuInstance = new VolumeMenuInstance(this._volumeMenu, this._settings);
         }
 
-        this._canIntegradeMenu = true;
+        this._allowIntegrateMenu = true;
         this._addMenuItem(this._volumeMenu, this._volumeMenu._output.item, this._outputInstance.menuItem);
         this._addMenuItem(this._volumeMenu, this._volumeMenu._input.item, this._inputInstance.menuItem);
         this._expandVolMenu();
@@ -185,7 +185,7 @@ var SDCInstance = class SDCInstance {
     }
 
     _canIntegrateMenuItem(menuItem) {
-        return this._canIntegradeMenu && menuItem.visible && this._settings.get_boolean(Prefs.INTEGRATE_WITH_SLIDER);
+        return this._allowIntegrateMenu && menuItem.visible && this._settings.get_boolean(Prefs.INTEGRATE_WITH_SLIDER);
     }
 
     _expandVolMenu() {
@@ -246,7 +246,7 @@ var SDCInstance = class SDCInstance {
         this._settings = null;
         this._signalManager.disconnectAll();
         this._signalManager = null;
-        this._canIntegradeMenu = false;
+        this._allowIntegrateMenu = false;
         this._switchSubmenuMenu();
         this._revertVolMenuChanges();
         if (this._outputInstance) {
