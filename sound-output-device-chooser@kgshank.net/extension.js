@@ -229,6 +229,7 @@ var SDCInstance = class SDCInstance {
             selectorItem.label.hide();
             _sliderItem.get_next_sibling().hide(); //expander
             selectorItem.icon.hide();
+            selectorItem.set_style('padding-top: 0px; padding-bottom: 0px');
         } else {
             _d("Not integrating with Volume menu")
             if (selectorItem.contains(_sliderItem) == true) {
@@ -240,6 +241,7 @@ var SDCInstance = class SDCInstance {
             selectorItem.label.show();
             selectorItem.label.get_next_sibling().show(); //expander
             selectorItem.icon.show();
+            selectorItem.set_style('');
             if (_volumeMenu.box.contains(_sliderItem) == false) {
                 _volumeMenu.box.insert_child_below(_sliderItem, selectorItem);
             }
