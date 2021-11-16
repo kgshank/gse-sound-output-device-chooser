@@ -246,14 +246,14 @@ var SDCInstance = class SDCInstance {
             sliderItem.set_style('');
             sliderItem._ornamentLabel.show();
             selectorItem.label.show();
-            sliderItem.label.get_next_sibling().show(); //expander
+            selectorItem.label.get_next_sibling().show(); //expander
             selectorItem.icon.show();
             selectorItem.set_style('');
             if (_volumeMenu.box.contains(sliderItem) == false) {
                 let oriVisible = sliderItem.visible;
                 _volumeMenu.box.insert_child_below(sliderItem, selectorItem);
                 sliderItem.visible = oriVisible;
-            }
+            } 
         }
     }
 
