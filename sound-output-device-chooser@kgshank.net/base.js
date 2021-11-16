@@ -235,6 +235,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         }
 
         this._signalManager.addSignal(this.menuItem.menu, "open-state-changed", this._onSubmenuOpenStateChanged.bind(this));
+        this._signalManager.addSignal(this.menuItem, "notify::visible", () => {this.emit('update-visibility', this.menuItem.actor.visible);});
     }
 
     _getMixerControl() { return VolumeMenu.getMixerControl(); }
@@ -549,13 +550,16 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
 
     _setVisibility() {
         if (!this._settings.get_boolean(this._show_device_signal))
-            this.menuItem.actor.visible = false;
+            this.setVisible(false);
         else
             // if setting says to show device, check for any device, otherwise
             // hide the "actor"
-            this.menuItem.actor.visible = this._getDeviceVisibility();//(Array.from(this._devices.values()).some(x => x.isAvailable()));
-
-        this.emit('update-visibility', this.menuItem.actor.visible);
+            this.setVisible(this._getDeviceVisibility());        
+    }
+    
+    setVisible(visibility) {
+        this.menuItem.actor.visible = visibility;
+        //this.emit('update-visibility', visibility);    
     }
 
     _setProfileVisibility() {
