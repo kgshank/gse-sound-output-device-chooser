@@ -222,6 +222,8 @@ var SDCInstance = class SDCInstance {
                 _volumeMenu.box.remove_child(_sliderItem);
             }
             _sliderItem.set_x_expand(true);
+            _sliderItem.set_style('padding-right: 0px;');
+            _sliderItem._ornamentLabel.hide();
             selectorItem.insert_child_above(_sliderItem, selectorItem.label);
             selectorItem.label.hide();
             _sliderItem.get_next_sibling().hide(); //expander
@@ -232,6 +234,8 @@ var SDCInstance = class SDCInstance {
                 selectorItem.remove_child(_sliderItem);
             }
             _sliderItem.set_x_expand(false);
+            _sliderItem.set_style('');
+            _sliderItem._ornamentLabel.show();
             selectorItem.label.show();
             selectorItem.label.get_next_sibling().show(); //expander
             selectorItem.icon.show();
