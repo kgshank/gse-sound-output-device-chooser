@@ -217,9 +217,9 @@ var SDCInstance = class SDCInstance {
 
     _switchSubmenuMenu() {
         _d("Output Device visibility");
-        this._updateMenuVisibility(this._outputInstance, this._outputInstance.menuItem.visibile);
+        this._updateMenuVisibility(this._outputInstance, this._outputInstance.menuItem.visible);
         _d("Input Device visibility");
-        this._updateMenuVisibility(this._inputInstance, this._inputInstance.menuItem.visibile);
+        this._updateMenuVisibility(this._inputInstance, this._inputInstance.menuItem.visible);
     }
 
     _integrateMenu(_volumeMenu, sliderItem, selectorItem, visible) {
