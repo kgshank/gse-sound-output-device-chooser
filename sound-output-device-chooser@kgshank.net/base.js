@@ -546,6 +546,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         //this.menuItem._triangleBin.visible = visibility;
         //this.menuItem.actor.visible = visibility;
         this._setProfileVisibility();
+        this.setVisible(visibility);
     }
 
     _setVisibility() {
