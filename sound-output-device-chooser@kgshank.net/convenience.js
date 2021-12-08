@@ -350,3 +350,8 @@ function dump(obj) {
         catch (e) { _log(propName + "!!!Error!!!"); }
     }
 }
+
+function getActor(item) {
+    //.actor is needed for backward compatablity
+    return (item.actor) ? item.actor : item;
+}

@@ -38,6 +38,7 @@ const Domain = Gettext.domain(Me.metadata["gettext-domain"]);
 const _ = Domain.gettext;
 //const _ = Gettext.gettext;
 const _d = Lib._log;
+const getActor = Lib.getActor;
 
 const DISPLAY_OPTIONS = Prefs.DISPLAY_OPTIONS;
 const SignalManager = Lib.SignalManager;
@@ -68,7 +69,7 @@ var ProfileMenuItem = class ProfileMenuItem
                 this.remove_style_pseudo_class('insensitive');
             }
             else {
-                this.actor.remove_style_pseudo_class('insensitive');
+                getActor(this).remove_style_pseudo_class('insensitive');
             }
         }
         else {
@@ -77,13 +78,13 @@ var ProfileMenuItem = class ProfileMenuItem
                 this.add_style_pseudo_class('insensitive');
             }
             else {
-                this.actor.add_style_pseudo_class('insensitive');
+                getActor(this).add_style_pseudo_class('insensitive');
             }
         }
     }
 
     setVisibility(visibility) {
-        this.actor.visible = visibility;
+        getActor(this).visible = visibility;
     }
 }
 
@@ -124,8 +125,8 @@ var SoundDeviceMenuItem = class SoundDeviceMenuItem extends PopupMenu.PopupImage
         this.available = true;
         this.activeProfile = "";
         this.activeDevice = false;
-        this.visible = false;
         this._displayOption = DISPLAY_OPTIONS.INITIAL;
+        getActor(this).visible = false;
     }
 
     isAvailable() {
@@ -149,11 +150,10 @@ var SoundDeviceMenuItem = class SoundDeviceMenuItem extends PopupMenu.PopupImage
     }
 
     setVisibility(_v) {
-        this.actor.visible = _v;
+        getActor(this).visible = _v;
         if (!_v) {
             this.profilesitems.forEach((p) => p.setVisibility(false));
         }
-        this.visible = _v;
     };
 
     setTitle(_t) {
@@ -163,7 +163,7 @@ var SoundDeviceMenuItem = class SoundDeviceMenuItem extends PopupMenu.PopupImage
     }
 
     isVisible() {
-        return this.visible;
+        return getActor(this).visible;
     }
 
     setActiveDevice(_a) {
@@ -235,7 +235,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         }
 
         this._signalManager.addSignal(this.menuItem.menu, "open-state-changed", this._onSubmenuOpenStateChanged.bind(this));
-        this._signalManager.addSignal(this.menuItem, "notify::visible", () => {this.emit('update-visibility', this.menuItem.actor.visible);});
+        this._signalManager.addSignal(this.menuItem, "notify::visible", () => {this.emit('update-visibility', getActor(this.menuItem).visible);});
     }
 
     _getMixerControl() { return VolumeMenu.getMixerControl(); }
@@ -543,8 +543,8 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         let visibility = this._getDeviceVisibility();
         this._getAvailableDevices().forEach(x => x.setVisibility(visibility))
 
-        //this.menuItem._triangleBin.visible = visibility;
-        //this.menuItem.actor.visible = visibility;
+        //getActor(this.menuItem._triangleBin).visible = visibility;
+        //getActor(this.menuItem).visible = visibility;
         this._setProfileVisibility();
         this.setVisible(visibility);
     }
@@ -559,7 +559,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
     }
     
     setVisible(visibility) {
-        this.menuItem.actor.visible = visibility;
+        getActor(this.menuItem).visible = visibility;
         //this.emit('update-visibility', visibility);    
     }
 

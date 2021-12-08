@@ -23,6 +23,7 @@ const Base = Me.imports.base;
 const Lib = Me.imports.convenience;
 const _d = Lib._log;
 const _dump = Lib.dump;
+const getActor = Lib.getActor;
 const SignalManager = Lib.SignalManager;
 const Prefs = Me.imports.prefs;
 const Main = imports.ui.main;
@@ -91,13 +92,13 @@ var VolumeMenuInstance = class VolumeMenuInstance {
 
         this._input._updateVisibilityOriginal = this._input._updateVisibility;
         this._input._updateVisibilityCustom = function() {
-            let old_state_visible = this.item.visible;
+            let old_state_visible = getActor(this.item).visible;
             let visible = this._shouldBeVisible();
 
             if (old_state_visible != visible) {
-                this.item.visible = visible;
+                getActor(this.item).visible = visible;
             } else {
-                this.item.notify('visible');
+                getActor(this.item).notify('visible');
             }
         };
         this._input._updateVisibility = this._input._updateVisibilityCustom;
@@ -173,9 +174,9 @@ var SDCInstance = class SDCInstance {
         this._signalManager.addSignal(this._inputInstance, "update-visibility", this._updateMenuVisibility.bind(this));
 
         //If slider disappears remove menu integration, getting complicated!!
-        this._signalManager.addSignal(this._getActor(this._volumeMenu._output.item),
+        this._signalManager.addSignal(getActor(this._volumeMenu._output.item),
             "notify::visible", () => { this._updateMenuVisibility(this._outputInstance, false) });
-        this._signalManager.addSignal(this._getActor(this._volumeMenu._input.item),
+        this._signalManager.addSignal(getActor(this._volumeMenu._input.item),
             "notify::visible", () => { this._updateMenuVisibility(this._inputInstance, false) });
     }
 
@@ -191,35 +192,30 @@ var SDCInstance = class SDCInstance {
 
     _expandVolMenu() {
         if (this._settings.get_boolean(Prefs.EXPAND_VOL_MENU)) {
-            this._aggregateLayout.addSizeChild(this._getActor(this._volumeMenu));
+            this._aggregateLayout.addSizeChild(getActor(this._volumeMenu));
         } else {
             this._revertVolMenuChanges();
         }
     }
 
     _revertVolMenuChanges() {
-        this._aggregateLayout._sizeChildren = this._aggregateLayout._sizeChildren.filter(item => item !== this._volumeMenu.actor);
+        this._aggregateLayout._sizeChildren = this._aggregateLayout._sizeChildren.filter(item => item !== getActor(this._volumeMenu));
         this._aggregateLayout.layout_changed();
-    }
-
-    _getActor(menuItem) {
-        //.actor is needed for backward compatablity
-        return (menuItem.actor) ? menuItem.actor : menuItem;
     }
 
     _updateMenuVisibility(menuInstance, visible) {
         if (menuInstance instanceof SoundOutputDeviceChooser) {
-            this._integrateMenu(this._volumeMenu, this._getActor(this._volumeMenu._output.item), this._getActor(menuInstance.menuItem), visible);
+            this._integrateMenu(this._volumeMenu, getActor(this._volumeMenu._output.item), getActor(menuInstance.menuItem), visible);
         } else {
-            this._integrateMenu(this._volumeMenu, this._getActor(this._volumeMenu._input.item), this._getActor(menuInstance.menuItem), visible);
+            this._integrateMenu(this._volumeMenu, getActor(this._volumeMenu._input.item), getActor(menuInstance.menuItem), visible);
         }
     }
 
     _switchSubmenuMenu() {
         _d("Output Device visibility");
-        this._updateMenuVisibility(this._outputInstance, this._getActor(this._outputInstance.menuItem).visible);
+        this._updateMenuVisibility(this._outputInstance, getActor(this._outputInstance.menuItem).visible);
         _d("Input Device visibility");
-        this._updateMenuVisibility(this._inputInstance, this._getActor(this._inputInstance.menuItem).visible);
+        this._updateMenuVisibility(this._inputInstance, getActor(this._inputInstance.menuItem).visible);
     }
 
     _integrateMenu(_volumeMenu, sliderItem, selectorItem, visible) {
