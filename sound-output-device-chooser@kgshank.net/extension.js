@@ -187,7 +187,7 @@ var SDCInstance = class SDCInstance {
             i = menuItems.length;
         }
         _volumeMenu.addMenuItem(menuItem, ++i);
-        this._integrateMenu(_volumeMenu, checkItem, menuItem);
+        this._integrateMenu(_volumeMenu, getActor(checkItem), getActor(menuItem));
     }
 
     _expandVolMenu() {
