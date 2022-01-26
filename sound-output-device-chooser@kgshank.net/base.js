@@ -531,11 +531,12 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
 
     _getDeviceVisibility() {
         let hideChooser = this._settings.get_boolean(Prefs.HIDE_ON_SINGLE_DEVICE);
+        let numAvailableDevices = this._getAvailableDevices().length;
         if (hideChooser) {
-            return (this._getAvailableDevices().length > 1);
+            return numAvailableDevices > 1;
         }
         else {
-            return true;
+            return numAvailableDevices > 0;
         }
     }
 
