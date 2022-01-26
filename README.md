@@ -13,7 +13,7 @@ To install the extension from source, clone the repository and place it in the `
 cd ~/.local/share/gnome-shell/extensions/
 
 # Remove older version
-rm -rf "*sound-output-device-chooser*"
+rm -rf *sound-output-device-chooser*
 
 # Clone current version
 git clone https://github.com/kgshank/gse-sound-output-device-chooser.git
