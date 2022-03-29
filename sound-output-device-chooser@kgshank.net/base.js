@@ -45,11 +45,6 @@ const SignalManager = Lib.SignalManager;
 
 var ProfileMenuItem = class ProfileMenuItem
     extends PopupMenu.PopupMenuItem {
-    constructor(title, profileName) {
-        super(title);
-        this._init(title, profileName);
-    }
-
     _init(title, profileName) {
         if (super._init) {
             super._init(title);
@@ -89,11 +84,6 @@ var ProfileMenuItem = class ProfileMenuItem
 }
 
 var SoundDeviceMenuItem = class SoundDeviceMenuItem extends PopupMenu.PopupImageMenuItem {
-    constructor(id, title, icon_name, profiles) {
-        super(title, icon_name);
-        this._init(id, title, icon_name, profiles);
-    }
-
     _init(id, title, icon_name, profiles) {
         if (super._init) {
             super._init(title, icon_name);
