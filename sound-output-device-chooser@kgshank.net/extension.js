@@ -233,7 +233,7 @@ var SDCInstance = class SDCInstance {
             selectorItem.label.hide();
             sliderItem.get_next_sibling().hide(); //expander
             selectorItem.icon.hide();
-            selectorItem.set_style('padding-top: 0px; padding-bottom: 0px');
+            selectorItem.set_style('padding-left: 0px;padding-top: 0px; padding-bottom: 0px');
         } else {
             _d("Not integrating with Volume menu")
             if (selectorItem.contains(sliderItem) == true) {
