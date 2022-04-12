@@ -42,18 +42,23 @@ const getActor = Lib.getActor;
 
 const DISPLAY_OPTIONS = Prefs.DISPLAY_OPTIONS;
 const SignalManager = Lib.SignalManager;
+const isShellAbove34 = (parseFloat(Config.PACKAGE_VERSION) >= 3.34);
 
-var ProfileMenuItem = class ProfileMenuItem
+var ProfileMenuItem40 = class 
     extends PopupMenu.PopupMenuItem {
-    _init(title, profileName) {
+	_init(title, profileName) {
         if (super._init) {
             super._init(title);
         }
-        _d("ProfileMenuItem: _init:" + title);
-        this.profileName = profileName;
+        _d("ProfileMenuItem: _init:" + title); 
+        this._initialise(profileName);       
+    }
+    
+    _initialise(profileName) {
+		this.profileName = profileName;
         this._ornamentLabel.set_style("min-width: 3em;margin-left: 3em;");
         this.setProfileActive(false);
-    }
+	}
 
     setProfileActive(active) {
         if (active) {
@@ -83,12 +88,25 @@ var ProfileMenuItem = class ProfileMenuItem
     }
 }
 
-var SoundDeviceMenuItem = class SoundDeviceMenuItem extends PopupMenu.PopupImageMenuItem {
-    _init(id, title, icon_name, profiles) {
+var ProfileMenuItem32 = class 
+    extends ProfileMenuItem40 {
+	constructor(title, profileName){
+		_d("ProfileMenuItem: constructor:" + title);
+		super(title);
+		this._initialise(profileName);		
+	}
+}
+
+var SoundDeviceMenuItem40 = class extends PopupMenu.PopupImageMenuItem {
+	_init(id, title, icon_name, profiles) {
         if (super._init) {
             super._init(title, icon_name);
         }
         _d("SoundDeviceMenuItem: _init:" + title);
+        this._initialise(id, title, icon_name, profiles);
+    }
+
+    _initialise(id, title, icon_name, profiles) {
         this.id = id;
         this.title = title;
         this.icon_name = icon_name;
@@ -186,7 +204,19 @@ var SoundDeviceMenuItem = class SoundDeviceMenuItem extends PopupMenu.PopupImage
     }
 }
 
-if (parseFloat(Config.PACKAGE_VERSION) >= 3.34) {
+var SoundDeviceMenuItem32 = class extends SoundDeviceMenuItem40 {
+	constructor(id, title, icon_name, profiles) {
+        _d("SoundDeviceMenuItem: constructor:" + title);
+       	super(title, icon_name);
+		this._initialise(id, title, icon_name, profiles);        
+ 	}
+}
+
+var SoundDeviceMenuItem;
+var ProfileMenuItem;
+if (isShellAbove34) {
+	SoundDeviceMenuItem = SoundDeviceMenuItem40;
+	ProfileMenuItem = ProfileMenuItem40;
     ProfileMenuItem = GObject.registerClass({ GTypeName: 'ProfileMenuItem' }, ProfileMenuItem);
 
     SoundDeviceMenuItem = GObject.registerClass({
@@ -201,9 +231,13 @@ if (parseFloat(Config.PACKAGE_VERSION) >= 3.34) {
         }
     }, SoundDeviceMenuItem);
 }
+else
+{
+	SoundDeviceMenuItem = SoundDeviceMenuItem32;
+	ProfileMenuItem = ProfileMenuItem32;
+}
 
 var SoundDeviceChooserBase = class SoundDeviceChooserBase {
-
     constructor(deviceType) {
         _d("SDC: init");
         this.menuItem = new PopupMenu.PopupSubMenuMenuItem(_("Extension initialising..."), true);
