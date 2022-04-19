@@ -1,1 +1,187 @@
+# Sound Input & Output Device Chooser.GNOME Shell Extension
+# Copyright (C) 2022 Gopi Sankar Karmegam
+# This file is distributed under the same license as the Sound Input & Output
+# Device Chooser.GNOME Shell Extension
+# Davy Defaud <davy.defaud@free.fr>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 42\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-08-05 23:33+0300\n"
+"PO-Revision-Date: 2022-04-19 15:35+0200\n"
+"Last-Translator: Davy Defaud <davy.defaud@free.fr>\n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n >= 2);\n"
 
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:217
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:297
+msgid "(Select / deselect the required device in the Gnome Sound Settings)"
+msgstr "(sélectionner ou désélectionner le périphérique désiré depuis les réglages audio de GNOME)"
+
+#: sound-output-device-chooser@kgshank.net/base.js:452
+msgid "Activated Device: "
+msgstr "Périphérique activé : "
+
+#: sound-output-device-chooser@kgshank.net/base.js:451
+msgid "Activated device is hidden in Port Settings."
+msgstr "Le périphérique actif est masqué dans les paramètres des entrées‑sorties."
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:18
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:19
+msgid "Colored"
+msgstr "Couleur"
+
+#: sound-output-device-chooser@kgshank.net/prefs.js:139
+msgid "Could not load the preferences UI file"
+msgstr "Impossible de charger le fichier de préférences de l’interface utilisateur"
+
+#: sound-output-device-chooser@kgshank.net/base.js:452
+msgid "Deactivated Device: "
+msgstr "Périphérique désactivé : "
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:591
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:860
+msgid "Default"
+msgstr "Par défaut"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:548
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:817
+msgid "Device Type"
+msgstr "Type de périphérique"
+
+#: sound-output-device-chooser@kgshank.net/base.js:453
+msgid "Disable in extension preferences to avoid this behaviour."
+msgstr "Modifiez ce comportement en le désactivant dans les préférences de l’extension."
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:115
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:139
+msgid "Display audio profiles for selection"
+msgstr "Afficher les profils audio correspondants"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:404
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:593
+msgid "Display icons only in selection list"
+msgstr "Afficher les icônes uniquement dans la liste"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:192
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:258
+msgid "Don't allow device hidden in Port Settings to be activated"
+msgstr "Interdire l’activation du masquage des périphériques dans les paramètres des entrées‑sorties"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:448
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:665
+msgid "Enable Log messages"
+msgstr "Activer l’écriture de messages dans le journal système"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:470
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:704
+msgid "Enable new profile identification"
+msgstr "Activer l’identification des nouveaux profils"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:167
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:219
+msgid "Extend Volume Menu to fit device names"
+msgstr "Étendre le menu du volume sonore afin de l’adapter aux noms des périphériques"
+
+#: sound-output-device-chooser@kgshank.net/base.js:450
+msgid "Extension changed active sound device."
+msgstr "L’extension a modifié le périphérique actif."
+
+#: sound-output-device-chooser@kgshank.net/base.js:217
+msgid "Extension initialising..."
+msgstr "Initialisation de l’extension…"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:228
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:315
+msgid "General Settings"
+msgstr "Paramètres généraux"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:577
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:846
+msgid "Hide"
+msgstr "Masquer"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:90
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:99
+msgid "Hide selector if there's only one device"
+msgstr "Masquer le sélecteur s’il n’y a qu’un seul périphérique"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:371
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:545
+msgid "Icon Theme"
+msgstr "Thème d’icônes"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:421
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:622
+msgid "Icons"
+msgstr "Icônes"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:344
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:502
+msgid "Input Devices"
+msgstr "Périphériques d’entrée"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:487
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:734
+msgid "Miscellaneous"
+msgstr "Divers"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:14
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:15
+msgid "Monochrome"
+msgstr "Monochrome"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:533
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:803
+msgid "Name"
+msgstr "Nom"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:22
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:23
+msgid "None"
+msgstr "Aucun"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:141
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:179
+msgid "Omit device origins at Volume Menu"
+msgstr "Ne pas préciser le périphérique audio dans le menu du volume sonore"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:272
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:387
+msgid "Output Devices"
+msgstr "Périphériques de sortie"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:610
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:886
+msgid "Port Settings"
+msgstr "Réglages des entrées‑sorties audio"
+
+#: sound-output-device-chooser@kgshank.net/base.js:108
+msgid "Profile: "
+msgstr "Profil : "
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:563
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:832
+msgid "Show"
+msgstr "Affichage"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:300
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:431
+msgid "Show input devices"
+msgstr "Afficher les périphériques d’entrée"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:254
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:357
+msgid "Show output devices"
+msgstr "Afficher les périphériques de sortie"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:326
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:472
+msgid "Show volume control for default device"
+msgstr "Afficher le contrôle du volume du périphérique d’entrée par défaut"
