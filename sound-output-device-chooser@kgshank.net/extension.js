@@ -227,7 +227,10 @@ var SDCInstance = class SDCInstance {
             }
             sliderItem.set_x_expand(true);
             sliderItem.set_style('padding-right: 0px;');
-            sliderItem._ornamentLabel.hide();
+            if(sliderItem._ornamentLabel)
+            {
+            	sliderItem._ornamentLabel.hide();
+            }
             sliderItem.set_track_hover(false);
             selectorItem.insert_child_above(sliderItem, selectorItem.label);
             selectorItem.label.hide();
@@ -241,7 +244,10 @@ var SDCInstance = class SDCInstance {
             }
             sliderItem.set_x_expand(false);
             sliderItem.set_style('');
-            sliderItem._ornamentLabel.show();
+            if(sliderItem._ornamentLabel)
+            {
+				sliderItem._ornamentLabel.show();
+			}
             sliderItem.set_track_hover(true);
             selectorItem.label.show();
             selectorItem.label.get_next_sibling().show(); //expander
