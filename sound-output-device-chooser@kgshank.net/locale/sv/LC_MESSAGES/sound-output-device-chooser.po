@@ -20,15 +20,15 @@ msgstr ""
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:217
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:297
 msgid "(Select / deselect the required device in the Gnome Sound Settings)"
-msgstr ""
+msgstr "(Markera / avmarkera önskad enhet i Gnomes ljudinställningar)"
 
 #: sound-output-device-chooser@kgshank.net/base.js:452
 msgid "Activated Device: "
-msgstr ""
+msgstr "Aktiverade enheter: "
 
 #: sound-output-device-chooser@kgshank.net/base.js:451
 msgid "Activated device is hidden in Port Settings."
-msgstr ""
+msgstr "Aktiverad enhet är dold i port-inställningar."
 
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:18
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:19
@@ -41,7 +41,7 @@ msgstr "Det gick inte att ladda gränssnittsfilen för inställningar"
 
 #: sound-output-device-chooser@kgshank.net/base.js:452
 msgid "Deactivated Device: "
-msgstr ""
+msgstr "Avstängda enheter: "
 
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:591
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:860
@@ -55,7 +55,7 @@ msgstr "Enhetstyp"
 
 #: sound-output-device-chooser@kgshank.net/base.js:453
 msgid "Disable in extension preferences to avoid this behaviour."
-msgstr ""
+msgstr "Stäng av i inställningarna för att undvika detta beteende."
 
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:115
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:139
@@ -70,7 +70,7 @@ msgstr "Visa ikoner endast i urvalslistan"
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:192
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:258
 msgid "Don't allow device hidden in Port Settings to be activated"
-msgstr ""
+msgstr "Tillåt ej att dold enhet i portinställningar blir aktiverade"
 
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:448
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:665
@@ -89,11 +89,11 @@ msgstr "Utöka volymmenyn så att enhetsnamnen får plats"
 
 #: sound-output-device-chooser@kgshank.net/base.js:450
 msgid "Extension changed active sound device."
-msgstr ""
+msgstr "Utökningen ändrade aktive ljudenhet."
 
 #: sound-output-device-chooser@kgshank.net/base.js:217
 msgid "Extension initialising..."
-msgstr ""
+msgstr "Utökningen initialiseras..."
 
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:228
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:315
@@ -148,7 +148,7 @@ msgstr "Inget"
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:141
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:179
 msgid "Omit device origins at Volume Menu"
-msgstr ""
+msgstr "Lista inte enhetens ursprung i Volymmenyn"
 
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:272
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:387
@@ -162,7 +162,7 @@ msgstr "Portinställningar"
 
 #: sound-output-device-chooser@kgshank.net/base.js:108
 msgid "Profile: "
-msgstr ""
+msgstr "Profil: "
 
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:563
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:832
