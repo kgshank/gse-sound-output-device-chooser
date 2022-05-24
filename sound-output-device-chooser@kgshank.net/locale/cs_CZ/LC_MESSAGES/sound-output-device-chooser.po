@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: sound-output-device-chooser\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-23 15:04+0200\n"
-"PO-Revision-Date: 2022-05-23 16:11+0200\n"
+"PO-Revision-Date: 2022-05-24 15:31+0200\n"
 "Last-Translator: Ludek Vydra <lvtran@u.k2.cz>\n"
 "Language-Team: \n"
 "Language: cs_CZ\n"
@@ -184,3 +184,8 @@ msgstr "Zobrazit výstupní zařízení"
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:472
 msgid "Show volume control for default device"
 msgstr "Zobrazit ovládání hlasitosti pro výchozí zařízení"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:92
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:101
+msgid "Integrate selector with slider"
+msgstr "Integruj výběr zařízení s posuvníkem"

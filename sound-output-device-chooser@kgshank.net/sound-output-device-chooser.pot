@@ -183,3 +183,8 @@ msgstr ""
 #: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:472
 msgid "Show volume control for default device"
 msgstr ""
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:92
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:101
+msgid "Integrate selector with slider"
+msgstr ""
