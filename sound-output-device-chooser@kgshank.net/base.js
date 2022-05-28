@@ -728,7 +728,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
     _getDeviceTitle(uidevice) {
         let title = uidevice.description;
         if (!this._settings.get_boolean(Prefs.OMIT_DEVICE_ORIGIN) && uidevice.origin != "")
-            title += " - " + uidevice.origin;
+            title = uidevice.origin + ": " + title ;
 
         return title;
     }
