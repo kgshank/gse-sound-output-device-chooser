@@ -115,35 +115,25 @@ function refreshCards() {
 
     if (newProfLogic) {
         _log("New logic");
-        let pyLocation = Me.dir.get_child("utils/pa_helper.py").get_path();
-        let pythonExec = ["python", "python3", "python2"].find(cmd => isCmdFound(cmd));
-        if (!pythonExec) {
-            _log("ERROR: Python not found. fallback to default mode");
+        let helperLocation = Me.dir.get_child("utils/pa_helper").get_path();
+        try {
+            let [result, out, err, exit_code] = GLib.spawn_command_line_sync(helperLocation);
+            // _log("result" + result +" out"+out + " exit_code" +
+            // exit_code + "err" +err);
+            if (result && !exit_code) {
+                if (out instanceof Uint8Array) {
+                    out = ByteArray.toString(out);
+                }
+                let obj = JSON.parse(out);
+                cards = obj["cards"];
+                ports = obj["ports"];
+            }
+        }
+        catch (e) {
+            error = true;
+            _log("ERROR: Helper execution failed. fallback to default mode" + e);
             _settings.set_boolean(Prefs.NEW_PROFILE_ID, false);
             Gio.Settings.sync();
-            newProfLogic = false;
-        }
-        else {
-            try {
-                _log("Python found." + pythonExec);
-                let [result, out, err, exit_code] = GLib.spawn_command_line_sync(pythonExec + " " + pyLocation);
-                // _log("result" + result +" out"+out + " exit_code" +
-                // exit_code + "err" +err);
-                if (result && !exit_code) {
-                    if (out instanceof Uint8Array) {
-                        out = ByteArray.toString(out);
-                    }
-                    let obj = JSON.parse(out);
-                    cards = obj["cards"];
-                    ports = obj["ports"];
-                }
-            }
-            catch (e) {
-                error = true;
-                _log("ERROR: Python execution failed. fallback to default mode" + e);
-                _settings.set_boolean(Prefs.NEW_PROFILE_ID, false);
-                Gio.Settings.sync();
-            }
         }
     }
     //error = true;
