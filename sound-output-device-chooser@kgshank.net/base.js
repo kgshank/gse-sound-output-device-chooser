@@ -709,7 +709,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
     }
 
     _isDeviceInValid(uidevice) {
-        return (!uidevice || (uidevice.description != null && uidevice.description.match(/Dummy\s+(Output|Input)/gi)));
+        return (!uidevice || (uidevice.description != null && uidevice.description.match(/(Dummy|EasyEffects|JamesDSP)\s+(Output|Input|Sink|Source)/gi)));
     }
 
     _refreshDeviceTitles() {
