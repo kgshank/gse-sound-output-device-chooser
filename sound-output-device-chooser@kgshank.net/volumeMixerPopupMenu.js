@@ -27,16 +27,16 @@ var VolumeMixerPopupMenuInstance = class VolumeMixerPopupMenuInstance extends Po
         this._updateStreams();
     }
 
-    _streamAdded(control, id) {        
+    _streamAdded(control, id) {
         if (id in this._applicationStreams) {
             return;
-        }        
+        }
         const stream = control.lookup_stream_id(id);
 
         if (stream.is_event_stream || !(stream instanceof MixerSinkInput)) {
             return;
         }
-        this._applicationStreams[id] = new ApplicationStreamSlider(stream, { showDesc: this._showStreamDesc, showIcon: this._showStreamIcon });
+        this._applicationStreams[id] = new ApplicationStreamSlider(stream);
         this.addMenuItem(this._applicationStreams[id].item);
     }
 
@@ -60,7 +60,7 @@ var VolumeMixerPopupMenuInstance = class VolumeMixerPopupMenuInstance extends Po
 
     destroy() {
         this._control.disconnect(this._streamAddedEventId);
-        this._control.disconnect(this._streamRemovedEventId);        
+        this._control.disconnect(this._streamRemovedEventId);
         super.destroy();
     }
 }
@@ -68,23 +68,20 @@ var VolumeMixerPopupMenuInstance = class VolumeMixerPopupMenuInstance extends Po
 const { BoxLayout, Label } = imports.gi.St;
 const Volume$1 = imports.ui.status.volume;
 class ApplicationStreamSlider extends Volume$1.StreamSlider {
-    constructor(stream, opts) {        
+    constructor(stream) {
         super(Volume$1.getMixerControl());
 
         this.stream = stream;
+        this._icon.icon_name = stream.get_icon_name();
 
-        if (opts.showIcon) {
-            this._icon.icon_name = stream.get_icon_name();
-        }
-        
         let name = stream.get_name();
-        let description = stream.get_description();        
+        let description = stream.get_description();
         if (name || description) {
             this._vbox = new BoxLayout();
             this._vbox.vertical = true;
 
             this._label = new Label();
-            this._label.text = name && opts.showDesc ? `${name} - ${description}` : (name || description);
+            this._label.text = name && `${name} - ${description}`;
             this._vbox.add(this._label);
 
             this.item.remove_child(this._slider);
@@ -93,6 +90,6 @@ class ApplicationStreamSlider extends Volume$1.StreamSlider {
 
             this.item.actor.add(this._vbox);
         }
-        
+
     }
 }
