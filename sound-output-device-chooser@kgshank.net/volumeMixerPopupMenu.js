@@ -14,7 +14,8 @@ const Volume = imports.ui.status.volume;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Lib = Me.imports.convenience;
-
+const Prefs = Me.imports.prefs;
+let subMenus = [];
 
 var VolumeMixerPopupMenuInstance = class VolumeMixerPopupMenuInstance extends PopupMenu.PopupMenuSection {
     constructor() {
@@ -49,38 +50,34 @@ var VolumeMixerPopupMenuInstance = class VolumeMixerPopupMenuInstance extends Po
         this._applicationStreams[id] = new ApplicationStreamSlider(stream);
         this.addMenuItem(this._applicationStreams[id].item);
 
-        let [result, out, err, exit_code] = GLib.spawn_command_line_sync("pactl list sinks");
-        let input = imports.byteArray.toString(out);
-        const regex = /Sink #(\d+)\n(?:.|\n)*?device\.description = "(.*?)"(?:.|\n)*?/g;
-        let matches;
-        let sinks = [];
-        while (matches = regex.exec(input)) {
-            sinks.push({
-                id: matches[1],
-                name: matches[2]
-            });
-        }
-        const menuItem = new PopupMenu.PopupSubMenuMenuItem("Output", true, {});
+
+        let sinks = Lib.getSinks();
+        const menuItem = new PopupMenu.PopupSubMenuMenuItem("Default Output", true, {});
         menuItem.set_style("min-width: 3em;margin-left: 3em;");
         sinks.forEach(sink => {
-            if (sink["name"] !== undefined) {
-                menuItem.menu.addAction(sink["name"], () => {                    
+            if (sink["name"] !== undefined) {                
+                menuItem.menu.addAction(sink["id"] + "-" + sink["name"], () => {
                     var cmd = "pactl " + "move-sink-input" + " " + sinkInputId + " " + sink.id;
-                    console.log(cmd);
                     GLib.spawn_command_line_sync(cmd);
+                    menuItem.label.text = sink["id"] + "-" + sink["name"];                    
                 });
             }
         });
-        this.addMenuItem(menuItem);
-        this.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
-
-
+        subMenus.push({ "menuItem": menuItem, "streamId": id });
+        this.addMenuItem(menuItem);        
     }
 
-    _streamRemoved(_control, id) {
+    _streamRemoved(_control, id) {        
         if (id in this._applicationStreams) {
             this._applicationStreams[id].item.destroy();
-            delete this._applicationStreams[id];
+            delete this._applicationStreams[id];            
+            for (let index = 0; index < subMenus.length; index++) {
+                const element = subMenus[index];
+                if (element["streamId"] == id) {
+                    element["menuItem"].destroy();
+                    subMenus = subMenus.slice(index)                    
+                }
+            }
         }
     }
 
@@ -92,6 +89,10 @@ var VolumeMixerPopupMenuInstance = class VolumeMixerPopupMenuInstance extends Po
 
         for (const stream of this._control.get_streams()) {
             this._streamAdded(this._control, stream.get_id());
+        }
+        for (let index = 0; index < subMenus.length; index++) {
+            const element = subMenus[index];
+            element.destroy();            
         }
     }
 
