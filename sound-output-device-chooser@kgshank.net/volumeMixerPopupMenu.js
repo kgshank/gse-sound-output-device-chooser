@@ -55,27 +55,27 @@ var VolumeMixerPopupMenuInstance = class VolumeMixerPopupMenuInstance extends Po
         const menuItem = new PopupMenu.PopupSubMenuMenuItem("Default Output", true, {});
         menuItem.set_style("min-width: 3em;margin-left: 3em;");
         sinks.forEach(sink => {
-            if (sink["name"] !== undefined) {                
+            if (sink["name"] !== undefined) {
                 menuItem.menu.addAction(sink["id"] + "-" + sink["name"], () => {
                     var cmd = "pactl " + "move-sink-input" + " " + sinkInputId + " " + sink.id;
                     GLib.spawn_command_line_sync(cmd);
-                    menuItem.label.text = sink["id"] + "-" + sink["name"];                    
+                    menuItem.label.text = sink["id"] + "-" + sink["name"];
                 });
             }
         });
         subMenus.push({ "menuItem": menuItem, "streamId": id });
-        this.addMenuItem(menuItem);        
+        this.addMenuItem(menuItem);
     }
 
-    _streamRemoved(_control, id) {        
+    _streamRemoved(_control, id) {
         if (id in this._applicationStreams) {
             this._applicationStreams[id].item.destroy();
-            delete this._applicationStreams[id];            
+            delete this._applicationStreams[id];
             for (let index = 0; index < subMenus.length; index++) {
                 const element = subMenus[index];
                 if (element["streamId"] == id) {
                     element["menuItem"].destroy();
-                    subMenus = subMenus.slice(index)                    
+                    subMenus = subMenus.slice(index);
                 }
             }
         }
@@ -86,14 +86,14 @@ var VolumeMixerPopupMenuInstance = class VolumeMixerPopupMenuInstance extends Po
             this._applicationStreams[id].item.destroy();
             delete this._applicationStreams[id];
         }
-
-        for (const stream of this._control.get_streams()) {
-            this._streamAdded(this._control, stream.get_id());
-        }
         for (let index = 0; index < subMenus.length; index++) {
             const element = subMenus[index];
-            element.destroy();            
+            element["menuItem"].destroy();
+            subMenus = subMenus.slice(index);
         }
+        for (const stream of this._control.get_streams()) {
+            this._streamAdded(this._control, stream.get_id());
+        }       
     }
 
     destroy() {
