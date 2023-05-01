@@ -1,7 +1,11 @@
-//* Original Author: Brendan Early - https://github.com/mymindstorm/gnome-volume-mixer
+/* 
+ * Original Author: Brendan Early (https://github.com/mymindstorm/gnome-volume-mixer)
+ * Modified by Burak Sener
+ */
 
 const { Settings, SettingsSchemaSource } = imports.gi.Gio;
 const { MixerSinkInput } = imports.gi.Gvc;
+const { Gio, GLib } = imports.gi;
 
 // https://gitlab.gnome.org/GNOME/gnome-shell/-/blob/main/js/ui/popupMenu.js
 const PopupMenu = imports.ui.popupMenu;
@@ -9,6 +13,8 @@ const PopupMenu = imports.ui.popupMenu;
 const Volume = imports.ui.status.volume;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
+const Lib = Me.imports.convenience;
+
 
 var VolumeMixerPopupMenuInstance = class VolumeMixerPopupMenuInstance extends PopupMenu.PopupMenuSection {
     constructor() {
@@ -24,6 +30,7 @@ var VolumeMixerPopupMenuInstance = class VolumeMixerPopupMenuInstance extends Po
         this._control = Volume.getMixerControl();
         this._streamAddedEventId = this._control.connect("stream-added", this._streamAdded.bind(this));
         this._streamRemovedEventId = this._control.connect("stream-removed", this._streamRemoved.bind(this));
+
         this._updateStreams();
     }
 
@@ -32,12 +39,42 @@ var VolumeMixerPopupMenuInstance = class VolumeMixerPopupMenuInstance extends Po
             return;
         }
         const stream = control.lookup_stream_id(id);
-
         if (stream.is_event_stream || !(stream instanceof MixerSinkInput)) {
             return;
         }
+
+        //pactl list short sink-inputs
+        var sinkInputId = stream.get_index();
+
         this._applicationStreams[id] = new ApplicationStreamSlider(stream);
         this.addMenuItem(this._applicationStreams[id].item);
+
+        let [result, out, err, exit_code] = GLib.spawn_command_line_sync("pactl list sinks");
+        let input = imports.byteArray.toString(out);
+        const regex = /Sink #(\d+)\n(?:.|\n)*?device\.description = "(.*?)"(?:.|\n)*?/g;
+        let matches;
+        let sinks = [];
+        while (matches = regex.exec(input)) {
+            sinks.push({
+                id: matches[1],
+                name: matches[2]
+            });
+        }
+        const menuItem = new PopupMenu.PopupSubMenuMenuItem("Output", true, {});
+        menuItem.set_style("min-width: 3em;margin-left: 3em;");
+        sinks.forEach(sink => {
+            if (sink["name"] !== undefined) {
+                menuItem.menu.addAction(sink["name"], () => {                    
+                    var cmd = "pactl " + "move-sink-input" + " " + sinkInputId + " " + sink.id;
+                    console.log(cmd);
+                    GLib.spawn_command_line_sync(cmd);
+                });
+            }
+        });
+        this.addMenuItem(menuItem);
+        this.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+
+
     }
 
     _streamRemoved(_control, id) {
