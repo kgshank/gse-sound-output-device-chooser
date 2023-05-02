@@ -15,12 +15,12 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Lib = Me.imports.convenience;
 const Prefs = Me.imports.prefs;
-let subMenus = [];
 
 var VolumeMixerPopupMenuInstance = class VolumeMixerPopupMenuInstance extends PopupMenu.PopupMenuSection {
     constructor() {
         super();
         this._applicationStreams = {};
+        this._subMenus = {};
 
         // The PopupSeparatorMenuItem needs something above and below it or it won't display
         this._hiddenItem = new PopupMenu.PopupBaseMenuItem();
@@ -63,7 +63,7 @@ var VolumeMixerPopupMenuInstance = class VolumeMixerPopupMenuInstance extends Po
                 });
             }
         });
-        subMenus.push({ "menuItem": menuItem, "streamId": id });
+        this._subMenus[id] = menuItem;
         this.addMenuItem(menuItem);
     }
 
@@ -71,29 +71,21 @@ var VolumeMixerPopupMenuInstance = class VolumeMixerPopupMenuInstance extends Po
         if (id in this._applicationStreams) {
             this._applicationStreams[id].item.destroy();
             delete this._applicationStreams[id];
-            for (let index = 0; index < subMenus.length; index++) {
-                const element = subMenus[index];
-                if (element["streamId"] == id) {
-                    element["menuItem"].destroy();
-                    subMenus = subMenus.slice(index);
-                }
-            }
-        }
+            this._subMenus[id].destroy();
+            delete this._subMenus[id];
+        }        
     }
 
     _updateStreams() {
         for (const id in this._applicationStreams) {
             this._applicationStreams[id].item.destroy();
             delete this._applicationStreams[id];
-        }
-        for (let index = 0; index < subMenus.length; index++) {
-            const element = subMenus[index];
-            element["menuItem"].destroy();
-            subMenus = subMenus.slice(index);
-        }
+            this._subMenus[id].destroy();
+            delete this._subMenus[id];
+        }       
         for (const stream of this._control.get_streams()) {
             this._streamAdded(this._control, stream.get_id());
-        }       
+        }
     }
 
     destroy() {
