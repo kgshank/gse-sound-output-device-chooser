@@ -97,5 +97,29 @@
         <summary>Preference to integrate selector with slider</summary>
         <description></description>
     </key>
-  </schema>
+
+    <key name="cycle-output-forward" type="as">
+        <default><![CDATA[['<Super><Alt>Page_Up']]]></default>
+        <summary>The shortcut to cycle forward through output devices</summary>
+        <description></description>
+    </key>
+
+    <key name="cycle-output-backward" type="as">
+        <default><![CDATA[['<Super><Alt>Page_Down']]]></default>
+        <summary>The shortcut to cycle backward through output devices</summary>
+        <description></description>
+    </key>
+
+    <key name="cycle-input-forward" type="as"> 
+        <default><![CDATA[['<Super><Alt>Home']]]></default>
+        <summary>The shortcut to cycle forward through input devices</summary>
+        <description></description>
+    </key>
+
+    <key name="cycle-input-backward" type="as">
+        <default><![CDATA[['<Super><Alt>End']]]></default>
+        <summary>The shortcut to cycle backward through input devices</summary>
+        <description></description>
+    </key>
+</schema>
 </schemalist>
