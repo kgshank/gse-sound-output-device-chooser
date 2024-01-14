@@ -1,0 +1,192 @@
+# Japanese Translations for "Sound Input & Output Device Chooser" of GNOEM Shell Extension
+# GNOME Shell 扩展「Sound Input & Output Device Chooser」的中文翻译
+# Copyright (C) 2022 Sound Input & Output Device Chooser
+# This file is distributed under the same license as the sound-output-device-chooser package.
+# lousuan <2546336381@qq.com>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: sound-output-device-chooser\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-08-05 23:33+0300\n"
+"PO-Revision-Date: 2024-01-14 21:03+0800\n"
+"Last-Translator: lousuan <2546336381@qq.com>\n"
+"Language-Team: \n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.0.1\n"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:217
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:297
+msgid "(Select / deselect the required device in the Gnome Sound Settings)"
+msgstr "（在 Gnome 的声音设置中选择所需要的设备时）"
+
+#: sound-output-device-chooser@kgshank.net/base.js:452
+msgid "Activated Device: "
+msgstr "活动中的设备："
+
+#: sound-output-device-chooser@kgshank.net/base.js:451
+msgid "Activated device is hidden in Port Settings."
+msgstr "要使用的设备在端口设置中被设置为隐藏。"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:18
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:19
+msgid "Colored"
+msgstr "彩色"
+
+#: sound-output-device-chooser@kgshank.net/prefs.js:139
+msgid "Could not load the preferences UI file"
+msgstr "无法加载设置界面"
+
+#: sound-output-device-chooser@kgshank.net/base.js:452
+msgid "Deactivated Device: "
+msgstr "不活动的设备："
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:591
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:860
+msgid "Default"
+msgstr "默认"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:548
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:817
+msgid "Device Type"
+msgstr "设备类型"
+
+#: sound-output-device-chooser@kgshank.net/base.js:453
+msgid "Disable in extension preferences to avoid this behaviour."
+msgstr "在设置中禁用可避免这一行为。"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:115
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:139
+msgid "Display audio profiles for selection"
+msgstr "在选择列表中展示声音配置文件选项"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:404
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:593
+msgid "Display icons only in selection list"
+msgstr "只在选择列表中展示图标"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:192
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:258
+msgid "Don't allow device hidden in Port Settings to be activated"
+msgstr "禁止切换到端口设置中已隐藏的设备"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:448
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:665
+msgid "Enable Log messages"
+msgstr "开启日志"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:470
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:704
+msgid "Enable new profile identification"
+msgstr "使用新的配置文件识别方式"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:167
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:219
+msgid "Extend Volume Menu to fit device names"
+msgstr "自动调节音量菜单以适应设备名称"
+
+#: sound-output-device-chooser@kgshank.net/base.js:450
+msgid "Extension changed active sound device."
+msgstr "扩展切换到了另一个音频设备。"
+
+#: sound-output-device-chooser@kgshank.net/base.js:217
+msgid "Extension initialising..."
+msgstr "扩展正在初始化..."
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:228
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:315
+msgid "General Settings"
+msgstr "常规设置"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:577
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:846
+msgid "Hide"
+msgstr "隐藏"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:90
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:99
+msgid "Hide selector if there's only one device"
+msgstr "只有一个设备时隐藏设备选项"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:371
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:545
+msgid "Icon Theme"
+msgstr "图标主题"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:421
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:622
+msgid "Icons"
+msgstr "图标"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:344
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:502
+msgid "Input Devices"
+msgstr "输入设备"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:487
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:734
+msgid "Miscellaneous"
+msgstr "其他"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:14
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:15
+msgid "Monochrome"
+msgstr "黑白"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:533
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:803
+msgid "Name"
+msgstr "名称"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:22
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:23
+msgid "None"
+msgstr "无"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:141
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:179
+msgid "Omit device origins at Volume Menu"
+msgstr "在音量菜单中省略设备来源"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:272
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:387
+msgid "Output Devices"
+msgstr "输出设备"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:610
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:886
+msgid "Port Settings"
+msgstr "端口设置"
+
+#: sound-output-device-chooser@kgshank.net/base.js:108
+msgid "Profile: "
+msgstr "配置文件："
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:563
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:832
+msgid "Show"
+msgstr "显示"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:300
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:431
+msgid "Show input devices"
+msgstr "显示输入设备"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:254
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:357
+msgid "Show output devices"
+msgstr "显示输出设备"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:326
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:472
+msgid "Show volume control for default device"
+msgstr "显示默认设备的音量滑动条"
+
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog40.glade:92
+#: sound-output-device-chooser@kgshank.net/ui/prefs-dialog.glade:101
+msgid "Integrate selector with slider"
+msgstr "集成设备选项到音量滑动条中"
