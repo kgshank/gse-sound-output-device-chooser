@@ -36,6 +36,21 @@ else {
 
 let cards;
 
+function getSinks() {
+    let [result, out, err, exit_code] = GLib.spawn_command_line_sync("pactl list sinks");
+    let input = imports.byteArray.toString(out);
+    const regex = /Sink #(\d+)\n(?:.|\n)*?device\.description = "(.*?)"(?:.|\n)*?/g;
+    let matches;
+    let sinks = [];
+    while (matches = regex.exec(input)) {
+        sinks.push({
+            id: matches[1],
+            name: matches[2]
+        });
+    }
+    return sinks;
+}
+
 function getCard(card_index) {
     if (!cards || Object.keys(cards).length == 0) {
         refreshCards();

@@ -28,6 +28,8 @@ const SignalManager = Lib.SignalManager;
 const Prefs = Me.imports.prefs;
 const Main = imports.ui.main;
 const PopupMenu = imports.ui.popupMenu;
+const VolumeMixerPopupMenu = Me.imports.volumeMixerPopupMenu;
+
 
 var SoundOutputDeviceChooser = class SoundOutputDeviceChooser
     extends Base.SoundDeviceChooserBase {
@@ -163,6 +165,10 @@ var SDCInstance = class SDCInstance {
         if (this._volumeMenuInstance == null) {
             this._volumeMenuInstance = new VolumeMenuInstance(this._volumeMenu, this._settings);
         }
+
+        if (this._volumeMixerInstance == null) {
+            this._volumeMixerInstance = new VolumeMixerPopupMenu.VolumeMixerPopupMenuInstance();            
+            this._aggregateMenu._volume.menu.addMenuItem(this._volumeMixerInstance);
 
         // create keybindings
         const keybindings = [
@@ -323,6 +329,10 @@ var SDCInstance = class SDCInstance {
         if (this._volumeMenuInstance) {
             this._volumeMenuInstance.destroy();
             this._volumeMenuInstance = null;
+        }
+        if (this._volumeMixerInstance) {
+            this._volumeMixerInstance.destroy();
+            this._volumeMixerInstance = null;
         }
         this._settings = null;
         this._signalManager.disconnectAll();
