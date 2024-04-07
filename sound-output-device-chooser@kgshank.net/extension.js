@@ -16,7 +16,7 @@
  ******************************************************************************/
 /* jshint moz:true */
 
-const { GObject } = imports.gi;
+const { GObject, Shell, Meta  } = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Base = Me.imports.base;
@@ -169,6 +169,23 @@ var SDCInstance = class SDCInstance {
         if (this._volumeMixerInstance == null) {
             this._volumeMixerInstance = new VolumeMixerPopupMenu.VolumeMixerPopupMenuInstance();            
             this._aggregateMenu._volume.menu.addMenuItem(this._volumeMixerInstance);
+
+        // create keybindings
+        const keybindings = [
+            { name: "cycle-output-forward", fn: () => this.cycleDevice(this._outputInstance, 1) },
+            { name: "cycle-output-backward", fn: () => this.cycleDevice(this._outputInstance, -1) },
+            { name: "cycle-input-forward", fn: () => this.cycleDevice(this._inputInstance, 1) },
+            { name: "cycle-input-backward", fn: () => this.cycleDevice(this._inputInstance, -1) }
+        ];
+
+        for (const { name, fn } of keybindings) {
+            Main.wm.addKeybinding(
+                name,
+                this._settings,
+                Meta.KeyBindingFlags.NONE,
+                Shell.ActionMode.NORMAL,
+                fn
+            );
         }
 
         this._addMenuItem(this._volumeMenu, this._volumeMenu._output.item, this._outputInstance.menuItem);
@@ -185,6 +202,30 @@ var SDCInstance = class SDCInstance {
             "notify::visible", () => { this._updateMenuVisibility(this._outputInstance, false) });
         this._signalManager.addSignal(getActor(this._volumeMenu._input.item),
             "notify::visible", () => { this._updateMenuVisibility(this._inputInstance, false) });
+    }
+
+    /**
+     * cycle direction = 1 for forward, -1 for backward
+    */ 
+    cycleDevice(InputOutputInstance, direction) {
+        try {
+            let devices = InputOutputInstance._getAvailableDevices();
+            if (devices.length <= 1) {
+                return;
+            }
+
+            let currentActiveDeviceIndex = devices.findIndex(elem => elem.activeDevice === true);
+            if (currentActiveDeviceIndex < 0) {
+                return;
+            }
+
+            let nextDeviceIndex = (((currentActiveDeviceIndex + direction) % devices.length ) + devices.length ) % devices.length;
+            InputOutputInstance._changeDeviceBase(devices[nextDeviceIndex].id, InputOutputInstance._getMixerControl());
+
+            Main.notify('Sound Device Chooser', 'Switched to ' + devices[nextDeviceIndex].title);
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     _addMenuItem(_volumeMenu, checkItem, menuItem) {
@@ -269,6 +310,10 @@ var SDCInstance = class SDCInstance {
     }
 
     disable() {
+        Main.wm.removeKeybinding("cycle-output-forward");
+        Main.wm.removeKeybinding("cycle-output-backward");
+        Main.wm.removeKeybinding("cycle-input-forward");
+        Main.wm.removeKeybinding("cycle-input-backward");
         //this._switchSubmenuMenu();
         this._revertVolMenuChanges();
         if (this._outputInstance) {
