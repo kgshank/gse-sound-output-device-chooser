@@ -3,12 +3,12 @@
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  * *****************************************************************************
@@ -16,22 +16,19 @@
  ******************************************************************************/
 /* jshint moz:true */
 
-const { GObject, Shell, Meta  } = imports.gi;
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
-const Base = Me.imports.base;
-const Lib = Me.imports.convenience;
-const _d = Lib._log;
-const _dump = Lib.dump;
-const getActor = Lib.getActor;
-const SignalManager = Lib.SignalManager;
-const Prefs = Me.imports.prefs;
-const Main = imports.ui.main;
-const PopupMenu = imports.ui.popupMenu;
-const VolumeMixerPopupMenu = Me.imports.volumeMixerPopupMenu;
+import GObject from 'gi://GObject'
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import {Extension, gettext as _, ngettext, pgettext} from 'resource:///org/gnome/shell/extensions/extension.js';
+import GLib from 'gi://GLib';
+import Clutter from 'gi://Clutter';
+import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
+import {QuickSettingsItem} from 'resource:///org/gnome/shell/ui/quickSettings.js';
+import { _log as _l, dump as _d, SignalManager, setLog } from './convenience.js';
+import * as Base from  './base.js';
+import * as Constants from './definitions.js';
+import * as VolumeMixerPopupMenu from './volumeMixerPopupMenu.js';
 
-
-var SoundOutputDeviceChooser = class SoundOutputDeviceChooser
+class SoundOutputDeviceChooser
     extends Base.SoundDeviceChooserBase {
     constructor() {
         super("output");
@@ -50,7 +47,7 @@ var SoundOutputDeviceChooser = class SoundOutputDeviceChooser
     }
 };
 
-var SoundInputDeviceChooser = class SoundInputDeviceChooser
+class SoundInputDeviceChooser
     extends Base.SoundDeviceChooserBase {
     constructor() {
         super("input");
@@ -69,7 +66,7 @@ var SoundInputDeviceChooser = class SoundInputDeviceChooser
     }
 };
 
-var VolumeMenuInstance = class VolumeMenuInstance {
+class VolumeMenuInstance {
     constructor(volumeMenu, settings) {
         this._settings = settings;
 
@@ -84,7 +81,7 @@ var VolumeMenuInstance = class VolumeMenuInstance {
             + Prefs.SHOW_INPUT_SLIDER, this._setSliderVisiblity.bind(this));
     }
     _overrideFunctions() {
-        // Fix the indicator when using SHOW_INPUT_SLIDER. 
+        // Fix the indicator when using SHOW_INPUT_SLIDER.
         // If not applied when SHOW_INPUT_SLIDER=True indication of mic being used will be on (even when not used)
         this._volumeMenu._getInputVisibleOriginal = this._volumeMenu.getInputVisible;
         this._volumeMenu._getInputVisibleCustom = function() {
@@ -136,16 +133,13 @@ var VolumeMenuInstance = class VolumeMenuInstance {
     }
 }
 
-var SDCInstance = class SDCInstance {
-    constructor() {
-    }
-
+export default class SDCInstance  extends Extension {
     enable() {
-        this._settings = ExtensionUtils.getSettings();
+        this._settings = this.getSettings();
         this._signalManager = new SignalManager();
-        this._aggregateMenu = Main.panel.statusArea.aggregateMenu;
-        this._volume = this._aggregateMenu._volume;
-        this._volumeMenu = this._volume._volumeMenu;
+        this._aggregateMenu = Main.panel.statusArea.quickSettings;
+        this._volume = this._aggregateMenu._volumeOutput;
+        this._volumeMenu = this._volume._output;
         this._aggregateLayout = this._aggregateMenu.menu.box.get_layout_manager();
         let theme = imports.gi.Gtk.IconTheme.get_default();
         if (theme != null) {
@@ -167,9 +161,9 @@ var SDCInstance = class SDCInstance {
         }
 
         if (this._volumeMixerInstance == null) {
-            this._volumeMixerInstance = new VolumeMixerPopupMenu.VolumeMixerPopupMenuInstance();            
+            this._volumeMixerInstance = new VolumeMixerPopupMenu.VolumeMixerPopupMenuInstance();
             this._aggregateMenu._volume.menu.addMenuItem(this._volumeMixerInstance);
-
+        }
         // create keybindings
         const keybindings = [
             { name: "cycle-output-forward", fn: () => this.cycleDevice(this._outputInstance, 1) },
@@ -206,7 +200,8 @@ var SDCInstance = class SDCInstance {
 
     /**
      * cycle direction = 1 for forward, -1 for backward
-    */ 
+    */
+
     cycleDevice(InputOutputInstance, direction) {
         try {
             let devices = InputOutputInstance._getAvailableDevices();
@@ -338,9 +333,4 @@ var SDCInstance = class SDCInstance {
         this._signalManager.disconnectAll();
         this._signalManager = null;
     }
-};
-
-function init() {
-    ExtensionUtils.initTranslations(Me.metadata["gettext-domain"]);
-    return new SDCInstance();
 }

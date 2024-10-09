@@ -3,12 +3,12 @@
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see http://www.gnu.org/licenses/.
  * *****************************************************************************
@@ -16,44 +16,37 @@
  ******************************************************************************/
 /* jshint moz:true */
 
-const { GObject, GLib, Gvc } = imports.gi;
 
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
+import Gvc from 'gi://Gvc';
 const Signals = imports.signals;
 
-const PopupMenu = imports.ui.popupMenu;
-const VolumeMenu = imports.ui.status.volume;
-const Main = imports.ui.main;
-const MessageTray = imports.ui.messageTray;
+import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
+import * as VolumeMenu from 'resource:///org/gnome/shell/ui/status/volume.js';
 
-const Config = imports.misc.config;
-const ExtensionUtils = imports.misc.extensionUtils;
+//const Main = imports.ui.main;
+//const MessageTray = imports.ui.messageTray;
+
 const Gettext = imports.gettext;
 
-const Me = ExtensionUtils.getCurrentExtension();
-const Lib = Me.imports.convenience;
-const Prefs = Me.imports.prefs;
+import { _log as _l, dump as _d, SignalManager, setLog } from './convenience.js';
+import * as Constants from './definitions.js';
 
-ExtensionUtils.initTranslations(Me.metadata["gettext-domain"]);
-const Domain = Gettext.domain(Me.metadata["gettext-domain"]);
-const _ = Domain.gettext;
-//const _ = Gettext.gettext;
-const _d = Lib._log;
-const getActor = Lib.getActor;
+const DISPLAY_OPTIONS = Constants.DISPLAY_OPTIONS;
 
-const DISPLAY_OPTIONS = Prefs.DISPLAY_OPTIONS;
-const SignalManager = Lib.SignalManager;
-const isShellAbove34 = (parseFloat(Config.PACKAGE_VERSION) >= 3.34);
 
-var ProfileMenuItem40 = class 
+export const ProfileMenuItem = GObject.registerClass({ GTypeName: 'ProfileMenuItem' },
+class ProfileMenuItem
     extends PopupMenu.PopupMenuItem {
 	_init(title, profileName) {
         if (super._init) {
             super._init(title);
         }
-        _d("ProfileMenuItem: _init:" + title); 
-        this._initialise(profileName);       
+        _d("ProfileMenuItem: _init:" + title);
+        this._initialise(profileName);
     }
-    
+
     _initialise(profileName) {
 		this.profileName = profileName;
         this._ornamentLabel.set_style("min-width: 3em;margin-left: 3em;");
@@ -86,18 +79,21 @@ var ProfileMenuItem40 = class
     setVisibility(visibility) {
         getActor(this).visible = visibility;
     }
-}
+});
 
-var ProfileMenuItem32 = class 
-    extends ProfileMenuItem40 {
-	constructor(title, profileName){
-		_d("ProfileMenuItem: constructor:" + title);
-		super(title);
-		this._initialise(profileName);		
-	}
-}
 
-var SoundDeviceMenuItem40 = class extends PopupMenu.PopupImageMenuItem {
+
+export const SoundDeviceMenuItem = GObject.registerClass({
+    GTypeName: "SoundDeviceMenuItem",
+    Signals: {
+        "device-activated": {
+            param_types: [GObject.TYPE_INT]
+        },
+        "profile-activated": {
+            param_types: [GObject.TYPE_INT, GObject.TYPE_STRING]
+        }
+    }
+}, class SoundDeviceMenuItem extends PopupMenu.PopupImageMenuItem {
 	_init(id, title, icon_name, profiles) {
         if (super._init) {
             super._init(title, icon_name);
@@ -202,42 +198,9 @@ var SoundDeviceMenuItem40 = class extends PopupMenu.PopupImageMenuItem {
     getDisplayOption() {
         return this._displayOption;
     }
-}
+});
 
-var SoundDeviceMenuItem32 = class extends SoundDeviceMenuItem40 {
-	constructor(id, title, icon_name, profiles) {
-        _d("SoundDeviceMenuItem: constructor:" + title);
-       	super(title, icon_name);
-		this._initialise(id, title, icon_name, profiles);        
- 	}
-}
-
-var SoundDeviceMenuItem;
-var ProfileMenuItem;
-if (isShellAbove34) {
-	SoundDeviceMenuItem = SoundDeviceMenuItem40;
-	ProfileMenuItem = ProfileMenuItem40;
-    ProfileMenuItem = GObject.registerClass({ GTypeName: 'ProfileMenuItem' }, ProfileMenuItem);
-
-    SoundDeviceMenuItem = GObject.registerClass({
-        GTypeName: "SoundDeviceMenuItem",
-        Signals: {
-            "device-activated": {
-                param_types: [GObject.TYPE_INT]
-            },
-            "profile-activated": {
-                param_types: [GObject.TYPE_INT, GObject.TYPE_STRING]
-            }
-        }
-    }, SoundDeviceMenuItem);
-}
-else
-{
-	SoundDeviceMenuItem = SoundDeviceMenuItem32;
-	ProfileMenuItem = ProfileMenuItem32;
-}
-
-var SoundDeviceChooserBase = class SoundDeviceChooserBase {
+export class SoundDeviceChooserBase {
     constructor(deviceType) {
         _d("SDC: init");
         this.menuItem = new PopupMenu.PopupSubMenuMenuItem(_("Extension initialising..."), true);
@@ -249,7 +212,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
 
         this._setLog();
         this._signalManager = new SignalManager();
-        this._signalManager.addSignal(this._settings, "changed::" + Prefs.ENABLE_LOG, this._setLog.bind(this));
+        this._signalManager.addSignal(this._settings, "changed::" + Constants.ENABLE_LOG, this._setLog.bind(this));
 
         if (_control.get_state() == Gvc.MixerControlState.READY) {
             this._onControlStateChanged(_control);
@@ -264,7 +227,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
 
     _getMixerControl() { return VolumeMenu.getMixerControl(); }
 
-    _setLog() { Lib.setLog(this._settings.get_boolean(Prefs.ENABLE_LOG)); }
+    _setLog() { Lib.setLog(this._settings.get_boolean(Constants.ENABLE_LOG)); }
 
     _onControlStateChanged(control) {
         if (control.get_state() == Gvc.MixerControlState.READY) {
@@ -273,18 +236,18 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
             this._signalManager.addSignal(control, this.deviceType + "-removed", this._deviceRemoved.bind(this));
             this._signalManager.addSignal(control, "active-" + this.deviceType + "-update", this._deviceActivated.bind(this));
 
-            this._signalManager.addSignal(this._settings, "changed::" + Prefs.HIDE_ON_SINGLE_DEVICE, this._setChooserVisibility.bind(this));
-            this._signalManager.addSignal(this._settings, "changed::" + Prefs.SHOW_PROFILES, this._setProfileVisibility.bind(this));
-            this._signalManager.addSignal(this._settings, "changed::" + Prefs.ICON_THEME, this._setIcons.bind(this));
-            this._signalManager.addSignal(this._settings, "changed::" + Prefs.HIDE_MENU_ICONS, this._setIcons.bind(this));
-            this._signalManager.addSignal(this._settings, "changed::" + Prefs.PORT_SETTINGS, this._resetDevices.bind(this));
-            this._signalManager.addSignal(this._settings, "changed::" + Prefs.OMIT_DEVICE_ORIGIN, this._refreshDeviceTitles.bind(this));
+            this._signalManager.addSignal(this._settings, "changed::" + Constants.HIDE_ON_SINGLE_DEVICE, this._setChooserVisibility.bind(this));
+            this._signalManager.addSignal(this._settings, "changed::" + Constants.SHOW_PROFILES, this._setProfileVisibility.bind(this));
+            this._signalManager.addSignal(this._settings, "changed::" + Constants.ICON_THEME, this._setIcons.bind(this));
+            this._signalManager.addSignal(this._settings, "changed::" + Constants.HIDE_MENU_ICONS, this._setIcons.bind(this));
+            this._signalManager.addSignal(this._settings, "changed::" + Constants.PORT_SETTINGS, this._resetDevices.bind(this));
+            this._signalManager.addSignal(this._settings, "changed::" + Constants.OMIT_DEVICE_ORIGIN, this._refreshDeviceTitles.bind(this));
 
-            this._show_device_signal = Prefs["SHOW_" + this.deviceType.toUpperCase() + "_DEVICES"];
+            this._show_device_signal = Constants["SHOW_" + this.deviceType.toUpperCase() + "_DEVICES"];
 
             this._signalManager.addSignal(this._settings, "changed::" + this._show_device_signal, this._setVisibility.bind(this));
 
-            this._portsSettings = Prefs.getPortsFromSettings(this._settings);
+            this._portsSettings = Constants.getPortsFromSettings(this._settings);
 
             /**
              * There is no direct way to get all the UI devices from
@@ -431,7 +394,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
                    let device = Object.keys(this._devices).map((id) => this._devices[id]).find(({active}) => active === true);
                    if(device){
                        this._changeDeviceBase(device.id, this._getMixerControl());
-                   }                    
+                   }
                }
                this.deviceRemovedTimout = null;
                return false;
@@ -452,7 +415,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         }
         if (obj && id != this._activeDeviceId) {
             _d("Activated: " + id + ":" + obj.title);
-            if (this._settings.get_boolean(Prefs.CANNOT_ACTIVATE_HIDDEN_DEVICE)
+            if (this._settings.get_boolean(Constants.CANNOT_ACTIVATE_HIDDEN_DEVICE)
                 && obj.getDisplayOption() === DISPLAY_OPTIONS.HIDE_ALWAYS) {
                 _d("Preference does not allow this hidden device to be activated, fallback to the previous aka original device");
                 let device = null;
@@ -504,7 +467,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
 
         this.menuItem.label.text = obj.title;
 
-        if (!this._settings.get_boolean(Prefs.HIDE_MENU_ICONS)) {
+        if (!this._settings.get_boolean(Constants.HIDE_MENU_ICONS)) {
             this.menuItem.icon.icon_name = obj.icon_name;
         } else {
             this.menuItem.icon.gicon = null;
@@ -554,7 +517,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
     }
 
     _getDeviceVisibility() {
-        let hideChooser = this._settings.get_boolean(Prefs.HIDE_ON_SINGLE_DEVICE);
+        let hideChooser = this._settings.get_boolean(Constants.HIDE_ON_SINGLE_DEVICE);
         let numAvailableDevices = this._getAvailableDevices().length;
         if (hideChooser) {
             return numAvailableDevices > 1;
@@ -580,25 +543,25 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         else
             // if setting says to show device, check for any device, otherwise
             // hide the "actor"
-            this.setVisible(this._getDeviceVisibility());        
+            this.setVisible(this._getDeviceVisibility());
     }
-    
+
     setVisible(visibility) {
         getActor(this.menuItem).visible = visibility;
-        //this.emit('update-visibility', visibility);    
+        //this.emit('update-visibility', visibility);
     }
 
     _setProfileVisibility() {
-        let visibility = this._settings.get_boolean(Prefs.SHOW_PROFILES);
+        let visibility = this._settings.get_boolean(Constants.SHOW_PROFILES);
         this._getAvailableDevices().forEach(device => device.setProfileVisibility(visibility));
     }
 
     _getIcon(name) {
-        let iconsType = this._settings.get_string(Prefs.ICON_THEME);
+        let iconsType = this._settings.get_string(Constants.ICON_THEME);
         switch (iconsType) {
-            case Prefs.ICON_THEME_COLORED:
+            case Constants.ICON_THEME_COLORED:
                 return name;
-            case Prefs.ICON_THEME_MONOCHROME:
+            case Constants.ICON_THEME_MONOCHROME:
                 return name + "-symbolic";
             default:
                 //return "none";
@@ -622,7 +585,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
 
         // These indicate the active device, which is displayed directly in the
         // Gnome menu, not in the list.
-        if (!this._settings.get_boolean(Prefs.HIDE_MENU_ICONS)) {
+        if (!this._settings.get_boolean(Constants.HIDE_MENU_ICONS)) {
             this.menuItem.icon.icon_name = this._getIcon(this._devices.get(this._activeDeviceId).icon_name);
         } else {
             this.menuItem.icon.icon_name = null;
@@ -694,7 +657,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
     }
 
     _resetDevices() {
-        this._portsSettings = Prefs.getPortsFromSettings(this._settings);
+        this._portsSettings = Constants.getPortsFromSettings(this._settings);
         let control = this._getMixerControl();
         this._devices.forEach((device, id) => {
             device.setDisplayOption(DISPLAY_OPTIONS.INITIAL);
@@ -727,7 +690,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
 
     _getDeviceTitle(uidevice) {
         let title = uidevice.description;
-        if (!this._settings.get_boolean(Prefs.OMIT_DEVICE_ORIGIN) && uidevice.origin != "")
+        if (!this._settings.get_boolean(Constants.OMIT_DEVICE_ORIGIN) && uidevice.origin != "")
             title = uidevice.origin + ": " + title ;
 
         return title;

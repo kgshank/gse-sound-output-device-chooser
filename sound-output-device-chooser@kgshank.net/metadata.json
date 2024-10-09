@@ -6,16 +6,9 @@
   "settings-schema": "org.gnome.shell.extensions.sound-output-device-chooser",
   "gettext-domain" : "sound-output-device-chooser",
   "shell-version": [
-    "3.32",
-    "3.34",
-    "3.36",
-    "3.38",
-    "40",
-    "41",
-    "42",
-    "43"
+    "46"
   ],
   "url": "https://github.com/kgshank/gse-sound-output-device-chooser",
   "uuid": "sound-output-device-chooser@kgshank.net",
-  "version": "43"
+  "version": "44"
 }

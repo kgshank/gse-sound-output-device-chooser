@@ -1,20 +1,20 @@
-/* 
+/*
  * Original Author: Brendan Early (https://github.com/mymindstorm/gnome-volume-mixer)
  * Modified by Burak Sener
  */
 
-const { Settings, SettingsSchemaSource } = imports.gi.Gio;
-const { MixerSinkInput } = imports.gi.Gvc;
-const { Gio, GLib } = imports.gi;
+import GLib from 'gi://GLib';
+import Gio from 'gi://Gio';
+import Gvc  from 'gi://Gvc';
+const Signals = imports.signals;
 
-// https://gitlab.gnome.org/GNOME/gnome-shell/-/blob/main/js/ui/popupMenu.js
-const PopupMenu = imports.ui.popupMenu;
-// https://gitlab.gnome.org/GNOME/gnome-shell/-/blob/main/js/ui/status/volume.js
-const Volume = imports.ui.status.volume;
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
-const Lib = Me.imports.convenience;
-const Prefs = Me.imports.prefs;
+import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
+import * as Volume from 'resource:///org/gnome/shell/ui/status/volume.js';
+
+import * as St from  'gi://St';
+
+
+import { _log as _l, dump as _d, SignalManager, setLog } from './convenience.js';
 
 var VolumeMixerPopupMenuInstance = class VolumeMixerPopupMenuInstance extends PopupMenu.PopupMenuSection {
     constructor() {
@@ -40,7 +40,7 @@ var VolumeMixerPopupMenuInstance = class VolumeMixerPopupMenuInstance extends Po
             return;
         }
         const stream = control.lookup_stream_id(id);
-        if (stream.is_event_stream || !(stream instanceof MixerSinkInput)) {
+        if (stream.is_event_stream || !(stream instanceof Gvc.MixerSinkInput)) {
             return;
         }
 
@@ -73,7 +73,7 @@ var VolumeMixerPopupMenuInstance = class VolumeMixerPopupMenuInstance extends Po
             delete this._applicationStreams[id];
             this._subMenus[id].destroy();
             delete this._subMenus[id];
-        }        
+        }
     }
 
     _updateStreams() {
@@ -82,7 +82,7 @@ var VolumeMixerPopupMenuInstance = class VolumeMixerPopupMenuInstance extends Po
             delete this._applicationStreams[id];
             this._subMenus[id].destroy();
             delete this._subMenus[id];
-        }       
+        }
         for (const stream of this._control.get_streams()) {
             this._streamAdded(this._control, stream.get_id());
         }
@@ -94,12 +94,10 @@ var VolumeMixerPopupMenuInstance = class VolumeMixerPopupMenuInstance extends Po
         super.destroy();
     }
 }
-
-const { BoxLayout, Label } = imports.gi.St;
-const Volume$1 = imports.ui.status.volume;
-class ApplicationStreamSlider extends Volume$1.StreamSlider {
+/*
+class ApplicationStreamSlider extends Volume.StreamSlider {
     constructor(stream) {
-        super(Volume$1.getMixerControl());
+        super(Volume.getMixerControl());
 
         this.stream = stream;
         this._icon.icon_name = stream.get_icon_name();
@@ -107,10 +105,10 @@ class ApplicationStreamSlider extends Volume$1.StreamSlider {
         let name = stream.get_name();
         let description = stream.get_description();
         if (name || description) {
-            this._vbox = new BoxLayout();
+            this._vbox = new St.BoxLayout();
             this._vbox.vertical = true;
 
-            this._label = new Label();
+            this._label = new St.Label();
             this._label.text = name && `${name} - ${description}`;
             this._vbox.add(this._label);
 
@@ -123,3 +121,4 @@ class ApplicationStreamSlider extends Volume$1.StreamSlider {
 
     }
 }
+    */

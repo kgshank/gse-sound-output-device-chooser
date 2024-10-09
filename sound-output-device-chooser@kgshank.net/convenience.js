@@ -3,12 +3,12 @@
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  * *****************************************************************************
@@ -16,29 +16,18 @@
  ******************************************************************************/
 /* jshint moz:true */
 
-const ByteArray = imports.byteArray;
-const { Gio, GLib } = imports.gi;
-const ExtensionUtils = imports.misc.extensionUtils;
+//const ByteArray = imports.byteArray;
+import GLib from 'gi://GLib';
+import Gio from 'gi://Gio';
 
-const Me = ExtensionUtils.getCurrentExtension();
-const Prefs = Me.imports.prefs;
 
 var DEBUG = false;
 
-var logWrap;
-if (log != undefined) {
-    logWrap = log;
-}
-else {
-    logWrap = global.log
-}
-
-
 let cards;
 
-function getSinks() {
+export function getSinks() {
     let [result, out, err, exit_code] = GLib.spawn_command_line_sync("pactl list sinks");
-    let input = imports.byteArray.toString(out);
+    let input = TextDecoder.decode(out);
     const regex = /Sink #(\d+)\n(?:.|\n)*?device\.description = "(.*?)"(?:.|\n)*?/g;
     let matches;
     let sinks = [];
@@ -51,21 +40,21 @@ function getSinks() {
     return sinks;
 }
 
-function getCard(card_index) {
+export function getCard(card_index) {
     if (!cards || Object.keys(cards).length == 0) {
         refreshCards();
     }
     return cards[card_index];
 }
 
-function getCardByName(card_name) {
+export function getCardByName(card_name) {
     if (!cards || Object.keys(cards).length == 0) {
         refreshCards();
     }
     return Object.keys(cards).map((index) => cards[index]).find(({ name }) => name === card_name);
 }
 
-function getProfiles(control, uidevice) {
+export function getProfiles(control, uidevice) {
     let stream = control.lookup_stream_id(uidevice.get_stream_id());
     if (stream) {
         if (!cards || Object.keys(cards).length == 0 || !cards[stream.card_index]) {
@@ -94,14 +83,14 @@ function getProfiles(control, uidevice) {
 }
 
 let ports;
-function getPorts(refresh) {
+export function getPorts(refresh) {
     if (!ports || ports.length == 0 || refresh) {
         refreshCards();
     }
     return ports;
 }
 
-function isCmdFound(cmd) {
+export function isCmdFound(cmd) {
     try {
         let [result, out, err, exit_code] = GLib.spawn_command_line_sync(cmd);
         return true;
@@ -112,7 +101,7 @@ function isCmdFound(cmd) {
     }
 }
 
-function refreshCards() {
+export function refreshCards() {
     cards = {};
     ports = [];
     let _settings = ExtensionUtils.getSettings();
@@ -146,7 +135,7 @@ function refreshCards() {
                 // exit_code + "err" +err);
                 if (result && !exit_code) {
                     if (out instanceof Uint8Array) {
-                        out = ByteArray.toString(out);
+                        out = TextDecoder.decode(out);
                     }
                     let obj = JSON.parse(out);
                     cards = obj["cards"];
@@ -183,10 +172,10 @@ function refreshCards() {
     //_log(JSON.stringify(ports));
 }
 
-function parseOutput(out) {
+export function parseOutput(out) {
     let lines;
     if (out instanceof Uint8Array) {
-        lines = ByteArray.toString(out).split("\n");
+        lines = TextDecoder.decode(out).split("\n");
     } else {
         lines = out.toString().split("\n");
     }
@@ -268,7 +257,7 @@ function parseOutput(out) {
     }
 }
 
-var Signal = class Signal {
+export class Signal {
 
     constructor(signalSource, signalName, callback) {
         this._signalSource = signalSource;
@@ -288,7 +277,7 @@ var Signal = class Signal {
     }
 }
 
-var SignalManager = class SignalManager {
+export class SignalManager {
     constructor() {
         this._signalsBySource = new Map();
     }
@@ -327,8 +316,7 @@ var SignalManager = class SignalManager {
     }
 }
 
-
-function getProfilesForPort(portName, card) {
+export function getProfilesForPort(portName, card) {
     if (card.ports) {
         let port = card.ports.find(port => (portName === port.name));
         if (port) {
@@ -344,18 +332,18 @@ function getProfilesForPort(portName, card) {
     return null;
 }
 
-function setLog(value) {
+export function setLog(value) {
     DEBUG = value;
 }
 
-function _log(msg) {
+export function _log(msg) {
     if (DEBUG == true) {
         // global.log("SDC Debug: " + msg);
-        logWrap("SDC Debug: " + msg);
+        console.log("SDC Debug: " + msg);
     }
 }
 
-function dump(obj) {
+export function dump(obj) {
     var propValue;
     for (var propName in obj) {
         try {
@@ -364,9 +352,4 @@ function dump(obj) {
         }
         catch (e) { _log(propName + "!!!Error!!!"); }
     }
-}
-
-function getActor(item) {
-    //.actor is needed for backward compatablity
-    return (item.actor) ? item.actor : item;
 }

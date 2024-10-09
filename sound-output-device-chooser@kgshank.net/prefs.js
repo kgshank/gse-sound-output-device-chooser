@@ -3,15 +3,15 @@
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Original Author: Gopi Sankar Karmegam
  ******************************************************************************/
 /* jshint moz:true */
@@ -27,25 +27,11 @@ const SignalManager = Lib.SignalManager;
 const Gettext = imports.gettext;
 const _ = Gettext.gettext;
 
-var HIDE_ON_SINGLE_DEVICE = "hide-on-single-device";
-var HIDE_MENU_ICONS = "hide-menu-icons";
-var SHOW_PROFILES = "show-profiles";
-var PORT_SETTINGS = "ports-settings";
-var SHOW_INPUT_SLIDER = "show-input-slider";
-var SHOW_INPUT_DEVICES = "show-input-devices";
-var SHOW_OUTPUT_DEVICES = "show-output-devices";
-var ENABLE_LOG = "enable-log";
-var NEW_PROFILE_ID_DEPRECATED = "new-profile-indentification";
-var NEW_PROFILE_ID = "new-profile-identification";
-var EXPAND_VOL_MENU = "expand-volume-menu";
-var CANNOT_ACTIVATE_HIDDEN_DEVICE = "cannot-activate-hidden-device";
-var OMIT_DEVICE_ORIGIN = "omit-device-origins";
-var INTEGRATE_WITH_SLIDER = "integrate-with-slider";
+import Gio from 'gi://Gio';
+import Adw from 'gi://Adw';
 
-var ICON_THEME = "icon-theme";
-var ICON_THEME_COLORED = "colored";
-var ICON_THEME_MONOCHROME = "monochrome";
-var ICON_THEME_NONE = "none";
+import { ExtensionPreferences, gettext as _ } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
+import * as Constants from './definitions.js';
 
 var DISPLAY_OPTIONS = { SHOW_ALWAYS: 1, HIDE_ALWAYS: 2, DEFAULT: 3, INITIAL: -1 };
 
@@ -126,28 +112,18 @@ const SDCSettingsWidget = new GObject.Class({
     GTypeName: "SDCSettingsWidget",
     Extends: Gtk.Box,
 
-    _init: function(params) {
+    _init: function (params) {
         this.parent(params);
         this.orientation = Gtk.Orientation.VERTICAL;
         this.spacing = 0;
-        let uiFileSuffix = "";
 
-        if (Gtk.get_major_version() >= "4") {
-            uiFileSuffix = "40";
-            this.__addFn = this.append;
-            this.__showFn = this.show;
-        }
-        else {
-            this.__addFn = x => this.pack_start(x, true, true, 0);
-            this.__showFn = this.show_all;
-        }
         // creates the settings
         this._settings = ExtensionUtils.getSettings();
 
         Lib.setLog(this._settings.get_boolean(ENABLE_LOG));
 
         // creates the ui builder and add the main resource file
-        let uiFilePath = Me.path + "/ui/prefs-dialog" + uiFileSuffix + ".glade";
+        let uiFilePath = Me.path + "/ui/prefs-dialog40.glade";
         let builder = new Gtk.Builder();
         builder.set_translation_domain("sound-output-device-chooser");
 
@@ -157,13 +133,13 @@ const SDCSettingsWidget = new GObject.Class({
                 label: _("Could not load the preferences UI file"),
                 vexpand: true
             });
-            this.__addFn(label);
+            this.append(label);
         } else {
             _d("JS LOG:_UI file receive and load: " + uiFilePath);
 
             let mainContainer = builder.get_object("main-container");
 
-            this.__addFn(mainContainer);
+            this.append(mainContainer);
 
             this._signalManager = new SignalManager();
 
@@ -211,7 +187,7 @@ const SDCSettingsWidget = new GObject.Class({
         }
     },
 
-    _populatePorts: function() {
+    _populatePorts: function () {
         let ports = Lib.getPorts(true);
         ports.sort((a, b) => (b.direction.localeCompare(a.direction)) || getPortDisplayName(a).localeCompare(getPortDisplayName(b))).forEach(port => {
             this._portsStore.set(this._portsStore.append(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
@@ -219,22 +195,22 @@ const SDCSettingsWidget = new GObject.Class({
         });
     },
 
-    _showAlwaysToggleRenderCallback: function(widget, path) {
+    _showAlwaysToggleRenderCallback: function (widget, path) {
         //this._toggleCallback(widget, path, 1, [2, 3]);
         this._toggleCallback(widget, path, DISPLAY_OPTIONS.SHOW_ALWAYS, [2, 3]);
     },
 
-    _hideAlwaysToggleRenderCallback: function(widget, path) {
+    _hideAlwaysToggleRenderCallback: function (widget, path) {
         //this._toggleCallback(widget, path, 2, [1, 3]);
         this._toggleCallback(widget, path, DISPLAY_OPTIONS.HIDE_ALWAYS, [1, 3]);
     },
 
-    _showActiveToggleRenderCallback: function(widget, path) {
+    _showActiveToggleRenderCallback: function (widget, path) {
         //this._toggleCallback(widget, path, 3, [1, 2]);
         this._toggleCallback(widget, path, DISPLAY_OPTIONS.DEFAULT, [1, 2]);
     },
 
-    _toggleCallback: function(widget, path, activeCol, inactiveCols) {
+    _toggleCallback: function (widget, path, activeCol, inactiveCols) {
         let active = !widget.active;
         if (!active) {
             return;
@@ -259,7 +235,7 @@ const SDCSettingsWidget = new GObject.Class({
         }
     },
 
-    _commitSettings: function() {
+    _commitSettings: function () {
         let ports = [];
         let [success, iter] = this._portsStore.get_iter_first();
         while (iter && success) {
@@ -282,7 +258,7 @@ const SDCSettingsWidget = new GObject.Class({
         setPortsSettings(ports, this._settings);
     },
 
-    _restorePortsFromSettings: function() {
+    _restorePortsFromSettings: function () {
         let ports = getPortsFromSettings(this._settings);
 
         let found;
@@ -320,9 +296,9 @@ const SDCSettingsWidget = new GObject.Class({
 });
 
 
-function buildPrefsWidget() {
-    let _settingsWidget = new SDCSettingsWidget();
-    _settingsWidget.__showFn();
+export default class DWifiPreferences extends ExtensionPreferences {
+    fillPreferencesWindow(window) {
+        window.add(new SDCSettingsWidget());
 
-    return _settingsWidget;
+    }
 }
