@@ -388,6 +388,14 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
             this._deviceRemoved(control, id);
         }
         else {
+            // Guard: verify device has a valid stream before changing profile.
+            // change_profile_on_selected_device can trigger a fatal
+            // gvc_mixer_card_get_profile abort if the card's profiles are stale.
+            let stream = control.get_stream_from_device(uidevice);
+            if (!stream) {
+                _d("No stream for device " + id + ", skipping profile change");
+                return;
+            }
             _d("i am setting profile, " + profileName + ":" + uidevice.description + ":" + uidevice.port_name);
             if (id != this._activeDeviceId) {
                 _d("Changing active device to " + uidevice.description + ":" + uidevice.port_name);
@@ -543,6 +551,15 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
             this._deviceRemoved(control, device.id);
         }
         else {
+            // Guard: only get profile if device has a valid stream.
+            // Without this, get_active_profile() can trigger a fatal
+            // gvc_mixer_card_get_profile abort when BT devices are in
+            // a transitional state (e.g. just connected, profiles in flux).
+            let stream = control.get_stream_from_device(uidevice);
+            if (!stream) {
+                _d("No stream for device " + device.id + ", skipping profile update");
+                return;
+            }
             let activeProfile = uidevice.get_active_profile();
             _d("Active Profile:" + activeProfile);
             device.setActiveProfile(activeProfile);
