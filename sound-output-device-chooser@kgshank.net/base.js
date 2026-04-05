@@ -525,6 +525,15 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         }
         let uidevice = this.lookupDeviceById(control, id);
         if (uidevice) {
+            // Guard: verify device has a valid stream before switching.
+            // change_output/change_input can trigger a fatal
+            // gvc_mixer_card_get_profile abort if the card's profiles are
+            // stale (e.g. BT device just connected, profiles in flux).
+            let stream = control.get_stream_from_device(uidevice);
+            if (!stream) {
+                _d("No stream for device " + id + ", skipping device change");
+                return;
+            }
             this.changeDevice(control, uidevice);
         }
         else {
