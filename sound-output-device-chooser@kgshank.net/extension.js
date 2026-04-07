@@ -253,6 +253,7 @@ var SDCInstance = class SDCInstance {
     }
 
     _updateMenuVisibility(menuInstance, visible) {
+        if (!menuInstance || !menuInstance.menuItem) return;
         if (menuInstance instanceof SoundOutputDeviceChooser) {
             this._integrateMenu(this._volumeMenu, getActor(this._volumeMenu._output.item), getActor(menuInstance.menuItem), visible);
         } else {
@@ -261,10 +262,14 @@ var SDCInstance = class SDCInstance {
     }
 
     _switchSubmenuMenu() {
-        _d("Output Device visibility");
-        this._updateMenuVisibility(this._outputInstance, getActor(this._outputInstance.menuItem).visible);
-        _d("Input Device visibility");
-        this._updateMenuVisibility(this._inputInstance, getActor(this._inputInstance.menuItem).visible);
+        if (this._outputInstance && this._outputInstance.menuItem) {
+            _d("Output Device visibility");
+            this._updateMenuVisibility(this._outputInstance, getActor(this._outputInstance.menuItem).visible);
+        }
+        if (this._inputInstance && this._inputInstance.menuItem) {
+            _d("Input Device visibility");
+            this._updateMenuVisibility(this._inputInstance, getActor(this._inputInstance.menuItem).visible);
+        }
     }
 
     _integrateMenu(_volumeMenu, sliderItem, selectorItem, visible) {
