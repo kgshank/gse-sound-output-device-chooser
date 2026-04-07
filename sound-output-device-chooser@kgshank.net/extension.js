@@ -169,6 +169,7 @@ var SDCInstance = class SDCInstance {
         if (this._volumeMixerInstance == null) {
             this._volumeMixerInstance = new VolumeMixerPopupMenu.VolumeMixerPopupMenuInstance();            
             this._aggregateMenu._volume.menu.addMenuItem(this._volumeMixerInstance);
+        }
 
         // create keybindings
         const keybindings = [
