@@ -52,14 +52,27 @@ var VolumeMixerPopupMenuInstance = class VolumeMixerPopupMenuInstance extends Po
 
 
         let sinks = Lib.getSinks();
-        const menuItem = new PopupMenu.PopupSubMenuMenuItem("Default Output", true, {});
+
+        let currentSinkLabel = "Default Output";
+        let [, siOut] = GLib.spawn_command_line_sync("pactl list short sink-inputs");
+        let siLines = imports.byteArray.toString(siOut).trim().split("\n");
+        for (let line of siLines) {
+            let parts = line.split("\t");
+            if (parts[0] === String(sinkInputId)) {
+                let currentSink = sinks.find(s => s.id === parts[1]);
+                if (currentSink)
+                    currentSinkLabel = currentSink.name;
+                break;
+            }
+        }
+
+        const menuItem = new PopupMenu.PopupSubMenuMenuItem(currentSinkLabel, true, {});
         menuItem.set_style("min-width: 3em;margin-left: 3em;");
         sinks.forEach(sink => {
             if (sink["name"] !== undefined) {
-                menuItem.menu.addAction(sink["id"] + "-" + sink["name"], () => {
-                    var cmd = "pactl " + "move-sink-input" + " " + sinkInputId + " " + sink.id;
-                    GLib.spawn_command_line_sync(cmd);
-                    menuItem.label.text = sink["id"] + "-" + sink["name"];
+                menuItem.menu.addAction(sink["name"], () => {
+                    GLib.spawn_command_line_sync("pactl move-sink-input " + sinkInputId + " " + sink.id);
+                    menuItem.label.text = sink["name"];
                 });
             }
         });
