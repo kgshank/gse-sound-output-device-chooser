@@ -166,8 +166,9 @@ var SDCInstance = class SDCInstance {
             this._volumeMenuInstance = new VolumeMenuInstance(this._volumeMenu, this._settings);
         }
 
-        if (this._volumeMixerInstance == null) {
-            this._volumeMixerInstance = new VolumeMixerPopupMenu.VolumeMixerPopupMenuInstance();            
+        if (this._volumeMixerInstance == null
+                && this._settings.get_boolean(Prefs.SHOW_VOLUME_MIXER)) {
+            this._volumeMixerInstance = new VolumeMixerPopupMenu.VolumeMixerPopupMenuInstance();
             this._aggregateMenu._volume.menu.addMenuItem(this._volumeMixerInstance);
         }
 
@@ -195,6 +196,7 @@ var SDCInstance = class SDCInstance {
 
         this._signalManager.addSignal(this._settings, "changed::" + Prefs.EXPAND_VOL_MENU, this._expandVolMenu.bind(this));
         this._signalManager.addSignal(this._settings, "changed::" + Prefs.INTEGRATE_WITH_SLIDER, this._switchSubmenuMenu.bind(this));
+        this._signalManager.addSignal(this._settings, "changed::" + Prefs.SHOW_VOLUME_MIXER, this._updateVolumeMixer.bind(this));
         this._signalManager.addSignal(this._outputInstance, "update-visibility", this._updateMenuVisibility.bind(this));
         this._signalManager.addSignal(this._inputInstance, "update-visibility", this._updateMenuVisibility.bind(this));
 
@@ -311,6 +313,20 @@ var SDCInstance = class SDCInstance {
                 let oriVisible = sliderItem.visible;
                 _volumeMenu.box.insert_child_below(sliderItem, selectorItem);
                 sliderItem.visible = oriVisible;
+            }
+        }
+    }
+
+    _updateVolumeMixer() {
+        if (this._settings.get_boolean(Prefs.SHOW_VOLUME_MIXER)) {
+            if (this._volumeMixerInstance == null) {
+                this._volumeMixerInstance = new VolumeMixerPopupMenu.VolumeMixerPopupMenuInstance();
+                this._aggregateMenu._volume.menu.addMenuItem(this._volumeMixerInstance);
+            }
+        } else {
+            if (this._volumeMixerInstance) {
+                this._volumeMixerInstance.destroy();
+                this._volumeMixerInstance = null;
             }
         }
     }
