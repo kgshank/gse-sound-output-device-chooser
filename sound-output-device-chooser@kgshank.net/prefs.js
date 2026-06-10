@@ -41,6 +41,7 @@ var EXPAND_VOL_MENU = "expand-volume-menu";
 var CANNOT_ACTIVATE_HIDDEN_DEVICE = "cannot-activate-hidden-device";
 var OMIT_DEVICE_ORIGIN = "omit-device-origins";
 var INTEGRATE_WITH_SLIDER = "integrate-with-slider";
+var SHOW_VOLUME_MIXER = "show-volume-mixer";
 
 var ICON_THEME = "icon-theme";
 var ICON_THEME_COLORED = "colored";
@@ -180,6 +181,7 @@ const SDCSettingsWidget = new GObject.Class({
             let cantActHiddSwitch = builder.get_object(CANNOT_ACTIVATE_HIDDEN_DEVICE);
             let omitDeviceOrigin = builder.get_object(OMIT_DEVICE_ORIGIN);
             let integrateWithSlider = builder.get_object(INTEGRATE_WITH_SLIDER);
+            let showVolumeMixerSwitch = builder.get_object(SHOW_VOLUME_MIXER);
 
             this._settings.bind(HIDE_ON_SINGLE_DEVICE, singleDeviceSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(SHOW_PROFILES, showProfileSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
@@ -193,6 +195,7 @@ const SDCSettingsWidget = new GObject.Class({
             this._settings.bind(CANNOT_ACTIVATE_HIDDEN_DEVICE, cantActHiddSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(OMIT_DEVICE_ORIGIN, omitDeviceOrigin, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(INTEGRATE_WITH_SLIDER, integrateWithSlider, "active", Gio.SettingsBindFlags.DEFAULT);
+            this._settings.bind(SHOW_VOLUME_MIXER, showVolumeMixerSwitch, "active", Gio.SettingsBindFlags.DEFAULT);
             this._settings.bind(ICON_THEME, iconThemeCombo, "active-id", Gio.SettingsBindFlags.DEFAULT);
 
             //Show always is not working always, hidden in the UI directly
