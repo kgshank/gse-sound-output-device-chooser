@@ -36,6 +36,31 @@ else {
 
 let cards;
 
+function getSinks() {
+    // Try JSON output (PulseAudio >= 16.0) for friendly descriptions.
+    // LC_NUMERIC=C is required: pactl's JSON uses the locale decimal separator
+    // which makes it invalid JSON on non-English systems (e.g. "0,00" instead of "0.00").
+    let env = GLib.get_environ();
+    env = GLib.environ_setenv(env, "LC_NUMERIC", "C", true);
+    let [, out, , exit_code] = GLib.spawn_sync(null,
+        ["pactl", "--format=json", "list", "sinks"],
+        env, GLib.SpawnFlags.SEARCH_PATH, null);
+    let input = imports.byteArray.toString(out);
+    if (exit_code === 0) {
+        try {
+            return JSON.parse(input).map(sink => ({ id: String(sink.index), name: sink.description }));
+        } catch (e) {
+            // JSON parse failed (pactl < 16 ignores --format and outputs text); fall through
+        }
+    }
+    let [, out2] = GLib.spawn_command_line_sync("pactl list short sinks");
+    let input2 = imports.byteArray.toString(out2);
+    return input2.trim().split("\n").filter(l => l).map(line => {
+        let parts = line.split("\t");
+        return { id: parts[0], name: parts[1] };
+    });
+}
+
 function getCard(card_index) {
     if (!cards || Object.keys(cards).length == 0) {
         refreshCards();

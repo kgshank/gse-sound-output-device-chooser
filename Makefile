@@ -49,4 +49,10 @@ $(LOCALE_DIR)/%/LC_MESSAGES/sound-output-device-chooser.mo: $(LOCALE_DIR)/%/LC_M
 install:
 	@echo "Installing extension files in $(INSTALL_DIR)/sound-output-device-chooser@kgshank.net"
 	mkdir -p $(INSTALL_DIR)
-	cp -r sound-output-device-chooser@kgshank.net  $(INSTALL_DIR)
+	cp -r $(SRC_DIR)  $(INSTALL_DIR)
+
+enable:
+	gnome-extensions enable $(SRC_DIR)
+
+disable:
+	gnome-extensions disable $(SRC_DIR)

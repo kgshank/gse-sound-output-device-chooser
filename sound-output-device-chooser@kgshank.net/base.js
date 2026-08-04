@@ -388,6 +388,14 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
             this._deviceRemoved(control, id);
         }
         else {
+            // Guard: verify device has a valid stream before changing profile.
+            // change_profile_on_selected_device can trigger a fatal
+            // gvc_mixer_card_get_profile abort if the card's profiles are stale.
+            let stream = control.get_stream_from_device(uidevice);
+            if (!stream) {
+                _d("No stream for device " + id + ", skipping profile change");
+                return;
+            }
             _d("i am setting profile, " + profileName + ":" + uidevice.description + ":" + uidevice.port_name);
             if (id != this._activeDeviceId) {
                 _d("Changing active device to " + uidevice.description + ":" + uidevice.port_name);
@@ -517,7 +525,26 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
         }
         let uidevice = this.lookupDeviceById(control, id);
         if (uidevice) {
-            this.changeDevice(control, uidevice);
+            let stream = control.get_stream_from_device(uidevice);
+            if (stream) {
+                this.changeDevice(control, uidevice);
+                return;
+            }
+            // No stream yet: the card is likely on the wrong profile (e.g.
+            // a2dp_sink while the user clicked the HFP mic). Switch profile
+            // so PulseAudio creates the stream. Profile names come from the
+            // card's own list, so this is safe from the gvc abort.
+            let obj = this._devices.get(id);
+            let profiles = (obj && obj.profiles.length > 0)
+                ? obj.profiles
+                : Lib.getProfiles(control, uidevice);
+            if (profiles.length > 0) {
+                let profileName = profiles[0].name;
+                _d("No stream for device " + id + ", switching card profile to " + profileName);
+                control.change_profile_on_selected_device(uidevice, profileName);
+                return;
+            }
+            _d("No stream and no available profile for device " + id + ", skipping device change");
         }
         else {
             this._deviceRemoved(control, id);
@@ -543,6 +570,15 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
             this._deviceRemoved(control, device.id);
         }
         else {
+            // Guard: only get profile if device has a valid stream.
+            // Without this, get_active_profile() can trigger a fatal
+            // gvc_mixer_card_get_profile abort when BT devices are in
+            // a transitional state (e.g. just connected, profiles in flux).
+            let stream = control.get_stream_from_device(uidevice);
+            if (!stream) {
+                _d("No stream for device " + device.id + ", skipping profile update");
+                return;
+            }
             let activeProfile = uidevice.get_active_profile();
             _d("Active Profile:" + activeProfile);
             device.setActiveProfile(activeProfile);
@@ -709,7 +745,7 @@ var SoundDeviceChooserBase = class SoundDeviceChooserBase {
     }
 
     _isDeviceInValid(uidevice) {
-        return (!uidevice || (uidevice.description != null && uidevice.description.match(/Dummy\s+(Output|Input)/gi)));
+        return (!uidevice || (uidevice.description != null && uidevice.description.match(/(Dummy|EasyEffects|JamesDSP)\s+(Output|Input|Sink|Source)/gi)));
     }
 
     _refreshDeviceTitles() {
